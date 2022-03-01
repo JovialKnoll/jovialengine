@@ -1,2 +1,2 @@
-# jovial-engine
+# JovialEngine
 A Simple Pygame Engine

@@ -2,6 +2,6 @@
 requires = [
     "setuptools>=60",
     "wheel",
-    "pygame>=2"
+    "pygame>=2.1"
 ]
 build-backend = "setuptools.build_meta"
