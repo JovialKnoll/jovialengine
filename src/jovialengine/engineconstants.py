@@ -2,15 +2,6 @@ import sys
 import os
 
 
-SCREEN_SIZE = (0, 0)
-SCREEN_CENTER = (SCREEN_SIZE[0] // 2, SCREEN_SIZE[1] // 2)
-SCREEN_RECT = pygame.Rect((0, 0), SCREEN_SIZE)
-CURSOR_TIME = 500
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-
-SAVE_EXT = '.sav'
-
 _location = '.'
 if getattr(sys, 'frozen', False):
     _location = sys.executable
@@ -39,5 +30,9 @@ CONFIG_DEFAULTS = {
     CONFIG_FULLSCREEN: False,
 }
 
-with open(VERSION_TEXT) as version_file:
-    VERSION = version_file.readline().rstrip('\n')
+VERSION = ''
+try:
+    with open(VERSION_TEXT) as version_file:
+        VERSION = version_file.readline().rstrip('\n')
+except FileNotFoundError:
+    pass
