@@ -4,13 +4,13 @@ import pygame
 
 import constants
 import shared
-from modebase import ModeBase
+import mode
 from state import State
 from save import Save
 from saveable import Saveable
 
 
-class ModeGameMenu(ModeBase, abc.ABC):
+class ModeGameMenu(mode.Mode, abc.ABC):
     MENU_CHAR_WIDTH = 26
     MENU_WIDTH = MENU_CHAR_WIDTH * constants.FONT_SIZE + 1
     SHARED_DISP_TEXT = "Options:\nESC) Go Back\n"
@@ -21,7 +21,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
         '_last_disp_text',
     )
 
-    def __init__(self, previous_mode: ModeBase, old_screen=None):
+    def __init__(self, previous_mode: mode.Mode, old_screen=None):
         super().__init__()
         self._previous_mode = previous_mode
         if old_screen is None:
@@ -49,8 +49,8 @@ class ModeGameMenu(ModeBase, abc.ABC):
                 self.MENU_WIDTH,
                 disp_text,
                 False,
-                constants.WHITE,
-                constants.BLACK
+                (255, 255, 255),
+                (0, 0, 0)
             )
             menu_surface.set_alpha(235)
             screen.blit(menu_surface, (0, 0))
@@ -124,10 +124,10 @@ class ModeGameMenuSave(ModeGameMenu):
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._old_screen)
             elif event.key == pygame.K_RETURN:
                 if self._save_name and isinstance(self._previous_mode, Saveable):
-                    if Save.willOverwrite(self._save_name + constants.SAVE_EXT) and not self._confirm_overwrite:
+                    if Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
                         self._confirm_overwrite = True
                     elif not self._save_success:
-                        new_save = Save.getFromMode(self._save_name + constants.SAVE_EXT, self._previous_mode)
+                        new_save = Save.getFromMode(self._save_name, self._previous_mode)
                         self._save_success = new_save.save()
             elif event.key == pygame.K_LEFT:
                 self._cursor_position = max(self._cursor_position - 1, 0)
@@ -189,7 +189,7 @@ class ModeGameMenuSave(ModeGameMenu):
         self._drawText(screen, disp_text)
         if self._cursor_switch and not self._confirm_overwrite and self._save_success is None:
             screen.fill(
-                constants.WHITE,
+                (255, 255, 255),
                 (
                     ((self._cursor_position + 1) * constants.FONT_SIZE, 4 * constants.FONT_HEIGHT),
                     (1, constants.FONT_HEIGHT)
@@ -264,7 +264,7 @@ class ModeGameMenuLoad(ModeGameMenu):
                 else:
                     disp_text += "_"
                 if 0 <= this_index < len(self._saves):
-                    disp_text += self._saves[this_index].file_name[:-len(constants.SAVE_EXT)]
+                    disp_text += self._saves[this_index].save_name
             if self._confirm_delete:
                 disp_text += "\nAre you sure you want to delete?" \
                     + "\nPress ENTER to confirm, or any other key to go back."

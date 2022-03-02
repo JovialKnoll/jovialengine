@@ -4,6 +4,7 @@ import os
 import pygame
 
 import constants
+import engineconstants
 import shared
 
 
@@ -26,8 +27,8 @@ class Display(object):
     def __init__(self):
         self._window_icon = pygame.image.load(constants.WINDOW_ICON)
         self._setupDisplay()
-        self.is_fullscreen = shared.config.getboolean(constants.CONFIG_SECTION, constants.CONFIG_FULLSCREEN)
-        self.upscale = shared.config.getint(constants.CONFIG_SECTION, constants.CONFIG_SCREEN_SCALE)
+        self.is_fullscreen = shared.config.getboolean(engineconstants.CONFIG_SECTION, engineconstants.CONFIG_FULLSCREEN)
+        self.upscale = shared.config.getint(engineconstants.CONFIG_SECTION, engineconstants.CONFIG_SCREEN_SCALE)
         self.upscale = max(min(self.upscale, self._upscale_max), 0)
         self._scaleDisp()
         self.screen: pygame.Surface = pygame.Surface(constants.SCREEN_SIZE)
@@ -38,7 +39,7 @@ class Display(object):
         else:
             self._setWindowed()
         self.screen = self.screen.convert(self._disp_screen)
-        shared.config.set(constants.CONFIG_SECTION, constants.CONFIG_SCREEN_SCALE, str(self.upscale))
+        shared.config.set(engineconstants.CONFIG_SECTION, engineconstants.CONFIG_SCREEN_SCALE, str(self.upscale))
 
     def _setupDisplay(self):
         pygame.display.set_caption(constants.TITLE)
@@ -92,7 +93,7 @@ class Display(object):
             self._setupDisplay()
             self._setWindowed()
         self.screen = self.screen.convert(self._disp_screen)
-        shared.config.set(constants.CONFIG_SECTION, constants.CONFIG_SCREEN_SCALE, str(self.upscale))
+        shared.config.set(engineconstants.CONFIG_SECTION, engineconstants.CONFIG_SCREEN_SCALE, str(self.upscale))
 
     def _scaleDisp(self):
         self._disp_res = (
@@ -110,7 +111,7 @@ class Display(object):
         else:
             self._setWindowed()
         self.screen = self.screen.convert(self._disp_screen)
-        shared.config.set(constants.CONFIG_SECTION, constants.CONFIG_FULLSCREEN, str(self.is_fullscreen))
+        shared.config.set(engineconstants.CONFIG_SECTION, engineconstants.CONFIG_FULLSCREEN, str(self.is_fullscreen))
 
     def _setWindowed(self):
         # center window
@@ -137,7 +138,7 @@ class Display(object):
                 self._fullscreen_flags
             )
         else:
-            self._full_screen.fill(constants.BLACK)
+            self._full_screen.fill((0, 0, 0))
         self._disp_screen = pygame.Surface(self._disp_res).convert(self._full_screen)
 
     def scaleMouseInput(self, event: pygame.event.Event):

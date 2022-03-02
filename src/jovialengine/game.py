@@ -5,6 +5,7 @@ from datetime import datetime
 import pygame
 
 import constants
+import engineconstants
 import shared
 import mode
 
@@ -18,7 +19,7 @@ class Game(object):
     )
 
     def __init__(self, start_mode: mode.Mode):
-        self._max_framerate = shared.config.getint(constants.CONFIG_SECTION, constants.CONFIG_MAX_FRAMERATE)
+        self._max_framerate = shared.config.getint(engineconstants.CONFIG_SECTION, engineconstants.CONFIG_MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
         self._current_mode = start_mode
         self._is_first_loop = True
@@ -64,11 +65,11 @@ class Game(object):
                 return self._handlePauseMenu()
             elif event.key == pygame.K_F12:
                 try:
-                    os.mkdir(constants.SCREENSHOT_DIRECTORY)
+                    os.mkdir(engineconstants.SCREENSHOT_DIRECTORY)
                 except FileExistsError:
                     pass
                 file_name = f"{datetime.utcnow().isoformat().replace(':', '')}.png"
-                file_path = os.path.join(constants.SCREENSHOT_DIRECTORY, file_name)
+                file_path = os.path.join(engineconstants.SCREENSHOT_DIRECTORY, file_name)
                 pygame.image.save(shared.display.screen, file_path)
                 return False
         elif event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN) \
