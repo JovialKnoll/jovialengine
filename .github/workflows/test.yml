@@ -7,13 +7,3 @@ jobs:
     uses: JovialKnoll/workflows/.github/workflows/test-python.yml@master
     with:
       python_version: '3.10'
-
-  publish-python-package:
-    uses: JovialKnoll/workflows/.github/workflows/publish-python-package.yml@master
-    needs: test-python
-    with:
-      python_version: '3.10'
-      actual_publish: false
-    secrets:
-      TEST_PYPI_API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
-      PYPI_API_TOKEN: NOT_USED
