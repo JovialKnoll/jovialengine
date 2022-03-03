@@ -1,5 +1,5 @@
-import engineconstants
-import utility
+import .engineconstants
+import .utility
 from .animsprite import AnimSprite
 from .fontwrap import FontWrap
 from .game import Game
