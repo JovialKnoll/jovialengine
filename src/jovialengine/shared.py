@@ -1,18 +1,18 @@
 import configparser
 
-import jovialengine.engineconstants
-import jovialengine.fontwrap
-import jovialengine.display
+import jovialengine
+
+from .display import Display
 
 import constants
-import state
+from state import State
 
 
 config = configparser.ConfigParser(jovialengine.engineconstants.CONFIG_DEFAULTS, default_section=jovialengine.engineconstants.CONFIG_SECTION)
 config.read(jovialengine.engineconstants.CONFIG_FILE)
 for section in config.sections():
     config.remove_section(section)
-font_wrap = FontWrap(constants.FONT, constants.FONT_SIZE)
+font_wrap = jovialengine.fontwrap.FontWrap(constants.FONT, constants.FONT_SIZE)
 display = Display()
 state = State()
 game_running = True

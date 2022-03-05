@@ -3,10 +3,13 @@ import os
 from datetime import datetime
 
 import pygame
+import jovialengine
+
+from .modegamemenu import ModeGameMenu
+from .modegamemenu import ModeGameMenuTop
+
 
 import constants
-import engineconstants
-import shared
 import mode
 
 
@@ -18,8 +21,8 @@ class Game(object):
         '_is_first_loop',
     )
 
-    def __init__(self, start_mode: mode.Mode):
-        self._max_framerate = shared.config.getint(engineconstants.CONFIG_SECTION, engineconstants.CONFIG_MAX_FRAMERATE)
+    def __init__(self, start_mode: jovialengine.ModeBase):
+        self._max_framerate = jovialengine.shared.config.getint(jovialengine.engineconstants.CONFIG_SECTION, jovialengine.engineconstants.CONFIG_MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
         self._current_mode = start_mode
         self._is_first_loop = True
@@ -33,23 +36,23 @@ class Game(object):
         )
         for i in range(self._getTime()):
             self._current_mode.update(1)
-        self._current_mode.draw(shared.display.screen)
-        shared.display.scaleDraw()
+        self._current_mode.draw(jovialengine.shared.display.screen)
+        jovialengine.shared.display.scaleDraw()
         if self._current_mode.next_mode is not None:
-            if isinstance(self._current_mode, mode.ModeGameMenu) \
-                    and not isinstance(self._current_mode.next_mode, mode.ModeGameMenu):
+            if isinstance(self._current_mode, jovialengine.ModeGameMenu) \
+                    and not isinstance(self._current_mode.next_mode, ModeGameMenu):
                 pygame.mixer.music.unpause()
                 pygame.mixer.unpause()
             self._current_mode.all_sprites.empty()
             self._current_mode = self._current_mode.next_mode
-        if not shared.game_running:
-            shared.saveConfig()
+        if not jovialengine.shared.game_running:
+            jovialengine.shared.saveConfig()
         self._is_first_loop = False
-        return shared.game_running
+        return jovialengine.shared.game_running
 
     def _filterInput(self, events: typing.Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
-        return filter(self._stillNeedsHandling, map(shared.display.scaleMouseInput, events))
+        return filter(self._stillNeedsHandling, map(jovialengine.shared.display.scaleMouseInput, events))
 
     def _stillNeedsHandling(self, event: pygame.event.Event):
         """If event should be handled before all others, handle it and return False, otherwise return True.
@@ -65,12 +68,12 @@ class Game(object):
                 return self._handlePauseMenu()
             elif event.key == pygame.K_F12:
                 try:
-                    os.mkdir(engineconstants.SCREENSHOT_DIRECTORY)
+                    os.mkdir(jovialengine.engineconstants.SCREENSHOT_DIRECTORY)
                 except FileExistsError:
                     pass
                 file_name = f"{datetime.utcnow().isoformat().replace(':', '')}.png"
-                file_path = os.path.join(engineconstants.SCREENSHOT_DIRECTORY, file_name)
-                pygame.image.save(shared.display.screen, file_path)
+                file_path = os.path.join(jovialengine.engineconstants.SCREENSHOT_DIRECTORY, file_name)
+                pygame.image.save(jovialengine.shared.display.screen, file_path)
                 return False
         elif event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN) \
             and (
@@ -83,10 +86,10 @@ class Game(object):
         return True
 
     def _handlePauseMenu(self):
-        # pass quit events forward to mode.ModeGameMenu, but not to other modes
-        if isinstance(self._current_mode, mode.ModeGameMenu):
+        # pass quit events forward to ModeGameMenu, but not to other modes
+        if isinstance(self._current_mode, ModeGameMenu):
             return True
-        self._current_mode = mode.ModeGameMenuTop(self._current_mode)
+        self._current_mode = ModeGameMenuTop(self._current_mode)
         pygame.mixer.music.pause()
         pygame.mixer.pause()
         return False

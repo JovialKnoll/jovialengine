@@ -1,16 +1,13 @@
 import abc
 
 import pygame
+import jovialengine
 
 import constants
-import shared
-import mode
 from state import State
-from save import Save
-from saveable import Saveable
 
 
-class ModeGameMenu(mode.Mode, abc.ABC):
+class ModeGameMenu(jovialengine.ModeBase, abc.ABC):
     MENU_CHAR_WIDTH = 26
     MENU_WIDTH = MENU_CHAR_WIDTH * constants.FONT_SIZE + 1
     SHARED_DISP_TEXT = "Options:\nESC) Go Back\n"
@@ -22,7 +19,7 @@ class ModeGameMenu(mode.Mode, abc.ABC):
         '_menu_surface',
     )
 
-    def __init__(self, previous_mode: mode.Mode, old_screen=None):
+    def __init__(self, previous_mode: jovialengine.ModeBase, old_screen=None):
         super().__init__()
         self._previous_mode = previous_mode
         if old_screen is None:
@@ -32,7 +29,7 @@ class ModeGameMenu(mode.Mode, abc.ABC):
         self._menu_surface = None
 
     def _getOldScreen(self):
-        old_screen = pygame.Surface(constants.SCREEN_SIZE).convert(shared.display.screen)
+        old_screen = pygame.Surface(constants.SCREEN_SIZE).convert(jovialengine.shared.display.screen)
         self._previous_mode.draw(old_screen)
         old_screen = pygame.transform.smoothscale(
             pygame.transform.smoothscale(
@@ -45,7 +42,7 @@ class ModeGameMenu(mode.Mode, abc.ABC):
 
     def _drawTextAlways(self, disp_text: str):
         self._last_disp_text = disp_text
-        self._menu_surface = shared.font_wrap.renderInside(
+        self._menu_surface = jovialengine.shared.font_wrap.renderInside(
             self.MENU_WIDTH,
             disp_text,
             False,
@@ -64,7 +61,7 @@ class ModeGameMenu(mode.Mode, abc.ABC):
 class ModeGameMenuTop(ModeGameMenu):
     def _input(self, event):
         if event.type == pygame.QUIT:
-            shared.game_running = False
+            jovialengine.shared.game_running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.next_mode = self._previous_mode
@@ -76,14 +73,14 @@ class ModeGameMenuTop(ModeGameMenu):
                 self.next_mode = ModeGameMenuOptions(self._previous_mode, self._old_screen)
             elif event.key == pygame.K_4:
                 self._stopMixer()
-                shared.state = State()
+                jovialengine.shared.state = State()
                 self._previous_mode = mode.ModeOpening0()
                 pygame.mixer.music.pause()
                 pygame.mixer.pause()
                 self._old_screen = self._getOldScreen()
                 self._last_disp_text = None
             elif event.key == pygame.K_5:
-                shared.game_running = False
+                jovialengine.shared.game_running = False
 
     def _drawScreen(self, screen):
         disp_text = self.SHARED_DISP_TEXT
@@ -130,11 +127,11 @@ class ModeGameMenuSave(ModeGameMenu):
                 else:
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._old_screen)
             elif event.key == pygame.K_RETURN:
-                if self._save_name and isinstance(self._previous_mode, Saveable):
-                    if Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
+                if self._save_name and isinstance(self._previous_mode, jovialengine.Saveable):
+                    if jovialengine.Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
                         self._confirm_overwrite = True
                     elif not self._save_success:
-                        new_save = Save.getFromMode(self._save_name, self._previous_mode)
+                        new_save = jovialengine.Save.getFromMode(self._save_name, self._previous_mode)
                         self._save_success = new_save.save()
             elif event.key == pygame.K_LEFT:
                 self._cursor_position = max(self._cursor_position - 1, 0)
@@ -180,7 +177,7 @@ class ModeGameMenuSave(ModeGameMenu):
 
     def _drawScreen(self, screen):
         disp_text = self.SHARED_DISP_TEXT
-        if not isinstance(self._previous_mode, Saveable):
+        if not isinstance(self._previous_mode, jovialengine.Saveable):
             disp_text += "\nYou can't save now."
         elif not self._save_success:
             disp_text += "ENTER) Save\nType a save name:\n>"
@@ -217,7 +214,7 @@ class ModeGameMenuLoad(ModeGameMenu):
 
     def __init__(self, previous_mode, old_screen=None):
         super().__init__(previous_mode, old_screen)
-        self._saves = Save.getAllFromFiles()
+        self._saves = jovialengine.Save.getAllFromFiles()
         self._save_index = 0
         self._loaded_save = False
         self._confirm_delete = False
@@ -292,26 +289,26 @@ class ModeGameMenuOptions(ModeGameMenu):
                     pygame.K_LEFT, pygame.K_a,
                     pygame.K_PAGEDOWN, pygame.K_MINUS,
             ):
-                shared.display.changeScale(-1)
+                jovialengine.shared.display.changeScale(-1)
             elif event.key in (
                     pygame.K_UP, pygame.K_w,
                     pygame.K_RIGHT, pygame.K_d,
                     pygame.K_PAGEUP, pygame.K_EQUALS,
             ):
-                shared.display.changeScale(1)
+                jovialengine.shared.display.changeScale(1)
             elif event.key in (pygame.K_f, pygame.K_F11,):
-                shared.display.toggleFullscreen()
+                jovialengine.shared.display.toggleFullscreen()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._old_screen)
             elif '1' <= event.unicode <= '9':
                 target_scale = int(event.unicode)
-                shared.display.setScale(target_scale)
+                jovialengine.shared.display.setScale(target_scale)
 
     def _drawScreen(self, screen):
         disp_text = self.SHARED_DISP_TEXT
-        disp_text += f"ARROWS) Upscaling: {shared.display.upscale}" \
-                     f"\nF) Fullscreen: {self.getTickBox(shared.display.is_fullscreen)}"
+        disp_text += f"ARROWS) Upscaling: {jovialengine.shared.display.upscale}" \
+                     f"\nF) Fullscreen: {self.getTickBox(jovialengine.shared.display.is_fullscreen)}"
         if self._drawText(disp_text):
             screen.blit(self._old_screen, (0, 0))
             screen.blit(self._menu_surface, (0, 0))
