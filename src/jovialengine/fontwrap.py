@@ -1,7 +1,7 @@
 import pygame
 
 import constants
-import shared
+import jovialengine.shared
 
 
 class FontWrap(object):

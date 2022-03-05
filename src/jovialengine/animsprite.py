@@ -3,8 +3,8 @@ from collections import deque
 import pygame
 
 import constants
-import utility
-from saveable import Saveable
+from . import utility
+from .saveable import Saveable
 
 
 class Anim(Saveable):

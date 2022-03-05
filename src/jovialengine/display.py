@@ -4,8 +4,8 @@ import os
 import pygame
 
 import constants
-import engineconstants
-import shared
+import jovialengine.engineconstants
+import jovialengine.shared
 
 
 class Display(object):

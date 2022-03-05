@@ -1,14 +1,15 @@
 import configparser
 
+import jovialengine.engineconstants
+import jovialengine.fontwrap
+import jovialengine.display
+
 import constants
-import engineconstants
-from fontwrap import FontWrap
-from display import Display
-from state import State
+import state
 
 
-config = configparser.ConfigParser(engineconstants.CONFIG_DEFAULTS, default_section=engineconstants.CONFIG_SECTION)
-config.read(engineconstants.CONFIG_FILE)
+config = configparser.ConfigParser(jovialengine.engineconstants.CONFIG_DEFAULTS, default_section=jovialengine.engineconstants.CONFIG_SECTION)
+config.read(jovialengine.engineconstants.CONFIG_FILE)
 for section in config.sections():
     config.remove_section(section)
 font_wrap = FontWrap(constants.FONT, constants.FONT_SIZE)
