@@ -1,7 +1,8 @@
 import pygame
 
-import constants
 import jovialengine
+
+import constants
 
 
 class FontWrap(object):

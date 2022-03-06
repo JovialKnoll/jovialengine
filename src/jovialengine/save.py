@@ -5,11 +5,10 @@ from collections import deque
 
 import pygame.math
 
-import engineconstants
-import shared
+import jovialengine
+
+import state
 import mode
-from saveable import Saveable
-from state import State
 
 
 _KEY_COLLECTION = 'COLLECTION'
@@ -52,7 +51,7 @@ class _SaveableJSONEncoder(json.JSONEncoder):
                 _KEY_MODULE: o.__module__,
                 _KEY_CLASS: o.__qualname__,
             }
-        elif isinstance(o, Saveable):
+        elif isinstance(o, jovialengine.Saveable):
             return {
                 _KEY_MODULE: type(o).__module__,
                 _KEY_CLASS: type(o).__qualname__,
@@ -111,12 +110,12 @@ class Save(object):
 
     @staticmethod
     def _getSaveFiles():
-        if not os.path.isdir(engineconstants.SAVE_DIRECTORY):
+        if not os.path.isdir(jovialengine.engineconstants.SAVE_DIRECTORY):
             return ()
         return (
             file_name
             for file_name
-            in os.listdir(engineconstants.SAVE_DIRECTORY)
+            in os.listdir(jovialengine.engineconstants.SAVE_DIRECTORY)
             if os.path.isfile(
                 Save._getFilePathFromFileName(file_name)
             )
@@ -125,7 +124,7 @@ class Save(object):
 
     @staticmethod
     def _getFilePathFromFileName(file_name):
-        return os.path.join(engineconstants.SAVE_DIRECTORY, file_name)
+        return os.path.join(jovialengine.engineconstants.SAVE_DIRECTORY, file_name)
 
     def _getFilePath(self):
         return self._getFilePathFromFileName(self.save_name + _SAVE_EXT)
@@ -157,12 +156,12 @@ class Save(object):
             return False
 
     @classmethod
-    def getFromMode(cls, save_name: str, from_mode: Saveable):
-        return cls(save_name, type(from_mode).__name__, from_mode.save(), shared.state.save())
+    def getFromMode(cls, save_name: str, from_mode: jovialengine.Saveable):
+        return cls(save_name, type(from_mode).__name__, from_mode.save(), jovialengine.shared.state.save())
 
     def save(self):
         try:
-            os.mkdir(engineconstants.SAVE_DIRECTORY)
+            os.mkdir(jovialengine.engineconstants.SAVE_DIRECTORY)
         except FileExistsError:
             pass
         save_object = {
@@ -179,7 +178,7 @@ class Save(object):
             return False
 
     def load(self):
-        shared.state = State.load(self._shared_data)
+        jovialengine.shared.state = state.State.load(self._shared_data)
         mode_cls = getattr(mode, self._mode_name)
         new_mode = mode_cls.load(self._mode_data)
         return new_mode

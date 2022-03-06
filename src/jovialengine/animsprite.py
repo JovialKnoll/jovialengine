@@ -2,12 +2,12 @@ from collections import deque
 
 import pygame
 
+import jovialengine
+
 import constants
-from . import utility
-from .saveable import Saveable
 
 
-class Anim(Saveable):
+class Anim(jovialengine.Saveable):
     __slots__ = (
         'func',
         'time',
@@ -35,7 +35,7 @@ class Anim(Saveable):
         return cls(*save_data)
 
 
-class AnimSprite(pygame.sprite.DirtySprite, Saveable):
+class AnimSprite(pygame.sprite.DirtySprite, jovialengine.Saveable):
     Binary = 'Binary'
     Lerp = 'LERP'
     IncSpeed = 'INC'
@@ -43,17 +43,17 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
     IncDecSpeed = 'INC_DEC'
     DecIncSpeed = 'DEC_INC'
     funcDict = {
-        Binary: utility.binary,
-        Lerp: utility.lerp,
-        IncSpeed: utility.incSpeedLerp,
-        DecSpeed: utility.decSpeedLerp,
-        IncDecSpeed: utility.incDecSpeedLerp,
-        DecIncSpeed: utility.decIncSpeedLerp,
+        Binary: jovialengine.utility.binary,
+        Lerp: jovialengine.utility.lerp,
+        IncSpeed: jovialengine.utility.incSpeedLerp,
+        DecSpeed: jovialengine.utility.decSpeedLerp,
+        IncDecSpeed: jovialengine.utility.incDecSpeedLerp,
+        DecIncSpeed: jovialengine.utility.decIncSpeedLerp,
     }
 
     @classmethod
     def toFunc(cls, func):
-        return cls.funcDict.get(func, utility.lerp)
+        return cls.funcDict.get(func, jovialengine.utility.lerp)
 
     __slots__ = (
         'anims',
@@ -124,8 +124,8 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
         if self.positional_sound:
             if self.sound_channel.get_busy():
                 pos = min(max(self.rect.centerx / constants.SCREEN_SIZE[0], 0), 1)
-                channel_l = self._boundChannelVolume(utility.cos_curve(pos))
-                channel_r = self._boundChannelVolume(utility.sin_curve(pos))
+                channel_l = self._boundChannelVolume(jovialengine.utility.cos_curve(pos))
+                channel_r = self._boundChannelVolume(jovialengine.utility.sin_curve(pos))
                 self.sound_channel.set_volume(channel_l, channel_r)
             else:
                 self.positional_sound = False

@@ -4,7 +4,7 @@ import pygame
 import jovialengine
 
 import constants
-from state import State
+import state
 
 
 class ModeGameMenu(jovialengine.ModeBase, abc.ABC):
@@ -73,7 +73,7 @@ class ModeGameMenuTop(ModeGameMenu):
                 self.next_mode = ModeGameMenuOptions(self._previous_mode, self._old_screen)
             elif event.key == pygame.K_4:
                 self._stopMixer()
-                jovialengine.shared.state = State()
+                jovialengine.shared.state = state.State()
                 self._previous_mode = mode.ModeOpening0()
                 pygame.mixer.music.pause()
                 pygame.mixer.pause()

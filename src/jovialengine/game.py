@@ -3,14 +3,14 @@ import os
 from datetime import datetime
 
 import pygame
-import jovialengine
 
+import jovialengine
 from .modegamemenu import ModeGameMenu
 from .modegamemenu import ModeGameMenuTop
-
+from .display import Display
 
 import constants
-import mode
+import state
 
 
 class Game(object):
@@ -22,6 +22,12 @@ class Game(object):
     )
 
     def __init__(self, start_mode: jovialengine.ModeBase):
+        # init shared objects
+        jovialengine.shared.display = Display()
+        jovialengine.shared.font_wrap = jovialengine.fontwrap.FontWrap(constants.FONT, constants.FONT_SIZE)
+        jovialengine.shared.state = state.State()
+        jovialengine.shared.game_running = True
+        # init game properties
         self._max_framerate = jovialengine.shared.config.getint(jovialengine.engineconstants.CONFIG_SECTION, jovialengine.engineconstants.CONFIG_MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
         self._current_mode = start_mode
