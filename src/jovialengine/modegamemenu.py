@@ -93,6 +93,8 @@ class ModeGameMenuTop(ModeGameMenu):
 
 
 class ModeGameMenuSave(ModeGameMenu):
+    _CURSOR_TIME = 500
+
     __slots__ = (
         '_save_name',
         '_cursor_position',
@@ -173,9 +175,9 @@ class ModeGameMenuSave(ModeGameMenu):
 
     def _update(self, dt):
         self._cursor_timer += dt
-        if self._cursor_timer >= constants.CURSOR_TIME:
+        if self._cursor_timer >= self._CURSOR_TIME:
             self._cursor_switch = not self._cursor_switch
-            self._cursor_timer -= constants.CURSOR_TIME
+            self._cursor_timer -= self._CURSOR_TIME
 
     def _drawScreen(self, screen):
         disp_text = self.SHARED_DISP_TEXT

@@ -1,0 +1,22 @@
+This package expects the following local modules to exist as part of your game:
+* constants
+  - SCREEN_SIZE
+    a tuple (width, height)
+  - WINDOW_ICON
+    a file location to use as the window icon
+  - TITLE
+    a string to use as the window title
+  - COLORKEY
+    a colorkey to use for transparency
+  - FONT
+    a file location to use as your main font
+  - FONT_SIZE
+    a size for your font, assumes monospace
+  - FONT_HEIGHT
+    a height for your font
+* state
+  - State
+    a class that inherits from jovialengine.Saveable and holds any state you need to share between modes
+* mode
+  - This should contain all of your game modes, and they should all inherit directly or indirectly from jovialengine.ModeBase
+  - Any modes that inherit from jovialengine.Saveable will be able to be saved and loaded.
