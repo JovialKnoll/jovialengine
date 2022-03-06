@@ -1,7 +1,9 @@
 import abc
 
 import pygame
+
 import jovialengine
+from .save import Save
 
 import constants
 import state
@@ -128,10 +130,10 @@ class ModeGameMenuSave(ModeGameMenu):
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._old_screen)
             elif event.key == pygame.K_RETURN:
                 if self._save_name and isinstance(self._previous_mode, jovialengine.Saveable):
-                    if jovialengine.Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
+                    if Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
                         self._confirm_overwrite = True
                     elif not self._save_success:
-                        new_save = jovialengine.Save.getFromMode(self._save_name, self._previous_mode)
+                        new_save = Save.getFromMode(self._save_name, self._previous_mode)
                         self._save_success = new_save.save()
             elif event.key == pygame.K_LEFT:
                 self._cursor_position = max(self._cursor_position - 1, 0)
@@ -214,7 +216,7 @@ class ModeGameMenuLoad(ModeGameMenu):
 
     def __init__(self, previous_mode, old_screen=None):
         super().__init__(previous_mode, old_screen)
-        self._saves = jovialengine.Save.getAllFromFiles()
+        self._saves = Save.getAllFromFiles()
         self._save_index = 0
         self._loaded_save = False
         self._confirm_delete = False

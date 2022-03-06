@@ -45,7 +45,7 @@ class Game(object):
         self._current_mode.draw(jovialengine.shared.display.screen)
         jovialengine.shared.display.scaleDraw()
         if self._current_mode.next_mode is not None:
-            if isinstance(self._current_mode, jovialengine.ModeGameMenu) \
+            if isinstance(self._current_mode, ModeGameMenu) \
                     and not isinstance(self._current_mode.next_mode, ModeGameMenu):
                 pygame.mixer.music.unpause()
                 pygame.mixer.unpause()
