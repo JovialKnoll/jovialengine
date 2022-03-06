@@ -4,10 +4,10 @@ This package expects the following local modules to exist as part of your game:
     a string to use as the window title
   - SCREEN_SIZE
     a tuple (width, height)
-  - WINDOW_ICON
-    a file location to use as the window icon
   - COLORKEY
     a colorkey to use for transparency
+  - WINDOW_ICON
+    a file location to use as the window icon
   - FONT
     a file location to use as your main font
   - FONT_SIZE
