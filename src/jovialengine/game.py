@@ -8,6 +8,7 @@ import jovialengine
 from .modegamemenu import ModeGameMenu
 from .modegamemenu import ModeGameMenuTop
 from .display import Display
+from . import config
 
 import constants
 import state
@@ -29,8 +30,7 @@ class Game(object):
         jovialengine.shared.start_mode_cls = start_mode_cls
         jovialengine.shared.game_running = True
         # init game properties
-        self._max_framerate = jovialengine.shared.config.getint(jovialengine.config.CONFIG_SECTION,
-                                                                jovialengine.config.CONFIG_MAX_FRAMERATE)
+        self._max_framerate = jovialengine.shared.config.getint(config.CONFIG_SECTION, config.CONFIG_MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
         self._current_mode = jovialengine.shared.start_mode_cls()
         self._is_first_loop = True

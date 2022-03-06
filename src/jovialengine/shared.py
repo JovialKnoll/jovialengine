@@ -1,12 +1,12 @@
 import configparser
 
 import jovialengine
+from . import config
 
 import constants
 
 
-config = configparser.ConfigParser(jovialengine.config.CONFIG_DEFAULTS,
-                                   default_section=jovialengine.config.CONFIG_SECTION)
+config = configparser.ConfigParser(config.CONFIG_DEFAULTS, default_section=config.CONFIG_SECTION)
 config.read(constants.CONFIG_FILE)
 for section in config.sections():
     config.remove_section(section)
