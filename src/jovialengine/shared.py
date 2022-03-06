@@ -2,8 +2,6 @@ import configparser
 
 import jovialengine
 
-import constants
-
 
 config = configparser.ConfigParser(jovialengine.engineconstants.CONFIG_DEFAULTS,
                                    default_section=jovialengine.engineconstants.CONFIG_SECTION)
