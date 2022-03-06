@@ -80,5 +80,41 @@ class TestUtility(unittest.TestCase):
             2
         )
 
+    def test_incDecSpeedLerp(self):
+        self.assertEqual(
+            utility.incDecSpeedLerp(1.0, 2.0, 0.0),
+            1
+        )
+        self.assertEqual(
+            utility.incDecSpeedLerp(1.0, 2.0, 0.25),
+            1.125
+        )
+        self.assertEqual(
+            utility.incDecSpeedLerp(1.0, 2.0, 0.75),
+            1.875
+        )
+        self.assertEqual(
+            utility.incDecSpeedLerp(1.0, 2.0, 1.0),
+            2
+        )
+
+    def test_decIncSpeedLerp(self):
+        self.assertEqual(
+            utility.decIncSpeedLerp(1.0, 2.0, 0.0),
+            1
+        )
+        self.assertEqual(
+            utility.decIncSpeedLerp(1.0, 2.0, 0.25),
+            1.375
+        )
+        self.assertEqual(
+            utility.decIncSpeedLerp(1.0, 2.0, 0.75),
+            1.625
+        )
+        self.assertEqual(
+            utility.decIncSpeedLerp(1.0, 2.0, 1.0),
+            2
+        )
+
 if __name__ == '__main__':
     unittest.main()
