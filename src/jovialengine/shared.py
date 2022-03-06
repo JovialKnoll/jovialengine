@@ -12,5 +12,5 @@ for section in config.sections():
 
 
 def saveConfig():
-    with open(engineconstants.CONFIG_FILE, 'w') as file:
+    with open(jovialengine.engineconstants.CONFIG_FILE, 'w') as file:
         config.write(file, space_around_delimiters=False)
