@@ -151,13 +151,23 @@ class Save(object):
         try:
             with open(file_path, 'r') as file:
                 save_object = json.load(file, object_hook=_decodeSaveable)
-                return cls(file_name[:-len(_SAVE_EXT)], save_object['mode_name'], save_object['mode_data'], save_object['shared_data'])
+                return cls(
+                    file_name[:-len(_SAVE_EXT)],
+                    save_object['mode_name'],
+                    save_object['mode_data'],
+                    save_object['shared_data']
+                )
         except (IOError, json.decoder.JSONDecodeError):
             return False
 
     @classmethod
     def getFromMode(cls, save_name: str, from_mode: jovialengine.Saveable):
-        return cls(save_name, type(from_mode).__name__, from_mode.save(), jovialengine.shared.state.save())
+        return cls(
+            save_name,
+            type(from_mode).__name__,
+            from_mode.save(),
+            jovialengine.shared.state.save()
+        )
 
     def save(self):
         try:

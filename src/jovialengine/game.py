@@ -29,7 +29,8 @@ class Game(object):
         jovialengine.shared.start_mode_cls = start_mode_cls
         jovialengine.shared.game_running = True
         # init game properties
-        self._max_framerate = jovialengine.shared.config.getint(jovialengine.engineconstants.CONFIG_SECTION, jovialengine.engineconstants.CONFIG_MAX_FRAMERATE)
+        self._max_framerate = jovialengine.shared.config.getint(jovialengine.engineconstants.CONFIG_SECTION,
+                                                                jovialengine.engineconstants.CONFIG_MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
         self._current_mode = jovialengine.shared.start_mode_cls()
         self._is_first_loop = True
