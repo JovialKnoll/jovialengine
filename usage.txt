@@ -1,11 +1,11 @@
 This package expects the following local modules to exist as part of your game:
 * constants
+  - TITLE
+    a string to use as the window title
   - SCREEN_SIZE
     a tuple (width, height)
   - WINDOW_ICON
     a file location to use as the window icon
-  - TITLE
-    a string to use as the window title
   - COLORKEY
     a colorkey to use for transparency
   - FONT
