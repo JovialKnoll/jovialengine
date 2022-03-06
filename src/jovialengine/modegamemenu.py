@@ -76,7 +76,7 @@ class ModeGameMenuTop(ModeGameMenu):
             elif event.key == pygame.K_4:
                 self._stopMixer()
                 jovialengine.shared.state = state.State()
-                self._previous_mode = mode.ModeOpening0()
+                self._previous_mode = jovialengine.shared.start_mode_cls()
                 pygame.mixer.music.pause()
                 pygame.mixer.pause()
                 self._old_screen = self._getOldScreen()

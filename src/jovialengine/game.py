@@ -21,16 +21,17 @@ class Game(object):
         '_is_first_loop',
     )
 
-    def __init__(self, start_mode: jovialengine.ModeBase):
+    def __init__(self, start_mode_cls: typing.Type[jovialengine.ModeBase]):
         # init shared objects
         jovialengine.shared.display = Display()
         jovialengine.shared.font_wrap = jovialengine.fontwrap.FontWrap(constants.FONT, constants.FONT_SIZE)
         jovialengine.shared.state = state.State()
+        jovialengine.shared.start_mode_cls = start_mode_cls
         jovialengine.shared.game_running = True
         # init game properties
         self._max_framerate = jovialengine.shared.config.getint(jovialengine.engineconstants.CONFIG_SECTION, jovialengine.engineconstants.CONFIG_MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
-        self._current_mode = start_mode
+        self._current_mode = jovialengine.shared.start_mode_cls()
         self._is_first_loop = True
 
     def run(self):
