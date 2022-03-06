@@ -2,14 +2,16 @@ import configparser
 
 import jovialengine
 
+import constants
 
-config = configparser.ConfigParser(jovialengine.engineconstants.CONFIG_DEFAULTS,
-                                   default_section=jovialengine.engineconstants.CONFIG_SECTION)
-config.read(jovialengine.engineconstants.CONFIG_FILE)
+
+config = configparser.ConfigParser(jovialengine.config.CONFIG_DEFAULTS,
+                                   default_section=jovialengine.config.CONFIG_SECTION)
+config.read(constants.CONFIG_FILE)
 for section in config.sections():
     config.remove_section(section)
 
 
 def saveConfig():
-    with open(jovialengine.engineconstants.CONFIG_FILE, 'w') as file:
+    with open(constants.CONFIG_FILE, 'w') as file:
         config.write(file, space_around_delimiters=False)

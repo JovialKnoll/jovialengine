@@ -14,6 +14,12 @@ This package expects the following local modules to exist as part of your game:
     a size for your font, assumes monospace
   - FONT_HEIGHT
     a height for your font
+  - SAVE_DIRECTORY
+    a directory for saves
+  - SCREENSHOT_DIRECTORY
+    a directory for screenshots
+  - CONFIG_FILE
+    a location to use for config file
 * state
   - State
     a class that inherits from jovialengine.Saveable and holds any state you need to share between modes

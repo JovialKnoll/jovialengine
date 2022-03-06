@@ -27,10 +27,10 @@ class Display(object):
     def __init__(self):
         self._window_icon = pygame.image.load(constants.WINDOW_ICON)
         self._setupDisplay()
-        self.is_fullscreen = jovialengine.shared.config.getboolean(jovialengine.engineconstants.CONFIG_SECTION,
-                                                                   jovialengine.engineconstants.CONFIG_FULLSCREEN)
-        self.upscale = jovialengine.shared.config.getint(jovialengine.engineconstants.CONFIG_SECTION,
-                                                         jovialengine.engineconstants.CONFIG_SCREEN_SCALE)
+        self.is_fullscreen = jovialengine.shared.config.getboolean(jovialengine.config.CONFIG_SECTION,
+                                                                   jovialengine.config.CONFIG_FULLSCREEN)
+        self.upscale = jovialengine.shared.config.getint(jovialengine.config.CONFIG_SECTION,
+                                                         jovialengine.config.CONFIG_SCREEN_SCALE)
         self.upscale = max(min(self.upscale, self._upscale_max), 0)
         self._scaleDisp()
         self.screen: pygame.Surface = pygame.Surface(constants.SCREEN_SIZE)
@@ -41,8 +41,8 @@ class Display(object):
         else:
             self._setWindowed()
         self.screen = self.screen.convert(self._disp_screen)
-        jovialengine.shared.config.set(jovialengine.engineconstants.CONFIG_SECTION,
-                                       jovialengine.engineconstants.CONFIG_SCREEN_SCALE, str(self.upscale))
+        jovialengine.shared.config.set(jovialengine.config.CONFIG_SECTION,
+                                       jovialengine.config.CONFIG_SCREEN_SCALE, str(self.upscale))
 
     def _setupDisplay(self):
         pygame.display.set_caption(constants.TITLE)
@@ -96,8 +96,8 @@ class Display(object):
             self._setupDisplay()
             self._setWindowed()
         self.screen = self.screen.convert(self._disp_screen)
-        jovialengine.shared.config.set(jovialengine.engineconstants.CONFIG_SECTION,
-                                       jovialengine.engineconstants.CONFIG_SCREEN_SCALE, str(self.upscale))
+        jovialengine.shared.config.set(jovialengine.config.CONFIG_SECTION,
+                                       jovialengine.config.CONFIG_SCREEN_SCALE, str(self.upscale))
 
     def _scaleDisp(self):
         self._disp_res = (
@@ -115,8 +115,8 @@ class Display(object):
         else:
             self._setWindowed()
         self.screen = self.screen.convert(self._disp_screen)
-        jovialengine.shared.config.set(jovialengine.engineconstants.CONFIG_SECTION,
-                                       jovialengine.engineconstants.CONFIG_FULLSCREEN, str(self.is_fullscreen))
+        jovialengine.shared.config.set(jovialengine.config.CONFIG_SECTION,
+                                       jovialengine.config.CONFIG_FULLSCREEN, str(self.is_fullscreen))
 
     def _setWindowed(self):
         # center window

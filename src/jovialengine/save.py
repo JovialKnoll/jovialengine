@@ -7,6 +7,7 @@ import pygame.math
 
 import jovialengine
 
+import constants
 import state
 import mode
 
@@ -110,12 +111,12 @@ class Save(object):
 
     @staticmethod
     def _getSaveFiles():
-        if not os.path.isdir(jovialengine.engineconstants.SAVE_DIRECTORY):
+        if not os.path.isdir(constants.SAVE_DIRECTORY):
             return ()
         return (
             file_name
             for file_name
-            in os.listdir(jovialengine.engineconstants.SAVE_DIRECTORY)
+            in os.listdir(constants.SAVE_DIRECTORY)
             if os.path.isfile(
                 Save._getFilePathFromFileName(file_name)
             )
@@ -124,7 +125,7 @@ class Save(object):
 
     @staticmethod
     def _getFilePathFromFileName(file_name):
-        return os.path.join(jovialengine.engineconstants.SAVE_DIRECTORY, file_name)
+        return os.path.join(constants.SAVE_DIRECTORY, file_name)
 
     def _getFilePath(self):
         return self._getFilePathFromFileName(self.save_name + _SAVE_EXT)
@@ -171,7 +172,7 @@ class Save(object):
 
     def save(self):
         try:
-            os.mkdir(jovialengine.engineconstants.SAVE_DIRECTORY)
+            os.mkdir(constants.SAVE_DIRECTORY)
         except FileExistsError:
             pass
         save_object = {

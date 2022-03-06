@@ -29,8 +29,8 @@ class Game(object):
         jovialengine.shared.start_mode_cls = start_mode_cls
         jovialengine.shared.game_running = True
         # init game properties
-        self._max_framerate = jovialengine.shared.config.getint(jovialengine.engineconstants.CONFIG_SECTION,
-                                                                jovialengine.engineconstants.CONFIG_MAX_FRAMERATE)
+        self._max_framerate = jovialengine.shared.config.getint(jovialengine.config.CONFIG_SECTION,
+                                                                jovialengine.config.CONFIG_MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
         self._current_mode = jovialengine.shared.start_mode_cls()
         self._is_first_loop = True
@@ -76,11 +76,11 @@ class Game(object):
                 return self._handlePauseMenu()
             elif event.key == pygame.K_F12:
                 try:
-                    os.mkdir(jovialengine.engineconstants.SCREENSHOT_DIRECTORY)
+                    os.mkdir(constants.SCREENSHOT_DIRECTORY)
                 except FileExistsError:
                     pass
                 file_name = f"{datetime.utcnow().isoformat().replace(':', '')}.png"
-                file_path = os.path.join(jovialengine.engineconstants.SCREENSHOT_DIRECTORY, file_name)
+                file_path = os.path.join(constants.SCREENSHOT_DIRECTORY, file_name)
                 pygame.image.save(jovialengine.shared.display.screen, file_path)
                 return False
         elif event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN) \
