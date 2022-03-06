@@ -1,4 +1,3 @@
-from . import config
 from . import utility
 from . import shared
 from .saveable import Saveable
