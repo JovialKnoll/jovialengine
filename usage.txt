@@ -1,4 +1,4 @@
-This package expects the following local modules to exist as part of your game:
+This package expects the following local modules to exist in your project:
 * constants
   - TITLE
     a string to use as the window title
@@ -22,7 +22,10 @@ This package expects the following local modules to exist as part of your game:
     a location to use for config file
 * state
   - State
-    a class that inherits from jovialengine.Saveable and holds any state you need to share between modes
+    a class that inherits from jovialengine.Saveable and holds any state you
+    need to share between modes
 * mode
-  - This should contain all of your game modes, and they should all inherit directly or indirectly from jovialengine.ModeBase
-  - Any modes that inherit from jovialengine.Saveable will be able to be saved and loaded.
+  - This should contain all of your game modes, and they should all inherit
+    directly or indirectly from jovialengine.ModeBase
+  - Any modes that inherit from jovialengine.Saveable will be able to be
+    saved and loaded.
