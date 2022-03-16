@@ -90,7 +90,7 @@ class ModeBase(abc.ABC):
         self._drawPreSprites(self._space)
         self._all_sprites.draw(self._space)
         self._drawPostSprites(self._space)
-        screen.blit(self._space, self._camera)
+        screen.blit(self._space, (0, 0), self._camera)
 
     @staticmethod
     def _stopMixer():
