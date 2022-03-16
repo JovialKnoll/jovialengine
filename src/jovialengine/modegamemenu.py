@@ -31,7 +31,7 @@ class ModeGameMenu(jovialengine.ModeBase, abc.ABC):
         self._menu_surface = None
 
     def _getOldScreen(self):
-        old_screen = pygame.Surface(constants.SCREEN_SIZE).convert(jovialengine.shared.display.screen)
+        old_screen = pygame.Surface(constants.SCREEN_SIZE).convert(self._space)
         self._previous_mode.draw(old_screen)
         old_screen = pygame.transform.smoothscale(
             pygame.transform.smoothscale(
@@ -84,7 +84,7 @@ class ModeGameMenuTop(ModeGameMenu):
             elif event.key == pygame.K_5:
                 jovialengine.shared.game_running = False
 
-    def _drawScreen(self, screen):
+    def _drawPreSprites(self, screen):
         disp_text = self.SHARED_DISP_TEXT
         disp_text += "1) Save\n2) Load\n3) Options\n4) Restart\n5) Quit"
         if self._drawText(disp_text):
@@ -179,7 +179,7 @@ class ModeGameMenuSave(ModeGameMenu):
             self._cursor_switch = not self._cursor_switch
             self._cursor_timer -= self._CURSOR_TIME
 
-    def _drawScreen(self, screen):
+    def _drawPreSprites(self, screen):
         disp_text = self.SHARED_DISP_TEXT
         if not isinstance(self._previous_mode, jovialengine.Saveable):
             disp_text += "\nYou can't save now."
@@ -256,7 +256,7 @@ class ModeGameMenuLoad(ModeGameMenu):
                 elif event.key == pygame.K_DELETE:
                     self._confirm_delete = True
 
-    def _drawScreen(self, screen):
+    def _drawPreSprites(self, screen):
         disp_text = self.SHARED_DISP_TEXT
         if len(self._saves) == 0:
             disp_text += "\nThere are no saves to select from."
@@ -309,7 +309,7 @@ class ModeGameMenuOptions(ModeGameMenu):
                 target_scale = int(event.unicode)
                 jovialengine.shared.display.setScale(target_scale)
 
-    def _drawScreen(self, screen):
+    def _drawPreSprites(self, screen):
         disp_text = self.SHARED_DISP_TEXT
         disp_text += f"ARROWS) Upscaling: {jovialengine.shared.display.upscale}" \
                      f"\nF) Fullscreen: {self.getTickBox(jovialengine.shared.display.is_fullscreen)}"
