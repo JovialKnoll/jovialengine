@@ -51,7 +51,7 @@ class Game(object):
                     and not isinstance(self._current_mode.next_mode, ModeGameMenu):
                 pygame.mixer.music.unpause()
                 pygame.mixer.unpause()
-            self._current_mode.all_sprites.empty()
+            self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
         if not jovialengine.shared.game_running:
             jovialengine.shared.saveConfig()
