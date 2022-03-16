@@ -3,22 +3,37 @@ import typing
 
 import pygame
 
+import jovialengine
+
+import constants
+
 
 class ModeBase(abc.ABC):
     """This is an abstract object for game modes.
     """
     __slots__ = (
-        'all_sprites',
         '__pressed_mouse_buttons',
+        '_space',
+        '_background',
+        '_all_sprites',
+        '_camera',
         'next_mode',
     )
 
     def __init__(self):
+        """If you want a mode's space to not share dimension with the screen size, call out to init yourself."""
+        self.init(constants.SCREEN_SIZE)
+
+    def init(self, space_size: tuple[int, int]):
+        self.__pressed_mouse_buttons = dict()
+        self._space = pygame.Surface(space_size).convert(jovialengine.shared.display.screen)
+        self._background = pygame.Surface(space_size).convert(self._space)
+        self._background.fill((255, 255, 255))
+        self._all_sprites = pygame.sprite.LayeredDirty()
+        self._camera = pygame.rect.Rect((0, 0), constants.SCREEN_SIZE)
         """All game modes must set the next mode when they are done.
         Don't create another mode unless you are immediately assigning it to self.next_mode
         """
-        self.all_sprites = pygame.sprite.LayeredDirty()
-        self.__pressed_mouse_buttons = dict()
         self.next_mode = None
 
     def __trackMouseButton(self, event: pygame.event.Event):
@@ -53,13 +68,10 @@ class ModeBase(abc.ABC):
     def update(self, dt: int):
         """All game modes can update."""
         self._update(dt)
-        self.all_sprites.update(dt)
+        self._all_sprites.update(dt)
 
-    @abc.abstractmethod
-    def _drawScreen(self, screen: pygame.surface.Surface):
-        raise NotImplementedError(
-            type(self).__name__ + "._drawScreen(self, screen)"
-        )
+    def _drawPreSprites(self, screen: pygame.surface.Surface):
+        pass
 
     def _drawPostSprites(self, screen: pygame.surface.Surface):
         pass
@@ -67,9 +79,11 @@ class ModeBase(abc.ABC):
     @typing.final
     def draw(self, screen: pygame.surface.Surface):
         """All game modes can draw to the screen"""
-        self._drawScreen(screen)
-        self.all_sprites.draw(screen)
-        self._drawPostSprites(screen)
+        self._space.blit(self._background, (0, 0))
+        self._drawPreSprites(self._space)
+        self._all_sprites.draw(self._space)
+        self._drawPostSprites(self._space)
+        screen.blit(self._space, self._camera)
 
     @staticmethod
     def _stopMixer():
