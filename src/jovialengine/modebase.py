@@ -36,6 +36,9 @@ class ModeBase(abc.ABC):
         """
         self.next_mode = None
 
+    def cleanup(self):
+        self.all_sprites.empty()
+
     def __trackMouseButton(self, event: pygame.event.Event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.__pressed_mouse_buttons[event.button] = event.pos
