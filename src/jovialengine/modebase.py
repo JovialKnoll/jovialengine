@@ -73,6 +73,9 @@ class ModeBase(abc.ABC):
         self._update(dt)
         self._all_sprites.update(dt)
 
+    def _updatePreDraw(self):
+        pass
+
     def _drawPreSprites(self, screen: pygame.surface.Surface):
         pass
 
@@ -82,6 +85,7 @@ class ModeBase(abc.ABC):
     @typing.final
     def draw(self, screen: pygame.surface.Surface):
         """All game modes can draw to the screen"""
+        self._updatePreDraw()
         self._space.blit(self._background, (0, 0))
         self._drawPreSprites(self._space)
         self._all_sprites.draw(self._space)
