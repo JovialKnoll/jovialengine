@@ -37,7 +37,7 @@ class ModeBase(abc.ABC):
         self.next_mode = None
 
     def cleanup(self):
-        self.all_sprites.empty()
+        self._all_sprites.empty()
 
     def __trackMouseButton(self, event: pygame.event.Event):
         if event.type == pygame.MOUSEBUTTONDOWN:
