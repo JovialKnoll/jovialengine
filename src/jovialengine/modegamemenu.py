@@ -16,7 +16,6 @@ class ModeGameMenu(jovialengine.ModeBase, abc.ABC):
 
     __slots__ = (
         '_previous_mode',
-        '_old_screen',
         '_last_disp_text',
         '_menu_surface',
     )
@@ -26,7 +25,7 @@ class ModeGameMenu(jovialengine.ModeBase, abc.ABC):
         self._previous_mode = previous_mode
         if old_screen is None:
             old_screen = self._getOldScreen()
-        self._old_screen = old_screen
+        self._background = old_screen
         self._last_disp_text = None
         self._menu_surface = None
 
@@ -56,8 +55,6 @@ class ModeGameMenu(jovialengine.ModeBase, abc.ABC):
     def _drawText(self, disp_text: str):
         if self._last_disp_text != disp_text:
             self._drawTextAlways(disp_text)
-            return True
-        return False
 
 
 class ModeGameMenuTop(ModeGameMenu):
@@ -68,18 +65,18 @@ class ModeGameMenuTop(ModeGameMenu):
             if event.key == pygame.K_ESCAPE:
                 self.next_mode = self._previous_mode
             elif event.key == pygame.K_1:
-                self.next_mode = ModeGameMenuSave(self._previous_mode, self._old_screen)
+                self.next_mode = ModeGameMenuSave(self._previous_mode, self._background)
             elif event.key == pygame.K_2:
-                self.next_mode = ModeGameMenuLoad(self._previous_mode, self._old_screen)
+                self.next_mode = ModeGameMenuLoad(self._previous_mode, self._background)
             elif event.key == pygame.K_3:
-                self.next_mode = ModeGameMenuOptions(self._previous_mode, self._old_screen)
+                self.next_mode = ModeGameMenuOptions(self._previous_mode, self._background)
             elif event.key == pygame.K_4:
                 self._stopMixer()
                 jovialengine.shared.state = state.State()
                 self._previous_mode = jovialengine.shared.start_mode_cls()
                 pygame.mixer.music.pause()
                 pygame.mixer.pause()
-                self._old_screen = self._getOldScreen()
+                self._background = self._getOldScreen()
                 self._last_disp_text = None
             elif event.key == pygame.K_5:
                 jovialengine.shared.game_running = False
@@ -87,9 +84,8 @@ class ModeGameMenuTop(ModeGameMenu):
     def _drawPreSprites(self, screen):
         disp_text = self.SHARED_DISP_TEXT
         disp_text += "1) Save\n2) Load\n3) Options\n4) Restart\n5) Quit"
-        if self._drawText(disp_text):
-            screen.blit(self._old_screen, (0, 0))
-            screen.blit(self._menu_surface, (0, 0))
+        self._drawText(disp_text)
+        screen.blit(self._menu_surface, (0, 0))
 
 
 class ModeGameMenuSave(ModeGameMenu):
@@ -118,18 +114,18 @@ class ModeGameMenuSave(ModeGameMenu):
 
     def _input(self, event):
         if event.type == pygame.QUIT:
-            self.next_mode = ModeGameMenuTop(self._previous_mode, self._old_screen)
+            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
         elif event.type == pygame.KEYDOWN:
             char = event.unicode
             length = len(self._save_name)
             if self._save_success:
-                self.next_mode = ModeGameMenuTop(self._previous_mode, self._old_screen)
+                self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             elif event.key == pygame.K_ESCAPE:
                 if self._confirm_overwrite:
                     self._confirm_overwrite = False
                     self._save_success = None
                 else:
-                    self.next_mode = ModeGameMenuTop(self._previous_mode, self._old_screen)
+                    self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             elif event.key == pygame.K_RETURN:
                 if self._save_name and isinstance(self._previous_mode, jovialengine.Saveable):
                     if Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
@@ -195,7 +191,6 @@ class ModeGameMenuSave(ModeGameMenu):
         else:
             disp_text += "\nSaved successfully.\nPress any key to go back."
         self._drawTextAlways(disp_text)
-        screen.blit(self._old_screen, (0, 0))
         if self._cursor_switch and not self._confirm_overwrite and self._save_success is None:
             self._menu_surface.fill(
                 (255, 255, 255),
@@ -226,10 +221,10 @@ class ModeGameMenuLoad(ModeGameMenu):
 
     def _input(self, event):
         if event.type == pygame.QUIT:
-            self.next_mode = ModeGameMenuTop(self._previous_mode, self._old_screen)
+            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE or self._loaded_save:
-                self.next_mode = ModeGameMenuTop(self._previous_mode, self._old_screen)
+                self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             elif self._deleted_save:
                 self._deleted_save = False
             elif self._confirm_delete:
@@ -251,7 +246,7 @@ class ModeGameMenuLoad(ModeGameMenu):
                     self._previous_mode = self._saves[self._save_index].load()
                     pygame.mixer.music.pause()
                     pygame.mixer.pause()
-                    self._old_screen = self._getOldScreen()
+                    self._background = self._getOldScreen()
                     self._loaded_save = True
                 elif event.key == pygame.K_DELETE:
                     self._confirm_delete = True
@@ -278,15 +273,14 @@ class ModeGameMenuLoad(ModeGameMenu):
             if self._confirm_delete:
                 disp_text += "\nAre you sure you want to delete?" \
                     + "\nPress ENTER to confirm, or any other key to go back."
-        if self._drawText(disp_text):
-            screen.blit(self._old_screen, (0, 0))
-            screen.blit(self._menu_surface, (0, 0))
+        self._drawText(disp_text)
+        screen.blit(self._menu_surface, (0, 0))
 
 
 class ModeGameMenuOptions(ModeGameMenu):
     def _input(self, event):
         if event.type == pygame.QUIT:
-            self.next_mode = ModeGameMenuTop(self._previous_mode, self._old_screen)
+            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
         elif event.type == pygame.KEYUP:
             if event.key in (
                     pygame.K_DOWN, pygame.K_s,
@@ -304,7 +298,7 @@ class ModeGameMenuOptions(ModeGameMenu):
                 jovialengine.shared.display.toggleFullscreen()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                self.next_mode = ModeGameMenuTop(self._previous_mode, self._old_screen)
+                self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             elif '1' <= event.unicode <= '9':
                 target_scale = int(event.unicode)
                 jovialengine.shared.display.setScale(target_scale)
@@ -313,9 +307,8 @@ class ModeGameMenuOptions(ModeGameMenu):
         disp_text = self.SHARED_DISP_TEXT
         disp_text += f"ARROWS) Upscaling: {jovialengine.shared.display.upscale}" \
                      f"\nF) Fullscreen: {self.getTickBox(jovialengine.shared.display.is_fullscreen)}"
-        if self._drawText(disp_text):
-            screen.blit(self._old_screen, (0, 0))
-            screen.blit(self._menu_surface, (0, 0))
+        self._drawText(disp_text)
+        screen.blit(self._menu_surface, (0, 0))
 
     @staticmethod
     def getTickBox(value: bool):
