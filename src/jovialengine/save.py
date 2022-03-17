@@ -5,7 +5,8 @@ from collections import deque
 
 import pygame.math
 
-import jovialengine
+from . import shared
+from .saveable import Saveable
 
 import constants
 import state
@@ -52,7 +53,7 @@ class _SaveableJSONEncoder(json.JSONEncoder):
                 _KEY_MODULE: o.__module__,
                 _KEY_CLASS: o.__qualname__,
             }
-        elif isinstance(o, jovialengine.Saveable):
+        elif isinstance(o, Saveable):
             return {
                 _KEY_MODULE: type(o).__module__,
                 _KEY_CLASS: type(o).__qualname__,
@@ -162,12 +163,12 @@ class Save(object):
             return False
 
     @classmethod
-    def getFromMode(cls, save_name: str, from_mode: jovialengine.Saveable):
+    def getFromMode(cls, save_name: str, from_mode: Saveable):
         return cls(
             save_name,
             type(from_mode).__name__,
             from_mode.save(),
-            jovialengine.shared.state.save()
+            shared.state.save()
         )
 
     def save(self):
@@ -189,7 +190,7 @@ class Save(object):
             return False
 
     def load(self):
-        jovialengine.shared.state = state.State.load(self._shared_data)
+        shared.state = state.State.load(self._shared_data)
         mode_cls = getattr(mode, self._mode_name)
         new_mode = mode_cls.load(self._mode_data)
         return new_mode

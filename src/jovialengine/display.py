@@ -3,8 +3,8 @@ import os
 
 import pygame
 
-import jovialengine
 from . import config
+from . import shared
 
 import constants
 
@@ -28,8 +28,8 @@ class Display(object):
     def __init__(self):
         self._window_icon = pygame.image.load(constants.WINDOW_ICON)
         self._setupDisplay()
-        self.is_fullscreen = jovialengine.shared.config.getboolean(config.CONFIG_SECTION, config.CONFIG_FULLSCREEN)
-        self.upscale = jovialengine.shared.config.getint(config.CONFIG_SECTION, config.CONFIG_SCREEN_SCALE)
+        self.is_fullscreen = shared.config.getboolean(config.CONFIG_SECTION, config.CONFIG_FULLSCREEN)
+        self.upscale = shared.config.getint(config.CONFIG_SECTION, config.CONFIG_SCREEN_SCALE)
         self.upscale = max(min(self.upscale, self._upscale_max), 0)
         self._scaleDisp()
         self.screen: pygame.Surface = pygame.Surface(constants.SCREEN_SIZE)
@@ -40,7 +40,7 @@ class Display(object):
         else:
             self._setWindowed()
         self.screen = self.screen.convert(self._disp_screen)
-        jovialengine.shared.config.set(config.CONFIG_SECTION, config.CONFIG_SCREEN_SCALE, str(self.upscale))
+        shared.config.set(config.CONFIG_SECTION, config.CONFIG_SCREEN_SCALE, str(self.upscale))
 
     def _setupDisplay(self):
         pygame.display.set_caption(constants.TITLE)
@@ -94,7 +94,7 @@ class Display(object):
             self._setupDisplay()
             self._setWindowed()
         self.screen = self.screen.convert(self._disp_screen)
-        jovialengine.shared.config.set(config.CONFIG_SECTION, config.CONFIG_SCREEN_SCALE, str(self.upscale))
+        shared.config.set(config.CONFIG_SECTION, config.CONFIG_SCREEN_SCALE, str(self.upscale))
 
     def _scaleDisp(self):
         self._disp_res = (
@@ -112,7 +112,7 @@ class Display(object):
         else:
             self._setWindowed()
         self.screen = self.screen.convert(self._disp_screen)
-        jovialengine.shared.config.set(config.CONFIG_SECTION, config.CONFIG_FULLSCREEN, str(self.is_fullscreen))
+        shared.config.set(config.CONFIG_SECTION, config.CONFIG_FULLSCREEN, str(self.is_fullscreen))
 
     def _setWindowed(self):
         # center window

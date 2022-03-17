@@ -1,6 +1,6 @@
 import pygame
 
-import jovialengine
+from . import shared
 
 import constants
 
@@ -38,7 +38,7 @@ class FontWrap(object):
             else:
                 lines[-1] += " " + new_word
 
-        result = pygame.Surface((width, constants.FONT_HEIGHT * len(lines))).convert(jovialengine.shared.display.screen)
+        result = pygame.Surface((width, constants.FONT_HEIGHT * len(lines))).convert(shared.display.screen)
         result.fill(background)
         for i, line in enumerate(lines):
             drawn_line = self._font.render(line, antialias, color, background).convert(result)
@@ -70,7 +70,7 @@ class FontWrap(object):
                 line = [""]
             imgs.append(self.renderWordsInside(width, line, antialias, color, background or constants.COLORKEY))
             height += imgs[-1].get_height()
-        result = pygame.Surface((width, height)).convert(jovialengine.shared.display.screen)
+        result = pygame.Surface((width, height)).convert(shared.display.screen)
         dest = [0, 0]
         for img in imgs:
             result.blit(img, dest)
