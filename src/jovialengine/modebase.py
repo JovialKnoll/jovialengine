@@ -3,7 +3,7 @@ import typing
 
 import pygame
 
-import jovialengine
+from . import shared
 
 import constants
 
@@ -26,7 +26,7 @@ class ModeBase(abc.ABC):
 
     def init(self, space_size: tuple[int, int]):
         self.__pressed_mouse_buttons = dict()
-        self._space = pygame.Surface(space_size).convert(jovialengine.shared.display.screen)
+        self._space = pygame.Surface(space_size).convert(shared.display.screen)
         self._background = pygame.Surface(space_size).convert(self._space)
         self._background.fill((255, 255, 255))
         self._all_sprites = pygame.sprite.LayeredDirty()
