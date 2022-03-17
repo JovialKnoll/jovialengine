@@ -27,7 +27,11 @@ class Game(object):
     def __init__(self, start_mode_cls: typing.Type[ModeBase]):
         # init shared objects
         shared.display = Display()
-        shared.font_wrap = FontWrap(constants.FONT, constants.FONT_SIZE)
+        if constants.FONT:
+            font = pygame.font.Font(constants.FONT, constants.FONT_SIZE)
+        else:
+            font = pygame.font.SysFont(None, constants.FONT_SIZE)
+        shared.font_wrap = FontWrap(font)
         shared.state = state.State()
         shared.start_mode_cls = start_mode_cls
         shared.game_running = True
