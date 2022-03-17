@@ -10,8 +10,8 @@ class FontWrap(object):
         '_font',
     )
 
-    def __init__(self, font_file, font_size: int):
-        self._font = pygame.font.Font(font_file, font_size)
+    def __init__(self, font):
+        self._font = font
 
     def renderTo(self, surf: pygame.Surface, dest, text: str,
                  antialias: bool, color, background=None):
