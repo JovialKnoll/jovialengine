@@ -3,8 +3,6 @@ import typing
 
 import pygame
 
-from . import shared
-
 import constants
 
 
