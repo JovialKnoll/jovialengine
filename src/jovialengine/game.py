@@ -45,7 +45,7 @@ class Game(object):
         """Run the game, and check if the game needs to end."""
         if not self._current_mode:
             raise RuntimeError("error: no current mode")
-        self._current_mode.input_events(
+        self._current_mode.inputEvents(
             self._filterInput(pygame.event.get())
         )
         for i in range(self._getTime()):
