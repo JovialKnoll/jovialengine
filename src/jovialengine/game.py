@@ -4,13 +4,13 @@ from datetime import datetime
 
 import pygame
 
-from . import shared
+from .display import Display
 from .fontwrap import FontWrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
 from .modegamemenu import ModeGameMenuTop
-from .display import Display
 from . import config
+from . import shared
 
 import constants
 import state
