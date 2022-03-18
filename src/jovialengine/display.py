@@ -40,7 +40,7 @@ class Display(object):
             self._setFullscreen()
         else:
             self._setWindowed()
-        self.screen = self.screen.convert(self._disp_screen)
+        self.screen = self.screen.convert()
         config.config.set(config.CONFIG_SECTION, config.CONFIG_SCREEN_SCALE, str(self.upscale))
 
     def _setupDisplay(self):
@@ -95,7 +95,7 @@ class Display(object):
             pygame.display.init()
             self._setupDisplay()
             self._setWindowed()
-        self.screen = self.screen.convert(self._disp_screen)
+        self.screen = self.screen.convert()
         config.config.set(config.CONFIG_SECTION, config.CONFIG_SCREEN_SCALE, str(self.upscale))
 
     def _scaleDisp(self):
@@ -113,7 +113,7 @@ class Display(object):
             self._setFullscreen()
         else:
             self._setWindowed()
-        self.screen = self.screen.convert(self._disp_screen)
+        self.screen = self.screen.convert()
         config.config.set(config.CONFIG_SECTION, config.CONFIG_FULLSCREEN, str(self.is_fullscreen))
 
     def _setWindowed(self):
@@ -142,7 +142,7 @@ class Display(object):
             )
         else:
             self._full_screen.fill((0, 0, 0))
-        self._disp_screen = pygame.Surface(self._disp_res).convert(self._full_screen)
+        self._disp_screen = pygame.Surface(self._disp_res).convert()
 
     def scaleMouseInput(self, event: pygame.event.Event):
         """Scale mouse position for events in terms of the screen (as opposed to the display surface)."""

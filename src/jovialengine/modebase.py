@@ -26,8 +26,8 @@ class ModeBase(abc.ABC):
 
     def _init(self, space_size: tuple[int, int]):
         self.__pressed_mouse_buttons = dict()
-        self._space = pygame.Surface(space_size).convert(shared.display.screen)
-        self._background = pygame.Surface(space_size).convert(self._space)
+        self._space = pygame.Surface(space_size).convert()
+        self._background = pygame.Surface(space_size).convert()
         self._background.fill((255, 255, 255))
         self._all_sprites = pygame.sprite.LayeredDirty()
         self._camera = pygame.rect.Rect((0, 0), constants.SCREEN_SIZE)
