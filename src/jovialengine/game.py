@@ -4,13 +4,13 @@ from datetime import datetime
 
 import pygame
 
-from . import shared
+from .display import Display
 from .fontwrap import FontWrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
 from .modegamemenu import ModeGameMenuTop
-from .display import Display
 from . import config
+from . import shared
 
 import constants
 import state
@@ -36,7 +36,7 @@ class Game(object):
         shared.start_mode_cls = start_mode_cls
         shared.game_running = True
         # init game properties
-        self._max_framerate = shared.config.getint(config.CONFIG_SECTION, config.CONFIG_MAX_FRAMERATE)
+        self._max_framerate = config.config.getint(config.CONFIG_SECTION, config.CONFIG_MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
         self._current_mode = shared.start_mode_cls()
         self._is_first_loop = True
@@ -45,7 +45,7 @@ class Game(object):
         """Run the game, and check if the game needs to end."""
         if not self._current_mode:
             raise RuntimeError("error: no current mode")
-        self._current_mode.input_events(
+        self._current_mode.inputEvents(
             self._filterInput(pygame.event.get())
         )
         for i in range(self._getTime()):
@@ -60,7 +60,7 @@ class Game(object):
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
         if not shared.game_running:
-            shared.saveConfig()
+            config.saveConfig()
         self._is_first_loop = False
         return shared.game_running
 

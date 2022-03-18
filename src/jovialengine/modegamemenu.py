@@ -32,7 +32,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
         self._menu_surface = None
 
     def _getOldScreen(self):
-        old_screen = pygame.Surface(constants.SCREEN_SIZE).convert(self._space)
+        old_screen = pygame.Surface(constants.SCREEN_SIZE).convert()
         self._previous_mode.draw(old_screen)
         old_screen = pygame.transform.smoothscale(
             pygame.transform.smoothscale(

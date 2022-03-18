@@ -1,16 +1,14 @@
-import configparser
+import typing
 
-from . import config
+from .display import Display
+from .fontwrap import FontWrap
+from .modebase import ModeBase
 
-import constants
-
-
-config = configparser.ConfigParser(config.CONFIG_DEFAULTS, default_section=config.CONFIG_SECTION)
-config.read(constants.CONFIG_FILE)
-for section in config.sections():
-    config.remove_section(section)
+import state
 
 
-def saveConfig():
-    with open(constants.CONFIG_FILE, 'w') as file:
-        config.write(file, space_around_delimiters=False)
+display: Display
+font_wrap: FontWrap
+state: state.State
+start_mode_cls: typing.Type[ModeBase]
+game_running: False

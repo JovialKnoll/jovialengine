@@ -3,8 +3,6 @@ import typing
 
 import pygame
 
-from . import shared
-
 import constants
 
 
@@ -22,12 +20,12 @@ class ModeBase(abc.ABC):
 
     def __init__(self):
         """If you want a mode's space to not share dimension with the screen size, call out to init yourself."""
-        self.init(constants.SCREEN_SIZE)
+        self._init(constants.SCREEN_SIZE)
 
-    def init(self, space_size: tuple[int, int]):
+    def _init(self, space_size: tuple[int, int]):
         self.__pressed_mouse_buttons = dict()
-        self._space = pygame.Surface(space_size).convert(shared.display.screen)
-        self._background = pygame.Surface(space_size).convert(self._space)
+        self._space = pygame.Surface(space_size).convert()
+        self._background = pygame.Surface(space_size).convert()
         self._background.fill((255, 255, 255))
         self._all_sprites = pygame.sprite.LayeredDirty()
         self._camera = pygame.rect.Rect((0, 0), constants.SCREEN_SIZE)
@@ -58,7 +56,7 @@ class ModeBase(abc.ABC):
         )
 
     @typing.final
-    def input_events(self, events: typing.Iterable[pygame.event.Event]):
+    def inputEvents(self, events: typing.Iterable[pygame.event.Event]):
         """All game modes can take in events."""
         for event in events:
             self._input(event)
