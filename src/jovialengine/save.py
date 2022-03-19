@@ -5,7 +5,7 @@ from collections import deque
 
 import pygame.math
 
-import shared
+from . import shared
 from .saveable import Saveable
 
 import constants

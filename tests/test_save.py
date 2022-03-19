@@ -1,10 +1,10 @@
 import unittest
 import sys
 import os
-sys.path.append(
-    os.path.dirname(os.path.realpath(__file__)) + "/../src/jovialengine"
-)
-import save
+#sys.path.append(
+#    os.path.dirname(os.path.realpath(__file__)) + "/../src/jovialengine"
+#)
+import ..src.jovialengine.save
 
 
 class TestSave(unittest.TestCase):
