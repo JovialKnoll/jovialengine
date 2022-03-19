@@ -1,10 +1,8 @@
 import unittest
 import sys
 import os
-sys.path.append(
-    os.path.dirname(os.path.realpath(__file__)) + "/../src/jovialengine"
-)
-import utility
+
+import jovialengine.utility as utility
 
 
 class TestUtility(unittest.TestCase):
