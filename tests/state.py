@@ -1,10 +1,7 @@
-sys.path.append(
-    os.path.dirname(os.path.realpath(__file__)) + "/../src/jovialengine"
-)
-from saveable import Saveable
+from jovialengine.saveable import Saveable
 
 
-class State(jovialengine.Saveable):
+class State(Saveable):
     __slots__ = (
     )
 
