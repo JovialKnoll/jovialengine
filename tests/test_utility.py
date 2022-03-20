@@ -1,6 +1,4 @@
 import unittest
-import sys
-import os
 
 import jovialengine.utility as utility
 
@@ -120,6 +118,7 @@ class TestUtility(unittest.TestCase):
             utility.decIncSpeedLerp(1.0, 2.0, 1.0),
             2
         )
+
 
 if __name__ == '__main__':
     unittest.main()
