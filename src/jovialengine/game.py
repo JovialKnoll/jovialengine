@@ -31,7 +31,7 @@ class Game(object):
             font = pygame.font.Font(constants.FONT, constants.FONT_SIZE)
         else:
             font = pygame.font.SysFont(None, constants.FONT_SIZE)
-        shared.font_wrap = FontWrap(font)
+        shared.font_wrap = FontWrap(font, constants.FONT_ANTIALIAS)
         shared.state = state.State()
         shared.start_mode_cls = start_mode_cls
         shared.game_running = True

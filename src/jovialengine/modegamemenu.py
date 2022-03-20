@@ -48,7 +48,6 @@ class ModeGameMenu(ModeBase, abc.ABC):
         self._menu_surface = shared.font_wrap.renderInside(
             self.MENU_WIDTH,
             disp_text,
-            False,
             (255, 255, 255),
             (0, 0, 0)
         )

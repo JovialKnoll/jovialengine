@@ -14,6 +14,8 @@ This package expects the following local modules to exist in your project:
     a size for your font, assumes monospace
   - FONT_HEIGHT
     a height for your font
+  - FONT_ANTIALIAS
+    a bool indicating ig your font is antialiased
   - SAVE_DIRECTORY
     a directory for saves
   - SCREENSHOT_DIRECTORY
