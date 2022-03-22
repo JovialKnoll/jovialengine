@@ -3,7 +3,6 @@ import os
 
 TITLE = "TEST TITLE"
 SCREEN_SIZE = (320, 240)
-COLORKEY = (255, 0, 255)
 WINDOW_ICON = None
 FONT = None
 FONT_SIZE = 8
