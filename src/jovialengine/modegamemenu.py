@@ -13,10 +13,10 @@ import state
 
 class ModeGameMenu(ModeBase, abc.ABC):
     MENU_CHAR_WIDTH = 26
-    MENU_WIDTH = MENU_CHAR_WIDTH * constants.FONT_SIZE + 1
     SHARED_DISP_TEXT = "Options:\nESC) Go Back\n"
 
     __slots__ = (
+        'MENU_WIDTH',
         '_previous_mode',
         '_last_disp_text',
         '_menu_surface',
@@ -24,6 +24,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
 
     def __init__(self, previous_mode: ModeBase, old_screen=None):
         super().__init__()
+        self.MENU_WIDTH = shared.font_wrap.font.size('_' * self.MENU_CHAR_WIDTH) + 1
         self._previous_mode = previous_mode
         if old_screen is None:
             old_screen = self._getOldScreen()
@@ -193,11 +194,12 @@ class ModeGameMenuSave(ModeGameMenu):
             disp_text += "\nSaved successfully.\nPress any key to go back."
         self._drawTextAlways(disp_text)
         if self._cursor_switch and not self._confirm_overwrite and self._save_success is None:
+            cursor_x = shared.font_wrap.font.size(">" + self._save_name[:self._cursor_position])
             self._menu_surface.fill(
                 (255, 255, 255),
                 (
-                    ((self._cursor_position + 1) * constants.FONT_SIZE, 4 * constants.FONT_HEIGHT),
-                    (1, constants.FONT_HEIGHT)
+                    (cursor_x, 4 * shared.font_wrap.line_height),
+                    (1, shared.font_wrap.line_height)
                 )
             )
         screen.blit(self._menu_surface, (0, 0))
