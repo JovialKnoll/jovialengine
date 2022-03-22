@@ -1,16 +1,16 @@
 import pygame
 
-import constants
-
 
 class FontWrap(object):
     __slots__ = (
         'font',
+        'line_height',
         '_antialias',
     )
 
-    def __init__(self, font: pygame.font.Font, antialias: bool):
+    def __init__(self, font: pygame.font.Font, line_height: int, antialias: bool):
         self.font = font
+        self.line_height = line_height
         self._antialias = antialias
 
     def renderTo(self, surf: pygame.Surface, dest, text: str, color, background=None):
@@ -45,18 +45,18 @@ class FontWrap(object):
                     self.font.render(text, self._antialias, color, background),
                     part_dest
                 )
-                part_dest[1] += constants.FONT_HEIGHT
+                part_dest[1] += self.line_height
 
     def _renderWordsInside(self, width: int, words: list[str], color, background):
         """Returns a surface of the width with the words drawn on it.
         If any word is too long to fit, it will be in its own line, and truncated.
         """
         lines = self._calculateLinesForWords(width, words)
-        result = pygame.Surface((width, constants.FONT_HEIGHT * len(lines))).convert()
+        result = pygame.Surface((width, self.line_height * len(lines))).convert()
         result.fill(background)
         for i, line in enumerate(lines):
             drawn_line = self.font.render(line, self._antialias, color, background).convert()
-            result.blit(drawn_line, (0, i * constants.FONT_HEIGHT))
+            result.blit(drawn_line, (0, i * self.line_height))
         return result
 
     def renderInside(self, width: int, text: str, color, background):
