@@ -23,10 +23,7 @@ class FontWrap(object):
             (dest[0] - text_size[0] // 2, dest[1] - text_size[1] // 2)
         )
 
-    def renderWordsInside(self, width: int, words: list[str], color, background):
-        """Returns a surface of the width with the words drawn on it.
-        If any word is too long to fit, it will be in its own line, and truncated.
-        """
+    def _calculateLinesForWords(self, width: int, words: list[str]):
         lines = [words[0].replace('_', ' ')]
         for word in words[1:]:
             new_word = word.replace('_', ' ')
@@ -34,6 +31,13 @@ class FontWrap(object):
                 lines.append(new_word)
             else:
                 lines[-1] += " " + new_word
+        return lines
+
+    def renderWordsInside(self, width: int, words: list[str], color, background):
+        """Returns a surface of the width with the words drawn on it.
+        If any word is too long to fit, it will be in its own line, and truncated.
+        """
+        lines = self._calculateLinesForWords(width, words)
         result = pygame.Surface((width, constants.FONT_HEIGHT * len(lines))).convert()
         result.fill(background)
         for i, line in enumerate(lines):
