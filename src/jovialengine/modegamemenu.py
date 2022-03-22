@@ -194,7 +194,7 @@ class ModeGameMenuSave(ModeGameMenu):
             disp_text += "\nSaved successfully.\nPress any key to go back."
         self._drawTextAlways(disp_text)
         if self._cursor_switch and not self._confirm_overwrite and self._save_success is None:
-            cursor_x = shared.font_wrap.font.size(">" + self._save_name[:self._cursor_position])
+            cursor_x = shared.font_wrap.font.size(">" + self._save_name[:self._cursor_position])[0]
             self._menu_surface.fill(
                 (255, 255, 255),
                 (
