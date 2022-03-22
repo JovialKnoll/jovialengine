@@ -11,7 +11,7 @@ CONFIG_FULLSCREEN = 'Fullscreen'
 CONFIG_SCREEN_SCALE = 'ScreenScale'
 CONFIG_DEFAULTS = {
     CONFIG_MAX_FRAMERATE: 1000,
-    CONFIG_SCREEN_SCALE: 4,
+    CONFIG_SCREEN_SCALE: 0,
     CONFIG_FULLSCREEN: False,
 }
 config = configparser.ConfigParser(config.CONFIG_DEFAULTS, default_section=config.CONFIG_SECTION)

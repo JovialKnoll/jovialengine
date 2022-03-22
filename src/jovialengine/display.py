@@ -1,5 +1,6 @@
 import sys
 import os
+import math
 
 import pygame
 
@@ -31,6 +32,8 @@ class Display(object):
         self._setupDisplay()
         self.is_fullscreen = config.config.getboolean(config.CONFIG_SECTION, config.CONFIG_FULLSCREEN)
         self.upscale = config.config.getint(config.CONFIG_SECTION, config.CONFIG_SCREEN_SCALE)
+        if self.upscale == 0:
+            self.upscale = math.ceil(self._upscale_max / 2)
         self.upscale = max(min(self.upscale, self._upscale_max), 0)
         self._scaleDisp()
         self.screen: pygame.Surface = pygame.Surface(constants.SCREEN_SIZE)
