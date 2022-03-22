@@ -40,10 +40,10 @@ class FontWrap(object):
             if not words:
                 words = [""]
             if background is None:
-                img = self.renderWordsInside(width, words, color, constants.COLORKEY)
+                img = self._renderWordsInside(width, words, color, constants.COLORKEY)
                 img.set_colorkey(constants.COLORKEY)
             else:
-                img = self.renderWordsInside(width, words, color, background)
+                img = self._renderWordsInside(width, words, color, background)
             surf.blit(img, part_dest)
             part_dest[1] += img.get_height()
 
