@@ -12,11 +12,11 @@ import state
 
 
 class ModeGameMenu(ModeBase, abc.ABC):
-    MENU_CHAR_WIDTH = 26
-    MENU_WIDTH = MENU_CHAR_WIDTH * constants.FONT_SIZE + 1
-    SHARED_DISP_TEXT = "Options:\nESC) Go Back\n"
+    _MENU_CHAR_WIDTH = 26
+    _SHARED_DISP_TEXT = "Options:\nESC) Go Back\n"
 
     __slots__ = (
+        '_MENU_WIDTH',
         '_previous_mode',
         '_last_disp_text',
         '_menu_surface',
@@ -24,6 +24,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
 
     def __init__(self, previous_mode: ModeBase, old_screen=None):
         super().__init__()
+        self._MENU_WIDTH = shared.font_wrap.font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
         self._previous_mode = previous_mode
         if old_screen is None:
             old_screen = self._getOldScreen()
@@ -46,7 +47,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
     def _drawTextAlways(self, disp_text: str):
         self._last_disp_text = disp_text
         self._menu_surface = shared.font_wrap.renderInside(
-            self.MENU_WIDTH,
+            self._MENU_WIDTH,
             disp_text,
             (255, 255, 255),
             (0, 0, 0)
@@ -83,7 +84,7 @@ class ModeGameMenuTop(ModeGameMenu):
                 shared.game_running = False
 
     def _drawPreSprites(self, screen):
-        disp_text = self.SHARED_DISP_TEXT
+        disp_text = self._SHARED_DISP_TEXT
         disp_text += "1) Save\n2) Load\n3) Options\n4) Restart\n5) Quit"
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
@@ -156,7 +157,7 @@ class ModeGameMenuSave(ModeGameMenu):
                     self._cursor_position -= 1
                 self._resetCursorBlink()
             elif (
-                length < (self.MENU_CHAR_WIDTH - 1)
+                length < (self._MENU_CHAR_WIDTH - 1)
                 and (
                     # numbers
                     ('0' <= char <= '9')
@@ -177,7 +178,7 @@ class ModeGameMenuSave(ModeGameMenu):
             self._cursor_timer -= self._CURSOR_TIME
 
     def _drawPreSprites(self, screen):
-        disp_text = self.SHARED_DISP_TEXT
+        disp_text = self._SHARED_DISP_TEXT
         if not isinstance(self._previous_mode, Saveable):
             disp_text += "\nYou can't save now."
         elif not self._save_success:
@@ -193,11 +194,12 @@ class ModeGameMenuSave(ModeGameMenu):
             disp_text += "\nSaved successfully.\nPress any key to go back."
         self._drawTextAlways(disp_text)
         if self._cursor_switch and not self._confirm_overwrite and self._save_success is None:
+            cursor_x = shared.font_wrap.font.size(">" + self._save_name[:self._cursor_position])[0]
             self._menu_surface.fill(
                 (255, 255, 255),
                 (
-                    ((self._cursor_position + 1) * constants.FONT_SIZE, 4 * constants.FONT_HEIGHT),
-                    (1, constants.FONT_HEIGHT)
+                    (cursor_x, 4 * shared.font_wrap.line_height),
+                    (1, shared.font_wrap.line_height)
                 )
             )
         screen.blit(self._menu_surface, (0, 0))
@@ -253,7 +255,7 @@ class ModeGameMenuLoad(ModeGameMenu):
                     self._confirm_delete = True
 
     def _drawPreSprites(self, screen):
-        disp_text = self.SHARED_DISP_TEXT
+        disp_text = self._SHARED_DISP_TEXT
         if len(self._saves) == 0:
             disp_text += "\nThere are no saves to select from."
         elif self._loaded_save:
@@ -305,7 +307,7 @@ class ModeGameMenuOptions(ModeGameMenu):
                 shared.display.setScale(target_scale)
 
     def _drawPreSprites(self, screen):
-        disp_text = self.SHARED_DISP_TEXT
+        disp_text = self._SHARED_DISP_TEXT
         disp_text += f"ARROWS) Upscaling: {shared.display.upscale}" \
                      f"\nF) Fullscreen: {self.getTickBox(shared.display.is_fullscreen)}"
         self._drawText(disp_text)
