@@ -39,13 +39,13 @@ class FontWrap(object):
         for words in [line.split() for line in text.splitlines()]:
             if not words:
                 words = [""]
-            if background is None:
-                img = self._renderWordsInside(width, words, color, constants.COLORKEY)
-                img.set_colorkey(constants.COLORKEY)
-            else:
-                img = self._renderWordsInside(width, words, color, background)
-            surf.blit(img, part_dest)
-            part_dest[1] += img.get_height()
+            lines = self._calculateLinesForWords(width, words)
+            for i, line in enumerate(lines):
+                surf.blit(
+                    self.font.render(text, self._antialias, color, background),
+                    part_dest
+                )
+                part_dest[1] += constants.FONT_HEIGHT
 
     def _renderWordsInside(self, width: int, words: list[str], color, background):
         """Returns a surface of the width with the words drawn on it.
