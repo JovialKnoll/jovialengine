@@ -33,18 +33,6 @@ class FontWrap(object):
                 lines[-1] += " " + new_word
         return lines
 
-    def renderWordsInside(self, width: int, words: list[str], color, background):
-        """Returns a surface of the width with the words drawn on it.
-        If any word is too long to fit, it will be in its own line, and truncated.
-        """
-        lines = self._calculateLinesForWords(width, words)
-        result = pygame.Surface((width, constants.FONT_HEIGHT * len(lines))).convert()
-        result.fill(background)
-        for i, line in enumerate(lines):
-            drawn_line = self.font.render(line, self._antialias, color, background).convert()
-            result.blit(drawn_line, (0, i * constants.FONT_HEIGHT))
-        return result
-
     def renderToInside(self, surf: pygame.Surface, dest, width: int, text: str, color, background=None):
         # probably more efficient to do once?
         part_dest = [dest[0], dest[1]]
@@ -58,6 +46,18 @@ class FontWrap(object):
                 img = self.renderWordsInside(width, words, color, background)
             surf.blit(img, part_dest)
             part_dest[1] += img.get_height()
+
+    def renderWordsInside(self, width: int, words: list[str], color, background):
+        """Returns a surface of the width with the words drawn on it.
+        If any word is too long to fit, it will be in its own line, and truncated.
+        """
+        lines = self._calculateLinesForWords(width, words)
+        result = pygame.Surface((width, constants.FONT_HEIGHT * len(lines))).convert()
+        result.fill(background)
+        for i, line in enumerate(lines):
+            drawn_line = self.font.render(line, self._antialias, color, background).convert()
+            result.blit(drawn_line, (0, i * constants.FONT_HEIGHT))
+        return result
 
     def renderInside(self, width: int, text: str, color, background):
         # probably more efficient if keeping resultant surface and using that to draw over and over?
