@@ -40,9 +40,9 @@ class FontWrap(object):
             if not words:
                 words = [""]
             lines = self._calculateLinesForWords(width, words)
-            for i, line in enumerate(lines):
+            for line in lines:
                 surf.blit(
-                    self.font.render(text, self._antialias, color, background),
+                    self.font.render(line, self._antialias, color, background),
                     part_dest
                 )
                 part_dest[1] += self.line_height
