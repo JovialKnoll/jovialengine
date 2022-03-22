@@ -23,7 +23,7 @@ class FontWrap(object):
             (dest[0] - text_size[0] // 2, dest[1] - text_size[1] // 2)
         )
 
-    def renderWordsInside(self, width: int, words: list[str], color, background=None):
+    def renderWordsInside(self, width: int, words: list[str], color, background):
         """Returns a surface of the width with the words drawn on it.
         If any word is too long to fit, it will be in its own line, and truncated.
         """
@@ -55,19 +55,18 @@ class FontWrap(object):
             surf.blit(img, part_dest)
             part_dest[1] += img.get_height()
 
-    def renderInside(self, width: int, text: str, color, background=None):
+    def renderInside(self, width: int, text: str, color, background):
         # probably more efficient if keeping resultant surface and using that to draw over and over?
         height = 0
         imgs = []
         for line in [line.split() for line in text.splitlines()]:
             if not line:
                 line = [""]
-            imgs.append(self.renderWordsInside(width, line, color, background or constants.COLORKEY))
+            imgs.append(self.renderWordsInside(width, line, color, background))
             height += imgs[-1].get_height()
         result = pygame.Surface((width, height)).convert()
         dest = [0, 0]
         for img in imgs:
             result.blit(img, dest)
             dest[1] += img.get_height()
-        result.set_colorkey(constants.COLORKEY)
         return result
