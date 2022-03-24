@@ -80,6 +80,9 @@ class ModeBase(abc.ABC):
     def _drawPostSprites(self, screen: pygame.surface.Surface):
         pass
 
+    def _drawPostCamera(self, screen: pygame.surface.Surface):
+        pass
+
     @typing.final
     def draw(self, screen: pygame.surface.Surface):
         """All game modes can draw to the screen"""
@@ -89,6 +92,7 @@ class ModeBase(abc.ABC):
         self._all_sprites.draw(self._space)
         self._drawPostSprites(self._space)
         screen.blit(self._space, (0, 0), self._camera)
+        self._drawPostCamera(screen)
 
     @staticmethod
     def _stopMixer():
