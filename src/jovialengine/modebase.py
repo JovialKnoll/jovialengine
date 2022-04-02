@@ -55,12 +55,17 @@ class ModeBase(abc.ABC):
             type(self).__name__ + "._input(self, event)"
         )
 
+    def _postInput(self):
+        """Handle any input that's checked directly, like joysticks etc."""
+        pass
+
     @typing.final
     def inputEvents(self, events: typing.Iterable[pygame.event.Event]):
         """All game modes can take in events."""
         for event in events:
             self._input(event)
             self.__trackMouseButton(event)
+        self._postInput()
 
     def _update(self, dt: int):
         pass
