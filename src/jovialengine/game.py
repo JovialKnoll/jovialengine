@@ -34,6 +34,11 @@ class Game(object):
         shared.font_wrap = FontWrap(font, constants.FONT_HEIGHT, constants.FONT_ANTIALIAS)
         shared.state = state.State()
         shared.start_mode_cls = start_mode_cls
+        shared.joysticks = [
+            pygame.joystick.Joystick(i)
+            for i
+            in range(pygame.joystick.get_count())
+        ]
         shared.game_running = True
         # init game properties
         self._max_framerate = config.config.getint(config.CONFIG_SECTION, config.CONFIG_MAX_FRAMERATE)
@@ -96,6 +101,21 @@ class Game(object):
                 or event.pos[0] >= constants.SCREEN_SIZE[0]
                 or event.pos[1] >= constants.SCREEN_SIZE[1]
         ):
+            return False
+        elif event.type == pygame.JOYDEVICEREMOVED:
+            shared.joysticks = [
+                joystick
+                for joystick
+                in shared.joysticks
+                if joystick.get_instance_id() != event.instance_id
+            ]
+            return False
+        elif event.type == pygame.JOYDEVICEADDED:
+            shared.joysticks = [
+                pygame.joystick.Joystick(i)
+                for i
+                in range(pygame.joystick.get_count())
+            ]
             return False
         return True
 
