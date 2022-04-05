@@ -9,7 +9,7 @@ This package expects the following local modules to exist in your project:
   - FONT
     a file location to use as your main font
   - FONT_SIZE
-    a size for your font, assumes monospace
+    a size for your font
   - FONT_HEIGHT
     a height for your font
   - FONT_ANTIALIAS
