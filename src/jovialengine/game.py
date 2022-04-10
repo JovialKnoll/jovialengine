@@ -50,9 +50,8 @@ class Game(object):
         """Run the game, and check if the game needs to end."""
         if not self._current_mode:
             raise RuntimeError("error: no current mode")
-        self._current_mode.inputEvents(
-            self._filterInput(pygame.event.get())
-        )
+        events = self._filterInput(pygame.event.get())
+        self._current_mode.inputEvents(events)
         for i in range(self._getTime()):
             self._current_mode.update(1)
         self._current_mode.draw(shared.display.screen)
@@ -71,7 +70,15 @@ class Game(object):
 
     def _filterInput(self, events: typing.Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
-        return filter(self._stillNeedsHandling, map(shared.display.scaleMouseInput, events))
+        return list(
+            filter(
+                self._stillNeedsHandling,
+                map(
+                    shared.display.scaleMouseInput,
+                    events
+                )
+            )
+        )
 
     def _stillNeedsHandling(self, event: pygame.event.Event):
         """If event should be handled before all others, handle it and return False, otherwise return True.
