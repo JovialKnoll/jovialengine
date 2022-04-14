@@ -4,12 +4,13 @@ import pygame
 
 
 @functools.cache
-def load(filename, alpha_or_colorkey=False):
-    image = pygame.image.load(filename)
+def image(filename, alpha_or_colorkey=False):
+    print("loading")
+    result = pygame.image.load(filename)
     if alpha_or_colorkey is True:
-        image = image.convert_alpha()
+        result = result.convert_alpha()
     else:
-        image = image.convert()
+        result = result.convert()
         if alpha_or_colorkey is not False:
-            image.set_colorkey(alpha_or_colorkey)
-    return image
+            result.set_colorkey(alpha_or_colorkey)
+    return result
