@@ -5,7 +5,6 @@ import pygame
 
 @functools.cache
 def image(filename, alpha_or_colorkey=False):
-    print("loading")
     result = pygame.image.load(filename)
     if alpha_or_colorkey is True:
         result = result.convert_alpha()
