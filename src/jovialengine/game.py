@@ -10,7 +10,6 @@ from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
 from .modegamemenu import ModeGameMenuTop
 from . import config
-from . import shared
 
 import constants
 import state
@@ -18,6 +17,11 @@ import state
 
 class _Game(object):
     __slots__ = (
+        'game_running',
+        'display',
+        'font_wrap',
+        'state',
+        'start_mode_cls',
         '_is_first_loop',
         '_max_framerate',
         '_clock',
@@ -26,21 +30,19 @@ class _Game(object):
     )
 
     def __init__(self, start_mode_cls: typing.Type[ModeBase]):
-        # init shared objects
-        shared.display = Display()
+        self.game_running = True
+        self.display = Display()
         if constants.FONT:
             font = pygame.font.Font(constants.FONT, constants.FONT_SIZE)
         else:
             font = pygame.font.SysFont(None, constants.FONT_SIZE)
-        shared.font_wrap = FontWrap(font, constants.FONT_HEIGHT, constants.FONT_ANTIALIAS)
-        shared.state = state.State()
-        shared.start_mode_cls = start_mode_cls
-        shared.game_running = True
-        # init game properties
+        self.font_wrap = FontWrap(font, constants.FONT_HEIGHT, constants.FONT_ANTIALIAS)
+        self.state = state.State()
+        self.start_mode_cls = start_mode_cls
         self._is_first_loop = True
         self._max_framerate = config.config.getint(config.CONFIG_SECTION, config.CONFIG_MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
-        self._current_mode = shared.start_mode_cls()
+        self._current_mode = self.start_mode_cls()
         self._joysticks = [
             pygame.joystick.Joystick(i)
             for i
@@ -56,8 +58,8 @@ class _Game(object):
         self._current_mode.inputEvents(events)
         for i in range(self._getTime()):
             self._current_mode.update(1)
-        self._current_mode.draw(shared.display.screen)
-        shared.display.scaleDraw()
+        self._current_mode.draw(self.display.screen)
+        self.display.scaleDraw()
         if self._current_mode.next_mode is not None:
             if isinstance(self._current_mode, ModeGameMenu) \
                     and not isinstance(self._current_mode.next_mode, ModeGameMenu):
@@ -65,10 +67,10 @@ class _Game(object):
                 pygame.mixer.unpause()
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
-        if not shared.game_running:
+        if not self.game_running:
             config.saveConfig()
         self._is_first_loop = False
-        return shared.game_running
+        return self.game_running
 
     def _filterInput(self, events: typing.Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
@@ -76,7 +78,7 @@ class _Game(object):
             filter(
                 self._stillNeedsHandling,
                 map(
-                    shared.display.scaleMouseInput,
+                    self.display.scaleMouseInput,
                     events
                 )
             )
@@ -101,7 +103,7 @@ class _Game(object):
                     pass
                 file_name = f"{datetime.utcnow().isoformat().replace(':', '')}.png"
                 file_path = os.path.join(constants.SCREENSHOT_DIRECTORY, file_name)
-                pygame.image.save(shared.display.screen, file_path)
+                pygame.image.save(self.display.screen, file_path)
                 return False
         elif event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN) \
             and (
