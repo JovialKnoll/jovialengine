@@ -5,7 +5,7 @@ from collections import deque
 
 import pygame.math
 
-import game
+from . import game
 from .saveable import Saveable
 
 import constants

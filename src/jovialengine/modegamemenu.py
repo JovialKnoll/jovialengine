@@ -2,7 +2,7 @@ import abc
 
 import pygame
 
-import game
+from . import game
 from .modebase import ModeBase
 from .save import Save
 from .saveable import Saveable
