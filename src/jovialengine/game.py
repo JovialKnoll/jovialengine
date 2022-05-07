@@ -22,15 +22,15 @@ class _Game(object):
         'font_wrap',
         'state',
         'start_mode_cls',
+        '_current_mode',
         '_is_first_loop',
         '_max_framerate',
         '_clock',
-        '_current_mode',
         '_joysticks',
     )
 
-    def __init__(self, start_mode_cls: typing.Type[ModeBase]):
-        self.game_running = True
+    def __init__(self):
+        self.game_running = False
         self.display = Display()
         if constants.FONT:
             font = pygame.font.Font(constants.FONT, constants.FONT_SIZE)
@@ -38,17 +38,21 @@ class _Game(object):
             font = pygame.font.SysFont(None, constants.FONT_SIZE)
         self.font_wrap = FontWrap(font, constants.FONT_HEIGHT, constants.FONT_ANTIALIAS)
         self.state = state.State()
-        self.start_mode_cls = start_mode_cls
+        self.start_mode_cls: typing.Type[ModeBase]
+        self._current_mode: ModeBase
         self._is_first_loop = True
         self._max_framerate = config.config.getint(config.CONFIG_SECTION, config.CONFIG_MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
-        self._current_mode = self.start_mode_cls()
         self._joysticks = [
             pygame.joystick.Joystick(i)
             for i
             in range(pygame.joystick.get_count())
         ]
 
+    def load(self, start_mode_cls: typing.Type[ModeBase]):
+        self.game_running = True
+        self.start_mode_cls = start_mode_cls
+        self._current_mode: ModeBase = self.start_mode_cls()
 
     def run(self):
         """Run the game, and check if the game needs to end."""
@@ -151,7 +155,7 @@ def getGame():
     return _game_instance
 
 
-def initGame(start_mode_cls: typing.Type[ModeBase]):
+def initGame():
     global _game_instance
-    _game_instance = _Game(start_mode_cls)
+    _game_instance = _Game()
     return getGame()
