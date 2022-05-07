@@ -16,7 +16,7 @@ import constants
 import state
 
 
-class Game(object):
+class _Game(object):
     __slots__ = (
         '_max_framerate',
         '_clock',
@@ -137,3 +137,17 @@ class Game(object):
 
     def _getTime(self):
         return self._clock.tick(self._max_framerate)
+
+
+_game_instance: _Game
+
+
+def getGame():
+    global _game_instance
+    return _game_instance
+
+
+def initGame(start_mode_cls: typing.Type[ModeBase]):
+    global _game_instance
+    _game_instance = _Game(start_mode_cls)
+    return getGame()
