@@ -18,10 +18,11 @@ import state
 
 class _Game(object):
     __slots__ = (
+        '_is_first_loop',
         '_max_framerate',
         '_clock',
         '_current_mode',
-        '_is_first_loop',
+        '_joysticks',
     )
 
     def __init__(self, start_mode_cls: typing.Type[ModeBase]):
@@ -34,17 +35,18 @@ class _Game(object):
         shared.font_wrap = FontWrap(font, constants.FONT_HEIGHT, constants.FONT_ANTIALIAS)
         shared.state = state.State()
         shared.start_mode_cls = start_mode_cls
-        shared.joysticks = [
+        shared.game_running = True
+        # init game properties
+        self._is_first_loop = True
+        self._max_framerate = config.config.getint(config.CONFIG_SECTION, config.CONFIG_MAX_FRAMERATE)
+        self._clock = pygame.time.Clock()
+        self._current_mode = shared.start_mode_cls()
+        self._joysticks = [
             pygame.joystick.Joystick(i)
             for i
             in range(pygame.joystick.get_count())
         ]
-        shared.game_running = True
-        # init game properties
-        self._max_framerate = config.config.getint(config.CONFIG_SECTION, config.CONFIG_MAX_FRAMERATE)
-        self._clock = pygame.time.Clock()
-        self._current_mode = shared.start_mode_cls()
-        self._is_first_loop = True
+
 
     def run(self):
         """Run the game, and check if the game needs to end."""
@@ -110,15 +112,15 @@ class _Game(object):
         ):
             return False
         elif event.type == pygame.JOYDEVICEREMOVED:
-            shared.joysticks = [
+            self._joysticks = [
                 joystick
                 for joystick
-                in shared.joysticks
+                in self._joysticks
                 if joystick.get_instance_id() != event.instance_id
             ]
             return False
         elif event.type == pygame.JOYDEVICEADDED:
-            shared.joysticks = [
+            self._joysticks = [
                 pygame.joystick.Joystick(i)
                 for i
                 in range(pygame.joystick.get_count())

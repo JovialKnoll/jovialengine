@@ -13,5 +13,4 @@ display: Display
 font_wrap: FontWrap
 state: state.State
 start_mode_cls: typing.Type[ModeBase]
-joysticks: typing.Iterable[pygame.joystick.Joystick]
 game_running: False
