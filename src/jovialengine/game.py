@@ -9,6 +9,7 @@ from .fontwrap import FontWrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
 from .modegamemenu import ModeGameMenuTop
+from .saveable import Saveable
 from . import config
 from . import shared
 
@@ -24,7 +25,11 @@ class Game(object):
         '_is_first_loop',
     )
 
-    def __init__(self, start_mode_cls: typing.Type[ModeBase]):
+    # possibly pass in constants, state type, and mode module explicitly?
+
+    # should constants be module, dictionary, or class (maybe inheriting from a
+    # base class that requires implementation of relevant properties)?
+    def __init__(self, constants, state: typing.Type[Saveable], mode, start_mode_cls: typing.Type[ModeBase]):
         # init shared objects
         shared.display = Display()
         if constants.FONT:
