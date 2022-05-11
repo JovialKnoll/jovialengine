@@ -7,9 +7,6 @@ from .modebase import ModeBase
 from .save import Save
 from .saveable import Saveable
 
-import constants
-import state
-
 
 class ModeGameMenu(ModeBase, abc.ABC):
     _MENU_CHAR_WIDTH = 26

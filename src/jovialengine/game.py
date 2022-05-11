@@ -13,9 +13,6 @@ from .saveable import Saveable
 from . import config
 from . import shared
 
-import constants
-import state
-
 
 class Game(object):
     __slots__ = (

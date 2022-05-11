@@ -3,8 +3,6 @@ import typing
 
 import pygame
 
-import constants
-
 
 class ModeBase(abc.ABC):
     """This is an abstract object for game modes.
