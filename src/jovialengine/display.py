@@ -6,8 +6,6 @@ import pygame
 
 from . import config
 
-import constants
-
 
 class Display(object):
     __slots__ = (

@@ -2,8 +2,6 @@ import configparser
 
 from . import config
 
-import constants
-
 
 CONFIG_SECTION = 'Game'
 CONFIG_MAX_FRAMERATE = 'MaxFramerate'

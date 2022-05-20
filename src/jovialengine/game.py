@@ -9,10 +9,8 @@ from .fontwrap import FontWrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
 from .modegamemenu import ModeGameMenuTop
+from .saveable import Saveable
 from . import config
-
-import constants
-import state
 
 
 class _Game(object):
@@ -49,7 +47,9 @@ class _Game(object):
             in range(pygame.joystick.get_count())
         ]
 
-    def load(self, start_mode_cls: typing.Type[ModeBase]):
+    # should constants be module, dictionary, or class (maybe inheriting from a
+    # base class that requires implementation of relevant properties)?
+    def load(self, constants, state: typing.Type[Saveable], mode, start_mode_cls: typing.Type[ModeBase]):
         self.game_running = True
         self.start_mode_cls = start_mode_cls
         self._current_mode: ModeBase = self.start_mode_cls()

@@ -6,8 +6,6 @@ import pygame
 from .saveable import Saveable
 from . import utility
 
-import constants
-
 
 class Anim(Saveable):
     __slots__ = (

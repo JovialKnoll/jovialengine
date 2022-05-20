@@ -8,10 +8,6 @@ import pygame.math
 from . import game
 from .saveable import Saveable
 
-import constants
-import state
-import mode
-
 
 _KEY_COLLECTION = 'COLLECTION'
 _COLLECTION_DEQUE = 'DEQUE'
