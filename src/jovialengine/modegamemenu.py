@@ -24,7 +24,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
 
     def __init__(self, previous_mode: ModeBase, old_screen=None):
         super().__init__()
-        self._MENU_WIDTH = game.getGame().font_wrap.font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
+        self._MENU_WIDTH = game.getInstance().font_wrap.font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
         self._previous_mode = previous_mode
         if old_screen is None:
             old_screen = self._getOldScreen()
@@ -46,7 +46,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
 
     def _drawTextAlways(self, disp_text: str):
         self._last_disp_text = disp_text
-        self._menu_surface = game.getGame().font_wrap.renderInside(
+        self._menu_surface = game.getInstance().font_wrap.renderInside(
             self._MENU_WIDTH,
             disp_text,
             (255, 255, 255),
@@ -62,7 +62,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
 class ModeGameMenuTop(ModeGameMenu):
     def _input(self, event):
         if event.type == pygame.QUIT:
-            game.getGame().game_running = False
+            game.getInstance().game_running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.next_mode = self._previous_mode
@@ -74,14 +74,14 @@ class ModeGameMenuTop(ModeGameMenu):
                 self.next_mode = ModeGameMenuOptions(self._previous_mode, self._background)
             elif event.key == pygame.K_4:
                 self._stopMixer()
-                game.getGame().state = state.State()
-                self._previous_mode = game.getGame().start_mode_cls()
+                game.getInstance().state = state.State()
+                self._previous_mode = game.getInstance().start_mode_cls()
                 pygame.mixer.music.pause()
                 pygame.mixer.pause()
                 self._background = self._getOldScreen()
                 self._last_disp_text = None
             elif event.key == pygame.K_5:
-                game.getGame().game_running = False
+                game.getInstance().game_running = False
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
@@ -194,12 +194,12 @@ class ModeGameMenuSave(ModeGameMenu):
             disp_text += "\nSaved successfully.\nPress any key to go back."
         self._drawTextAlways(disp_text)
         if self._cursor_switch and not self._confirm_overwrite and self._save_success is None:
-            cursor_x = game.getGame().font_wrap.font.size(">" + self._save_name[:self._cursor_position])[0]
+            cursor_x = game.getInstance().font_wrap.font.size(">" + self._save_name[:self._cursor_position])[0]
             self._menu_surface.fill(
                 (255, 255, 255),
                 (
-                    (cursor_x, 4 * game.getGame().font_wrap.line_height),
-                    (1, game.getGame().font_wrap.line_height)
+                    (cursor_x, 4 * game.getInstance().font_wrap.line_height),
+                    (1, game.getInstance().font_wrap.line_height)
                 )
             )
         screen.blit(self._menu_surface, (0, 0))
@@ -290,26 +290,26 @@ class ModeGameMenuOptions(ModeGameMenu):
                     pygame.K_LEFT, pygame.K_a,
                     pygame.K_PAGEDOWN, pygame.K_MINUS,
             ):
-                game.getGame().display.changeScale(-1)
+                game.getInstance().display.changeScale(-1)
             elif event.key in (
                     pygame.K_UP, pygame.K_w,
                     pygame.K_RIGHT, pygame.K_d,
                     pygame.K_PAGEUP, pygame.K_EQUALS,
             ):
-                game.getGame().display.changeScale(1)
+                game.getInstance().display.changeScale(1)
             elif event.key in (pygame.K_f, pygame.K_F11,):
-                game.getGame().display.toggleFullscreen()
+                game.getInstance().display.toggleFullscreen()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             elif '1' <= event.unicode <= '9':
                 target_scale = int(event.unicode)
-                game.getGame().display.setScale(target_scale)
+                game.getInstance().display.setScale(target_scale)
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
-        disp_text += f"ARROWS) Upscaling: {game.getGame().display.upscale}" \
-                     f"\nF) Fullscreen: {self.getTickBox(game.getGame().display.is_fullscreen)}"
+        disp_text += f"ARROWS) Upscaling: {game.getInstance().display.upscale}" \
+                     f"\nF) Fullscreen: {self.getTickBox(game.getInstance().display.is_fullscreen)}"
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
 
