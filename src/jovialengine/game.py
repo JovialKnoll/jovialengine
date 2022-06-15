@@ -147,15 +147,11 @@ class _Game(object):
         return self._clock.tick(self._max_framerate)
 
 
-_game_instance: _Game
+_game_instance: _Game | None = None
 
 
-def getGame():
+def getInstance():
     global _game_instance
+    if _game_instance is None:
+        _game_instance = _Game()
     return _game_instance
-
-
-def initGame():
-    global _game_instance
-    _game_instance = _Game()
-    return getGame()
