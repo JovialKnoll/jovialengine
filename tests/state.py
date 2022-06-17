@@ -3,16 +3,17 @@ from jovialengine.saveable import Saveable
 
 class State(Saveable):
     __slots__ = (
+        'value',
     )
 
-    def __init__(self):
-        pass
+    def __init__(self, value):
+        self.value = value
 
     def save(self):
-        return {
-        }
+        return self.value
 
     @classmethod
     def load(cls, save_data):
-        new_obj = cls()
+        value = save_data
+        new_obj = cls(value)
         return new_obj
