@@ -5,15 +5,22 @@ import pygame
 import jovialengine.display as display
 
 
-class DisplayForTest(display.Display):
+class DisplayForTestFullscreen(display.Display):
     def __init__(self):
+        self.is_fullscreen: True
         self._fullscreen_offset = [50, 100]
         self.upscale = 2
+
+class DisplayForTestWindowed(display.Display):
+    def __init__(self):
+        self.is_fullscreen: False
+        self._fullscreen_offset = None
+        self.upscale = 3
 
 
 class TestDisplay(unittest.TestCase):
     def test_scaleMouseInput(self):
-        disp = DisplayForTest()
+        disp = DisplayForTestFullscreen()
         event_dict = {
             'pos': (400, 800),
             'button': 1,
