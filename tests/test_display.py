@@ -54,7 +54,7 @@ class TestDisplay(unittest.TestCase):
         # Arrange
         disp = DisplayForTestWindowed()
         event_dict = {
-            'pos': (400, 800),
+            'pos': (133, 266),
             'button': 1,
         }
         event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, event_dict)
@@ -68,8 +68,8 @@ class TestDisplay(unittest.TestCase):
         # Arrange
         disp = DisplayForTestWindowed()
         event_dict = {
-            'pos': (400, 800),
-            'rel': (100, 200),
+            'pos': (133, 266),
+            'rel': (33, 66),
             'buttons': (1),
         }
         event = pygame.event.Event(pygame.MOUSEMOTION, event_dict)
