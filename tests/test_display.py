@@ -7,13 +7,13 @@ import jovialengine.display as display
 
 class DisplayForTestFullscreen(display.Display):
     def __init__(self):
-        self.is_fullscreen: True
+        self.is_fullscreen = True
         self._fullscreen_offset = [50, 100]
         self.upscale = 2
 
 class DisplayForTestWindowed(display.Display):
     def __init__(self):
-        self.is_fullscreen: False
+        self.is_fullscreen = False
         self._fullscreen_offset = None
         self.upscale = 3
 
