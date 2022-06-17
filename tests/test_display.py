@@ -54,30 +54,30 @@ class TestDisplay(unittest.TestCase):
         # Arrange
         disp = DisplayForTestWindowed()
         event_dict = {
-            'pos': (133, 266),
+            'pos': (400, 800),
             'button': 1,
         }
         event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, event_dict)
         # Act
         result_event = disp.scaleMouseInput(event)
         # Assert
-        self.assertEqual(result_event.pos, (200, 400))
+        self.assertEqual(result_event.pos, (133, 266))
         self.assertEqual(result_event.button, 1)
 
     def test_scaleMouseInput_windowed_motion(self):
         # Arrange
         disp = DisplayForTestWindowed()
         event_dict = {
-            'pos': (133, 266),
-            'rel': (33, 66),
+            'pos': (400, 800),
+            'rel': (100, 200),
             'buttons': (1),
         }
         event = pygame.event.Event(pygame.MOUSEMOTION, event_dict)
         # Act
         result_event = disp.scaleMouseInput(event)
         # Assert
-        self.assertEqual(result_event.pos, (200, 400))
-        self.assertEqual(result_event.rel, (50, 100))
+        self.assertEqual(result_event.pos, (133, 266))
+        self.assertEqual(result_event.rel, (33, 66))
         self.assertEqual(result_event.buttons, (1))
 
 
