@@ -16,12 +16,14 @@ class TestSave(unittest.TestCase):
 
     def test1_willOverwrite(self):
         # Arrange
-        saves = save.Save.getAllFromFiles()
-        test_save = saves[0]
+        collide_name = "a"
+        noncollide_name = "c"
         # Act
-        result = test_save.willOverwrite()
+        collide_result = save.Save.willOverwrite(collide_name)
+        noncollide_result = save.Save.willOverwrite(noncollide_name)
         # Assert
-        self.assertEqual(result, True)
+        self.assertEqual(collide_result, True)
+        self.assertEqual(noncollide_result, False)
 
     def test2_save_existing(self):
         # Arrange
