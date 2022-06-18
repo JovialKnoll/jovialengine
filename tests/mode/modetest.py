@@ -2,7 +2,7 @@ from jovialengine.modebase import ModeBase
 from jovialengine.saveable import Saveable
 
 
-class ModeGameMenu(ModeBase, Saveable):
+class ModeTest(ModeBase, Saveable):
     __slots__ = (
         'test_value',
     )
