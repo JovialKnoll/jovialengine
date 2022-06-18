@@ -52,7 +52,7 @@ class _Game(object):
     def load(self, start_mode_cls: typing.Type[ModeBase]):
         self.game_running = True
         self.start_mode_cls = start_mode_cls
-        self._current_mode: ModeBase = self.start_mode_cls()
+        self._current_mode = self.start_mode_cls()
 
     def run(self):
         """Run the game, and check if the game needs to end."""
