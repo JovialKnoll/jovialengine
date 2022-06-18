@@ -4,7 +4,7 @@ import jovialengine.save as save
 
 
 class TestSave(unittest.TestCase):
-    def test_getAllFromFiles(self):
+    def test0_getAllFromFiles(self):
         # Act
         saves = save.Save.getAllFromFiles()
         # Assert
@@ -14,7 +14,7 @@ class TestSave(unittest.TestCase):
         self.assertEqual(saves[0]._mode_data, 1)
         self.assertEqual(saves[0]._shared_data, "test")
 
-    def test_willOverwrite(self):
+    def test1_willOverwrite(self):
         # Arrange
         saves = save.Save.getAllFromFiles()
         test_save = saves[0]
@@ -23,7 +23,7 @@ class TestSave(unittest.TestCase):
         # Assert
         self.assertEqual(result, True)
 
-    def test_save_existing(self):
+    def test2_save_existing(self):
         # Arrange
         saves = save.Save.getAllFromFiles()
         test_save = saves[0]
@@ -38,7 +38,7 @@ class TestSave(unittest.TestCase):
         self.assertEqual(saves[0]._mode_data, 2)
         self.assertEqual(saves[0]._shared_data, "test")
 
-    def test_save_new(self):
+    def test3_save_new(self):
         # Arrange
         saves = save.Save.getAllFromFiles()
         test_save = saves[0]
@@ -54,7 +54,7 @@ class TestSave(unittest.TestCase):
         self.assertEqual(saves[1]._mode_data, 2)
         self.assertEqual(saves[1]._shared_data, "test")
 
-    def test_save_delete(self):
+    def test4_save_delete(self):
         # Arrange
         saves = save.Save.getAllFromFiles()
         # Act
