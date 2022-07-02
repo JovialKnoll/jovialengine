@@ -72,11 +72,11 @@ class TestGame(unittest.TestCase):
         # Assert
         self.assertFalse(result)
 
-    def test__stillNeedsHandling_KEYDOWN_A(self):
+    def test__stillNeedsHandling_KEYDOWN_a(self):
         # Arrange
         gameForTest = GameForTest()
         event_dict = {
-            'key': pygame.K_A,
+            'key': pygame.K_a,
         }
         event = pygame.event.Event(pygame.KEYDOWN, event_dict)
         # Act
