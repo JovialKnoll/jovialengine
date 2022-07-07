@@ -150,7 +150,7 @@ class _Game(object):
 _game_instance: _Game | None = None
 
 
-def getInstance():
+def getGame():
     global _game_instance
     if _game_instance is None:
         _game_instance = _Game()
