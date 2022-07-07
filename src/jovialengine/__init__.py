@@ -4,4 +4,4 @@ from .modebase import ModeBase
 from .fontwrap import FontWrap
 from . import load
 from . import utility
-from . import game
+from .game import getGame
