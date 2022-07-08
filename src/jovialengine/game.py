@@ -1,5 +1,6 @@
 import typing
 import os
+import functools
 from datetime import datetime
 
 import pygame
@@ -147,11 +148,6 @@ class _Game(object):
         return self._clock.tick(self._max_framerate)
 
 
-_game_instance: _Game | None = None
-
-
+@functools.cache
 def getGame():
-    global _game_instance
-    if _game_instance is None:
-        _game_instance = _Game()
-    return _game_instance
+    return _Game()
