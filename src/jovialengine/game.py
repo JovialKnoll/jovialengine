@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 import pygame
-pygame.init()
+#pygame.init()
 
 from .display import Display
 from .fontwrap import FontWrap
