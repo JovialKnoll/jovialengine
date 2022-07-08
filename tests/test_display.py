@@ -2,10 +2,7 @@ import unittest
 
 import pygame
 
-try:
-    import jovialengine.display as display
-except pygame.error:
-    pass
+import jovialengine.display as display
 
 
 class DisplayForTestFullscreen(display.Display):

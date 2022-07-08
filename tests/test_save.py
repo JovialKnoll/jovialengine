@@ -1,9 +1,6 @@
 import unittest
 
-try:
-    import jovialengine.save as save
-except pygame.error:
-    pass
+import jovialengine.save as save
 
 
 class TestSave(unittest.TestCase):

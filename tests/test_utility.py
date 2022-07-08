@@ -1,9 +1,6 @@
 import unittest
 
-try:
-    import jovialengine.utility as utility
-except pygame.error:
-    pass
+import jovialengine.utility as utility
 
 
 class TestUtility(unittest.TestCase):

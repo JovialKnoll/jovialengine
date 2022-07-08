@@ -1,9 +1,10 @@
 import typing
 import os
+import functools
 from datetime import datetime
 
 import pygame
-#pygame.init()
+pygame.init()
 
 from .display import Display
 from .fontwrap import FontWrap
@@ -148,4 +149,6 @@ class _Game(object):
         return self._clock.tick(self._max_framerate)
 
 
-game = _Game()
+@functools.cache
+def getGame():
+    return _Game()
