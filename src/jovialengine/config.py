@@ -32,6 +32,10 @@ def get(key: str):
     return _config.get(CONFIG_SECTION, key)
 
 
+def update(key: str, value):
+    _config.set(CONFIG_SECTION, key, str(value))
+
+
 def save():
     with open(constants.CONFIG_FILE, 'w') as file:
         _config.write(file, space_around_delimiters=False)
