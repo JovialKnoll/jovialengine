@@ -11,12 +11,12 @@ _DEFAULTS = {
     SCREEN_SCALE: 0,
     FULLSCREEN: False,
 }
-_SECTION = 'Game'
 _TYPES = {
     MAX_FRAMERATE: 'int',
     SCREEN_SCALE: 'int',
     FULLSCREEN: 'bool',
 }
+_SECTION = 'Game'
 _config = configparser.ConfigParser(_DEFAULTS, default_section=_SECTION)
 _config.read(constants.CONFIG_FILE)
 for section in _config.sections():
