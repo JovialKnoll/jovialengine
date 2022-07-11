@@ -1,7 +1,5 @@
 import typing
-import os
 import functools
-from datetime import datetime
 
 import pygame
 pygame.init()
@@ -100,13 +98,7 @@ class _Game(object):
             if event.key == pygame.K_ESCAPE:
                 return self._handlePauseMenu()
             elif event.key == pygame.K_F12:
-                try:
-                    os.mkdir(constants.SCREENSHOT_DIRECTORY)
-                except FileExistsError:
-                    pass
-                file_name = f"{datetime.utcnow().isoformat().replace(':', '')}.png"
-                file_path = os.path.join(constants.SCREENSHOT_DIRECTORY, file_name)
-                pygame.image.save(self.display.screen, file_path)
+                self.display.takeScreenshot()
                 return False
         elif event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN) \
             and (
