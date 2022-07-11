@@ -43,7 +43,7 @@ class _Game(object):
         self.start_mode_cls: typing.Type[ModeBase]
         self._current_mode: ModeBase
         self._is_first_loop = True
-        self._max_framerate = config.config.getint(config.CONFIG_SECTION, config.CONFIG_MAX_FRAMERATE)
+        self._max_framerate = config.get(config.MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
         self._joysticks = [
             pygame.joystick.Joystick(i)
@@ -74,7 +74,7 @@ class _Game(object):
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
         if not self.game_running:
-            config.saveConfig()
+            config.save()
         self._is_first_loop = False
         return self.game_running
 
