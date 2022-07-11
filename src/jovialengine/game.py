@@ -7,6 +7,7 @@ import pygame
 pygame.init()
 
 from .display import Display
+from .input import Input
 from .fontwrap import FontWrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
@@ -34,6 +35,7 @@ class _Game(object):
     def __init__(self):
         self.game_running = False
         self.display = Display()
+        self.input = Input()
         if constants.FONT:
             font = pygame.font.Font(constants.FONT, constants.FONT_SIZE)
         else:
@@ -82,6 +84,7 @@ class _Game(object):
         """Take care of input that game modes should not take care of."""
         events = map(self.display.scaleMouseInput, events)
         events = filter(self._stillNeedsHandling, events)
+        events = map(self.input.mapInput, events)
         return list(events)
 
     def _stillNeedsHandling(self, event: pygame.event.Event):
