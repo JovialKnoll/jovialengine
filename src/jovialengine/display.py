@@ -31,8 +31,8 @@ class Display(object):
         if constants.WINDOW_ICON:
             self._window_icon = pygame.image.load(constants.WINDOW_ICON)
         self._setupDisplay()
-        self.is_fullscreen = config.get(config.CONFIG_FULLSCREEN)
-        self.upscale = config.get(config.CONFIG_SCREEN_SCALE)
+        self.is_fullscreen = config.get(config.FULLSCREEN)
+        self.upscale = config.get(config.SCREEN_SCALE)
         if self.upscale == 0:
             self.upscale = math.ceil(self._upscale_max / 2)
         self.upscale = max(min(self.upscale, self._upscale_max), 0)
@@ -45,7 +45,7 @@ class Display(object):
         else:
             self._setWindowed()
         self.screen = self.screen.convert()
-        config.update(config.CONFIG_SCREEN_SCALE, self.upscale)
+        config.update(config.SCREEN_SCALE, self.upscale)
 
     def _setupDisplay(self):
         pygame.display.set_caption(constants.TITLE)
@@ -100,7 +100,7 @@ class Display(object):
             self._setupDisplay()
             self._setWindowed()
         self.screen = self.screen.convert()
-        config.update(config.CONFIG_SCREEN_SCALE, self.upscale)
+        config.update(config.SCREEN_SCALE, self.upscale)
 
     def _scaleDisp(self):
         self._disp_res = (
@@ -118,7 +118,7 @@ class Display(object):
         else:
             self._setWindowed()
         self.screen = self.screen.convert()
-        config.update(config.CONFIG_FULLSCREEN, self.is_fullscreen)
+        config.update(config.FULLSCREEN, self.is_fullscreen)
 
     def _setWindowed(self):
         # center window

@@ -3,19 +3,19 @@ import configparser
 import constants
 
 
-CONFIG_MAX_FRAMERATE = 'MaxFramerate'
-CONFIG_FULLSCREEN = 'Fullscreen'
-CONFIG_SCREEN_SCALE = 'ScreenScale'
+MAX_FRAMERATE = 'MaxFramerate'
+FULLSCREEN = 'Fullscreen'
+SCREEN_SCALE = 'ScreenScale'
 _DEFAULTS = {
-    CONFIG_MAX_FRAMERATE: 1000,
-    CONFIG_SCREEN_SCALE: 0,
-    CONFIG_FULLSCREEN: False,
+    MAX_FRAMERATE: 1000,
+    SCREEN_SCALE: 0,
+    FULLSCREEN: False,
 }
 _SECTION = 'Game'
 _TYPES = {
-    CONFIG_MAX_FRAMERATE: 'int',
-    CONFIG_SCREEN_SCALE: 'int',
-    CONFIG_FULLSCREEN: 'bool',
+    MAX_FRAMERATE: 'int',
+    SCREEN_SCALE: 'int',
+    FULLSCREEN: 'bool',
 }
 _config = configparser.ConfigParser(_DEFAULTS, default_section=_SECTION)
 _config.read(constants.CONFIG_FILE)
