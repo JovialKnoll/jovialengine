@@ -18,6 +18,6 @@ for section in config.sections():
     config.remove_section(section)
 
 
-def saveConfig():
+def save():
     with open(constants.CONFIG_FILE, 'w') as file:
         config.write(file, space_around_delimiters=False)

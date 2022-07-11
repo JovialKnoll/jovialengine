@@ -72,7 +72,7 @@ class _Game(object):
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
         if not self.game_running:
-            config.saveConfig()
+            config.save()
         self._is_first_loop = False
         return self.game_running
 
