@@ -14,6 +14,6 @@ class Input(object):
         # make objects to hold onto current virtual gamepad states
         pass
 
-    def mapInput(self, event: pygame.event.Event):
+    def map(self, event: pygame.event.Event):
         # map based on input mapping, update current virtual gamepad states
         return event
