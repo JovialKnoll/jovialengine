@@ -1,6 +1,7 @@
 import sys
 import os
 import math
+from datetime import datetime
 
 import pygame
 
@@ -181,3 +182,12 @@ class Display(object):
                 event_dict['button'] = event.button
             return pygame.event.Event(event.type, event_dict)
         return event
+
+    def takeScreenshot(self):
+        try:
+            os.mkdir(constants.SCREENSHOT_DIRECTORY)
+        except FileExistsError:
+            pass
+        file_name = f"{datetime.utcnow().isoformat().replace(':', '')}.png"
+        file_path = os.path.join(constants.SCREENSHOT_DIRECTORY, file_name)
+        pygame.image.save(self.screen, file_path)
