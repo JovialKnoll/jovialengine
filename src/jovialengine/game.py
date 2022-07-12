@@ -82,7 +82,7 @@ class _Game(object):
         """Take care of input that game modes should not take care of."""
         events = map(self.display.scaleMouseInput, events)
         events = filter(self._stillNeedsHandling, events)
-        events = map(self.input.mapInput, events)
+        events = map(self.input.map, events)
         return list(events)
 
     def _stillNeedsHandling(self, event: pygame.event.Event):
