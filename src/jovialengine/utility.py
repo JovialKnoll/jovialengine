@@ -17,11 +17,11 @@ def reduceNumber(number, divisor):
     return result
 
 
-def sin_curve(number):
+def sinCurve(number):
     return math.sin(number * math.pi / 2)
 
 
-def cos_curve(number):
+def cosCurve(number):
     if number == 1:
         return 0
     return math.cos(number * math.pi / 2)

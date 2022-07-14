@@ -131,8 +131,8 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
         if self.positional_sound:
             if self.sound_channel.get_busy():
                 pos = min(max(self.rect.centerx / constants.SCREEN_SIZE[0], 0), 1)
-                channel_l = self._boundChannelVolume(utility.cos_curve(pos))
-                channel_r = self._boundChannelVolume(utility.sin_curve(pos))
+                channel_l = self._boundChannelVolume(utility.cosCurve(pos))
+                channel_r = self._boundChannelVolume(utility.sinCurve(pos))
                 self.sound_channel.set_volume(channel_l, channel_r)
             else:
                 self.positional_sound = False
