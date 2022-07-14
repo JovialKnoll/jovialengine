@@ -5,7 +5,7 @@ from . import config
 import constants
 
 
-class Action(pygame.event.Event):
+class Action(pygame.event.EventType):
     def __init__(self, event: pygame.event.Event):
         self.__dict__.update(event.__dict__)
 
