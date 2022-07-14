@@ -24,12 +24,13 @@ for section in _config.sections():
 
 
 def get(key: str):
-    key_type = _TYPES.get(key)
-    if key_type == 'int':
-        return _config.getint(_SECTION, key)
-    elif key_type == 'bool':
-        return _config.getboolean(_SECTION, key)
-    return _config.get(_SECTION, key)
+    match _TYPES.get(key):
+        case 'int':
+            return _config.getint(_SECTION, key)
+        case 'bool':
+            return _config.getboolean(_SECTION, key)
+        case _:
+            return _config.get(_SECTION, key)
 
 
 def update(key: str, value):
