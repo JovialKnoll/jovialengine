@@ -7,13 +7,13 @@ import constants
 
 class Action(object):
     __slots__ = (
-        '__dict__',
         'type',
+        '__dict__',
     )
 
     def __init__(self, event: pygame.event.Event):
-        self.__dict__ = event.__dict__
         self.type = event.type
+        self.__dict__ = event.__dict__
 
 
 class Input(object):
