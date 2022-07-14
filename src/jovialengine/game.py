@@ -93,39 +93,41 @@ class _Game(object):
         As an example, game-ending or display-changing events should be handled before all others.
         Also filter out bad mouse events here.
         """
-        if event.type in (pygame.QUIT, pygame.WINDOWFOCUSLOST, pygame.WINDOWMINIMIZED):
-            return self._handlePauseMenu()
-        elif event.type == pygame.WINDOWMOVED and not self._is_first_loop:
-            return self._handlePauseMenu()
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
+        match event.type:
+            case pygame.QUIT | pygame.WINDOWFOCUSLOST | pygame.WINDOWMINIMIZED:
                 return self._handlePauseMenu()
-            elif event.key == pygame.K_F12:
-                self.display.takeScreenshot()
+            case pygame.WINDOWMOVED:
+                if not self._is_first_loop:
+                    return self._handlePauseMenu()
+            case pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return self._handlePauseMenu()
+                elif event.key == pygame.K_F12:
+                    self.display.takeScreenshot()
+                    return False
+            case pygame.MOUSEMOTION | pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
+                if (
+                    event.pos[0] < 0
+                    or event.pos[1] < 0
+                    or event.pos[0] >= constants.SCREEN_SIZE[0]
+                    or event.pos[1] >= constants.SCREEN_SIZE[1]
+                ):
+                    return False
+            case pygame.JOYDEVICEREMOVED:
+                self._joysticks = [
+                    joystick
+                    for joystick
+                    in self._joysticks
+                    if joystick.get_instance_id() != event.instance_id
+                ]
                 return False
-        elif event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN) \
-            and (
-                event.pos[0] < 0
-                or event.pos[1] < 0
-                or event.pos[0] >= constants.SCREEN_SIZE[0]
-                or event.pos[1] >= constants.SCREEN_SIZE[1]
-        ):
-            return False
-        elif event.type == pygame.JOYDEVICEREMOVED:
-            self._joysticks = [
-                joystick
-                for joystick
-                in self._joysticks
-                if joystick.get_instance_id() != event.instance_id
-            ]
-            return False
-        elif event.type == pygame.JOYDEVICEADDED:
-            self._joysticks = [
-                pygame.joystick.Joystick(i)
-                for i
-                in range(pygame.joystick.get_count())
-            ]
-            return False
+            case pygame.JOYDEVICEADDED:
+                self._joysticks = [
+                    pygame.joystick.Joystick(i)
+                    for i
+                    in range(pygame.joystick.get_count())
+                ]
+                return False
         return True
 
     def _handlePauseMenu(self):
