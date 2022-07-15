@@ -75,17 +75,17 @@ class _Game(object):
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
             self.input.clearMouseButtonStatus()
+        self._is_first_loop = False
         if not self.game_running:
             config.save()
-        self._is_first_loop = False
         return self.game_running
 
     def _filterInput(self, events: typing.Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
-        events = map(self.display.scaleMouseInput, events)
-        events = filter(self._stillNeedsHandling, events)
-        actions = map(self.input.map, events)
-        return list(actions)
+        result = map(self.display.scaleMouseInput, events)
+        result = filter(self._stillNeedsHandling, result)
+        result = map(self.input.map, result)
+        return list(result)
 
     def _stillNeedsHandling(self, event: pygame.event.Event):
         """If event should be handled before all others, handle it and return False, otherwise return True.
