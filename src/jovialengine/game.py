@@ -81,10 +81,11 @@ class _Game(object):
 
     def _filterInput(self, events: typing.Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
-        events = map(self.display.scaleMouseInput, events)
-        events = filter(self._stillNeedsHandling, events)
-        events = map(self.input.map, events)
-        return list(events)
+        actions = map(self.display.scaleMouseInput, events)
+        actions = filter(self._stillNeedsHandling, actions)
+        actions = map(self.input.map, actions)
+        actions = filter(self.input.filter, actions)
+        return list(actions)
 
     def _stillNeedsHandling(self, event: pygame.event.Event):
         """If event should be handled before all others, handle it and return False, otherwise return True.

@@ -6,6 +6,7 @@ import constants
 
 
 class Action(object):
+    ACTION_ID_NONE = -1
     __slots__ = (
         'player_id',
         'action_id',
@@ -34,9 +35,15 @@ class Input(object):
 
     def _getAction(self, event: pygame.event.Event):
         # do actual mapping
+        # if mapping results in setting a value in controller state that is already set
+        # for [player_id][action_id] then set action_id = Action.ACTION_ID_NONE
         return Action(0, 0, 0, event)
 
     def map(self, event: pygame.event.Event):
         action = self._getAction(event)
         self.controller_states[action.player_id][action.action_id] = action.action_value
         return action
+
+    @staticmethod
+    def filter(action: Action):
+        return action.action_id != Action.ACTION_ID_NONE
