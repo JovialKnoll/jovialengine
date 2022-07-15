@@ -3,6 +3,8 @@ import typing
 
 import pygame
 
+from .input import Action
+
 import constants
 
 
@@ -10,7 +12,6 @@ class ModeBase(abc.ABC):
     """This is an abstract object for game modes.
     """
     __slots__ = (
-        '__pressed_mouse_buttons',
         '_space',
         '_background',
         '_all_sprites',
@@ -37,22 +38,10 @@ class ModeBase(abc.ABC):
     def cleanup(self):
         self._all_sprites.empty()
 
-    def __trackMouseButton(self, event: pygame.event.Event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            self.__pressed_mouse_buttons[event.button] = event.pos
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button in self.__pressed_mouse_buttons:
-                del self.__pressed_mouse_buttons[event.button]
-
-    def _mouseButtonStatus(self, button: int):
-        if button not in self.__pressed_mouse_buttons:
-            return False
-        return self.__pressed_mouse_buttons[button]
-
     @abc.abstractmethod
-    def _input(self, event: pygame.event.Event):
+    def _input(self, action: Action):
         raise NotImplementedError(
-            type(self).__name__ + "._input(self, event)"
+            type(self).__name__ + "._input(self, action)"
         )
 
     def _postInput(self):
@@ -60,11 +49,10 @@ class ModeBase(abc.ABC):
         pass
 
     @typing.final
-    def inputEvents(self, events: typing.Iterable[pygame.event.Event]):
-        """All game modes can take in events."""
-        for event in events:
-            self._input(event)
-            self.__trackMouseButton(event)
+    def inputActions(self, actions: typing.Iterable[Action]):
+        """All game modes can take in actions."""
+        for action in actions:
+            self._input(action)
         self._postInput()
 
     def _update(self, dt: int):

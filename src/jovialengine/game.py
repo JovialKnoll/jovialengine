@@ -61,8 +61,8 @@ class _Game(object):
         """Run the game, and check if the game needs to end."""
         if not self._current_mode:
             raise RuntimeError("error: no current mode")
-        events = self._filterInput(pygame.event.get())
-        self._current_mode.inputEvents(events)
+        actions = self._filterInput(pygame.event.get())
+        self._current_mode.inputActions(actions)
         for i in range(self._getTime()):
             self._current_mode.update(1)
         self._current_mode.draw(self.display.screen)
@@ -74,6 +74,7 @@ class _Game(object):
                 pygame.mixer.unpause()
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
+            self.input.clearMouseButtonStatus()
         if not self.game_running:
             config.save()
         self._is_first_loop = False
@@ -134,6 +135,7 @@ class _Game(object):
         if isinstance(self._current_mode, ModeGameMenu):
             return True
         self._current_mode = ModeGameMenuTop(self._current_mode)
+        self.input.clearMouseButtonStatus()
         pygame.mixer.music.pause()
         pygame.mixer.pause()
         return False
