@@ -20,6 +20,7 @@ class _Game(object):
     __slots__ = (
         'game_running',
         'display',
+        'input',
         'font_wrap',
         'state',
         'start_mode_cls',
