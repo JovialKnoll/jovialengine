@@ -85,7 +85,6 @@ class _Game(object):
         events = map(self.display.scaleMouseInput, events)
         events = filter(self._stillNeedsHandling, events)
         actions = map(self.input.map, events)
-        actions = filter(self.input.filter, actions)
         return list(actions)
 
     def _stillNeedsHandling(self, event: pygame.event.Event):

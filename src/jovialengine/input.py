@@ -52,10 +52,6 @@ class Input(object):
         self.controller_states[action.player_id][action.action_id] = action.action_value
         return action
 
-    @staticmethod
-    def filter(action: Action):
-        return action.action_id != Action.ACTION_ID_NONE
-
     def mouseButtonStatus(self, button: int):
         if button not in self.__pressed_mouse_buttons:
             return False
