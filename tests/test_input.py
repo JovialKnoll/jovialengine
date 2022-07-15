@@ -14,7 +14,7 @@ class TestInput(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, event_dict)
         # Act
-        action = input.Action(event)
+        action = input.Action(0, 0, 1, event)
         # Assert
         self.assertEqual(action.pos, event.pos)
         self.assertEqual(action.button, event.button)
