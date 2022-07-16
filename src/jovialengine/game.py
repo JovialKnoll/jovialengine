@@ -12,7 +12,6 @@ from .modegamemenu import ModeGameMenu
 from .modegamemenu import ModeGameMenuTop
 from . import config
 
-import constants
 import state
 
 

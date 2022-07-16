@@ -34,8 +34,7 @@ class Display(object):
                  screenshot_directory: str,
                  screen_size: typing.Tuple[int, int],
                  title: str,
-                 window_icon: str | None
-                 ):
+                 window_icon: str | None):
         self._screenshot_directory = screenshot_directory
         self._screen_size = screen_size
         self._title = title
