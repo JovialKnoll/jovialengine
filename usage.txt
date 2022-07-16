@@ -2,8 +2,6 @@ This package expects the following local modules to exist in your project:
 * constants
   - SCREEN_SIZE
     a tuple (width, height)
-  - WINDOW_ICON
-    a file location to use as the window icon
   - FONT
     a file location to use as your main font
   - FONT_SIZE

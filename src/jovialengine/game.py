@@ -23,15 +23,16 @@ class _Game(object):
         'display',
         'font_wrap',
         'state',
-        '_current_mode',
         '_is_first_loop',
         '_max_framerate',
         '_clock',
         '_joysticks',
+        '_current_mode',
     )
 
     def __init__(self):
         self.game_running = False
+        self.start_mode_cls: typing.Type[ModeBase]
         self.display: Display
         self.font_wrap: FontWrap
         if constants.FONT:
@@ -40,8 +41,6 @@ class _Game(object):
             font = pygame.font.SysFont(None, constants.FONT_SIZE)
         self.font_wrap = FontWrap(font, constants.FONT_HEIGHT, constants.FONT_ANTIALIAS)
         self.state = state.State()
-        self.start_mode_cls: typing.Type[ModeBase]
-        self._current_mode: ModeBase
         self._is_first_loop = True
         self._max_framerate = config.get(config.MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
@@ -50,6 +49,7 @@ class _Game(object):
             for i
             in range(pygame.joystick.get_count())
         ]
+        self._current_mode: ModeBase
 
     def load(self,
              start_mode_cls: typing.Type[ModeBase],
