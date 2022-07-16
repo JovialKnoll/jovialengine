@@ -1,3 +1,4 @@
+import typing
 import sys
 import os
 import math
@@ -6,11 +7,13 @@ from datetime import datetime
 import pygame
 
 from . import config
+from .modebase import ModeBase
 
 
 class Display(object):
     __slots__ = (
         '_screenshot_directory',
+        'screen_size',
         '_title',
         '_window_icon',
         '_monitor_res',
@@ -28,10 +31,12 @@ class Display(object):
 
     def __init__(self,
                  screenshot_directory: str,
+                 screen_size: typing.Tuple[int, int],
                  title: str,
                  window_icon: str | None
                  ):
         self._screenshot_directory = screenshot_directory
+        self.screen_size = screen_size
         self._title = title
         self._window_icon = None
         if window_icon:
@@ -43,7 +48,7 @@ class Display(object):
             self.upscale = math.ceil(self._upscale_max / 2)
         self.upscale = max(min(self.upscale, self._upscale_max), 0)
         self._scaleDisp()
-        self.screen: pygame.Surface = pygame.Surface(constants.SCREEN_SIZE)
+        self.screen: pygame.Surface = pygame.Surface(self.screen_size)
         self._fullscreen_offset = None
         self._full_screen = None
         if self.is_fullscreen:
@@ -63,12 +68,12 @@ class Display(object):
             display_info.current_h,
         )
         self._upscale_max = min(
-            self._monitor_res[0] // constants.SCREEN_SIZE[0],
-            self._monitor_res[1] // constants.SCREEN_SIZE[1]
+            self._monitor_res[0] // self.screen_size[0],
+            self._monitor_res[1] // self.screen_size[1]
         )
         max_disp_res = (
-            constants.SCREEN_SIZE[0] * self._upscale_max,
-            constants.SCREEN_SIZE[1] * self._upscale_max,
+            self.screen_size[0] * self._upscale_max,
+            self.screen_size[1] * self._upscale_max,
         )
         self._windowed_flags = 0
         if pygame.display.mode_ok(max_disp_res, pygame.DOUBLEBUF):
@@ -110,8 +115,8 @@ class Display(object):
 
     def _scaleDisp(self):
         self._disp_res = (
-            constants.SCREEN_SIZE[0] * self.upscale,
-            constants.SCREEN_SIZE[1] * self.upscale,
+            self.screen_size[0] * self.upscale,
+            self.screen_size[1] * self.upscale,
         )
 
     def toggleFullscreen(self):
@@ -188,6 +193,27 @@ class Display(object):
                 event_dict['button'] = event.button
             return pygame.event.Event(event.type, event_dict)
         return event
+
+    def isInScreen(self, pos: typing.Sequence[int, int]):
+        return (
+            pos[0] < 0
+            or pos[1] < 0
+            or pos[0] >= self.screen_size[0]
+            or pos[1] >= self.screen_size[1]
+        )
+
+    def getBlurredScreen(self, mode: ModeBase):
+        screen = pygame.Surface(self.screen_size).convert()
+        mode.draw(screen)
+        screen = pygame.transform.smoothscale(
+            screen,
+            (self.screen_size[0] * 4 // 5, self.screen_size[1] * 4 // 5)
+        )
+        screen = pygame.transform.smoothscale(
+            screen,
+            self.screen_size
+        )
+        return screen
 
     def takeScreenshot(self):
         try:

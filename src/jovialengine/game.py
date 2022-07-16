@@ -1,5 +1,5 @@
-import os
 import typing
+import os
 import functools
 
 import pygame
@@ -115,13 +115,7 @@ class _Game(object):
                     self.display.takeScreenshot()
                     return False
             case pygame.MOUSEMOTION | pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
-                if (
-                    event.pos[0] < 0
-                    or event.pos[1] < 0
-                    or event.pos[0] >= constants.SCREEN_SIZE[0]
-                    or event.pos[1] >= constants.SCREEN_SIZE[1]
-                ):
-                    return False
+                return not self.display.isInScreen(event.pos)
             case pygame.JOYDEVICEREMOVED:
                 self._joysticks = [
                     joystick

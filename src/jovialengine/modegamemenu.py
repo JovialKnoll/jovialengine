@@ -7,7 +7,6 @@ from .modebase import ModeBase
 from .save import Save
 from .saveable import Saveable
 
-import constants
 import state
 
 
@@ -33,16 +32,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
         self._menu_surface = None
 
     def _getOldScreen(self):
-        old_screen = pygame.Surface(constants.SCREEN_SIZE).convert()
-        self._previous_mode.draw(old_screen)
-        old_screen = pygame.transform.smoothscale(
-            pygame.transform.smoothscale(
-                old_screen,
-                (constants.SCREEN_SIZE[0] * 4 // 5, constants.SCREEN_SIZE[1] * 4 // 5)
-            ),
-            constants.SCREEN_SIZE
-        )
-        return old_screen
+        return game.getGame().display.getBlurredScreen(self._previous_mode)
 
     def _drawTextAlways(self, disp_text: str):
         self._last_disp_text = disp_text
