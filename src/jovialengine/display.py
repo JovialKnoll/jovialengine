@@ -194,7 +194,7 @@ class Display(object):
             return pygame.event.Event(event.type, event_dict)
         return event
 
-    def isInScreen(self, pos: typing.Sequence[int, int]):
+    def isInScreen(self, pos: typing.Tuple[int, int]):
         return (
             pos[0] < 0
             or pos[1] < 0
