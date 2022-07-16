@@ -35,11 +35,6 @@ class _Game(object):
         self.start_mode_cls: typing.Type[ModeBase]
         self.display: Display
         self.font_wrap: FontWrap
-        if constants.FONT:
-            font = pygame.font.Font(constants.FONT, constants.FONT_SIZE)
-        else:
-            font = pygame.font.SysFont(None, constants.FONT_SIZE)
-        self.font_wrap = FontWrap(font, constants.FONT_HEIGHT, constants.FONT_ANTIALIAS)
         self.state = state.State()
         self._is_first_loop = True
         self._max_framerate = config.get(config.MAX_FRAMERATE)
@@ -56,7 +51,11 @@ class _Game(object):
              src_directory: str,
              screen_size: typing.Tuple[int, int],
              title: str,
-             window_icon: str | None
+             window_icon: str | None,
+             font_location: str | None,
+             font_size: int,
+             font_height: int,
+             font_antialias: bool
              ):
         self.start_mode_cls = start_mode_cls
         config.init(
@@ -71,6 +70,11 @@ class _Game(object):
             title,
             window_icon
         )
+        if font_location:
+            font = pygame.font.Font(font_location, font_size)
+        else:
+            font = pygame.font.SysFont(None, font_size)
+        self.font_wrap = FontWrap(font, font_height, font_antialias)
         self._current_mode = self.start_mode_cls()
         self.game_running = True
 
