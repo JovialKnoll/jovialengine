@@ -54,6 +54,7 @@ class _Game(object):
     def load(self,
              start_mode_cls: typing.Type[ModeBase],
              src_directory: str,
+             screen_size: typing.Tuple[int, int],
              title: str,
              window_icon: str | None
              ):
@@ -63,6 +64,7 @@ class _Game(object):
         )
         self.display = Display(
             os.path.join(src_directory, 'screenshots'),
+            screen_size,
             title,
             window_icon
         )
