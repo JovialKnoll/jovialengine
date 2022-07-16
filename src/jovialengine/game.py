@@ -11,6 +11,7 @@ from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
 from .modegamemenu import ModeGameMenuTop
 from . import config
+from . import save
 
 import state
 
@@ -60,6 +61,9 @@ class _Game(object):
         self.start_mode_cls = start_mode_cls
         config.init(
             os.path.join(src_directory, 'config.ini')
+        )
+        save.init(
+            os.path.join(src_directory, 'saves')
         )
         self.display = Display(
             os.path.join(src_directory, 'screenshots'),

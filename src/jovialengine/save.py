@@ -8,7 +8,6 @@ import pygame.math
 from . import game
 from .saveable import Saveable
 
-import constants
 import state
 import mode
 
@@ -23,6 +22,13 @@ _KEY_MAXLEN = 'MAXLEN'
 _KEY_MODULE = 'MODULE'
 _KEY_CLASS = 'CLASS'
 _KEY_SAVEABLE = 'SAVEABLE'
+_SAVE_EXT = '.sav'
+_save_directory: str
+
+
+def init(save_directory: str):
+    global _save_directory
+    _save_directory = save_directory
 
 
 class _SaveableJSONEncoder(json.JSONEncoder):
@@ -87,9 +93,6 @@ def _decodeSaveable(dct: dict):
     return dct
 
 
-_SAVE_EXT = '.sav'
-
-
 class Save(object):
     __slots__ = (
         'save_name',
@@ -112,12 +115,12 @@ class Save(object):
 
     @staticmethod
     def _getSaveFiles():
-        if not os.path.isdir(constants.SAVE_DIRECTORY):
+        if not os.path.isdir(_save_directory):
             return ()
         return (
             file_name
             for file_name
-            in os.listdir(constants.SAVE_DIRECTORY)
+            in os.listdir(_save_directory)
             if os.path.isfile(
                 Save._getFilePathFromFileName(file_name)
             )
@@ -126,7 +129,7 @@ class Save(object):
 
     @staticmethod
     def _getFilePathFromFileName(file_name):
-        return os.path.join(constants.SAVE_DIRECTORY, file_name)
+        return os.path.join(_save_directory, file_name)
 
     def _getFilePath(self):
         return self._getFilePathFromFileName(self.save_name + _SAVE_EXT)
@@ -173,7 +176,7 @@ class Save(object):
 
     def save(self):
         try:
-            os.mkdir(constants.SAVE_DIRECTORY)
+            os.mkdir(_save_directory)
         except FileExistsError:
             pass
         save_object = {
