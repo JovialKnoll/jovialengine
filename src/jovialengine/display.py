@@ -7,11 +7,11 @@ import pygame
 
 from . import config
 
-import constants
-
 
 class Display(object):
     __slots__ = (
+        '_screenshot_directory',
+        '_title',
         '_window_icon',
         '_monitor_res',
         '_upscale_max',
@@ -26,10 +26,16 @@ class Display(object):
         '_disp_screen',
     )
 
-    def __init__(self):
+    def __init__(self,
+                 screenshot_directory: str,
+                 title: str,
+                 window_icon: str | None
+                 ):
+        self._screenshot_directory = screenshot_directory
+        self._title = title
         self._window_icon = None
-        if constants.WINDOW_ICON:
-            self._window_icon = pygame.image.load(constants.WINDOW_ICON)
+        if window_icon:
+            self._window_icon = pygame.image.load(window_icon)
         self._setupDisplay()
         self.is_fullscreen = config.get(config.FULLSCREEN)
         self.upscale = config.get(config.SCREEN_SCALE)
@@ -48,7 +54,7 @@ class Display(object):
         config.update(config.SCREEN_SCALE, self.upscale)
 
     def _setupDisplay(self):
-        pygame.display.set_caption(constants.TITLE)
+        pygame.display.set_caption(self._title)
         if self._window_icon:
             pygame.display.set_icon(self._window_icon)
         display_info = pygame.display.Info()
@@ -185,9 +191,9 @@ class Display(object):
 
     def takeScreenshot(self):
         try:
-            os.mkdir(constants.SCREENSHOT_DIRECTORY)
+            os.mkdir(self._screenshot_directory)
         except FileExistsError:
             pass
         file_name = f"{datetime.utcnow().isoformat().replace(':', '')}.png"
-        file_path = os.path.join(constants.SCREENSHOT_DIRECTORY, file_name)
+        file_path = os.path.join(self._screenshot_directory, file_name)
         pygame.image.save(self.screen, file_path)

@@ -1,3 +1,4 @@
+import os
 import typing
 import functools
 
@@ -18,10 +19,10 @@ import state
 class _Game(object):
     __slots__ = (
         'game_running',
+        'start_mode_cls',
         'display',
         'font_wrap',
         'state',
-        'start_mode_cls',
         '_current_mode',
         '_is_first_loop',
         '_max_framerate',
@@ -31,7 +32,8 @@ class _Game(object):
 
     def __init__(self):
         self.game_running = False
-        self.display = Display()
+        self.display: Display
+        self.font_wrap: FontWrap
         if constants.FONT:
             font = pygame.font.Font(constants.FONT, constants.FONT_SIZE)
         else:
@@ -49,10 +51,23 @@ class _Game(object):
             in range(pygame.joystick.get_count())
         ]
 
-    def load(self, start_mode_cls: typing.Type[ModeBase]):
-        self.game_running = True
+    def load(self,
+             start_mode_cls: typing.Type[ModeBase],
+             src_directory: str,
+             title: str,
+             window_icon: str | None
+             ):
         self.start_mode_cls = start_mode_cls
+        config.init(
+            os.path.join(src_directory, 'config.ini')
+        )
+        self.display = Display(
+            os.path.join(src_directory, 'screenshots'),
+            title,
+            window_icon
+        )
         self._current_mode = self.start_mode_cls()
+        self.game_running = True
 
     def run(self):
         """Run the game, and check if the game needs to end."""
