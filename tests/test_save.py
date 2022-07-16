@@ -1,9 +1,16 @@
 import unittest
+import os
 
 import jovialengine.save as save
 
 
 class TestSave(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        save.init(
+            os.path.join('.', 'saves')
+        )
+
     def test0_getAllFromFiles(self):
         # Act
         saves = save.Save.getAllFromFiles()
