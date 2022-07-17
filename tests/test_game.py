@@ -11,7 +11,7 @@ class DisplayForTest(display.Display):
         self.is_fullscreen = False
         self._fullscreen_offset = None
         self.upscale = 3
-        self.screen_size = (320, 240)
+        self._screen_size = (320, 240)
 
 
 class GameForTest(game._Game):
