@@ -7,9 +7,6 @@ from .modebase import ModeBase
 from .save import Save
 from .saveable import Saveable
 
-import constants
-import state
-
 
 class ModeGameMenu(ModeBase, abc.ABC):
     _MENU_CHAR_WIDTH = 26
@@ -23,7 +20,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
     )
 
     def __init__(self, previous_mode: ModeBase, old_screen=None):
-        super().__init__()
+        self._init(game.getGame().display.screen_size)
         self._MENU_WIDTH = game.getGame().font_wrap.font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
         self._previous_mode = previous_mode
         if old_screen is None:
@@ -33,16 +30,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
         self._menu_surface = None
 
     def _getOldScreen(self):
-        old_screen = pygame.Surface(constants.SCREEN_SIZE).convert()
-        self._previous_mode.draw(old_screen)
-        old_screen = pygame.transform.smoothscale(
-            pygame.transform.smoothscale(
-                old_screen,
-                (constants.SCREEN_SIZE[0] * 4 // 5, constants.SCREEN_SIZE[1] * 4 // 5)
-            ),
-            constants.SCREEN_SIZE
-        )
-        return old_screen
+        return game.getGame().display.getBlurredScreen(self._previous_mode)
 
     def _drawTextAlways(self, disp_text: str):
         self._last_disp_text = disp_text
@@ -74,7 +62,7 @@ class ModeGameMenuTop(ModeGameMenu):
                 self.next_mode = ModeGameMenuOptions(self._previous_mode, self._background)
             elif action.key == pygame.K_4:
                 self._stopMixer()
-                game.getGame().state = state.State()
+                game.getGame().state = game.getGame().state_cls()
                 self._previous_mode = game.getGame().start_mode_cls()
                 pygame.mixer.music.pause()
                 pygame.mixer.pause()

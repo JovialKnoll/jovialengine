@@ -5,8 +5,6 @@ import pygame
 
 from .input import Action
 
-import constants
-
 
 class ModeBase(abc.ABC):
     """This is an abstract object for game modes.
@@ -20,8 +18,10 @@ class ModeBase(abc.ABC):
     )
 
     def __init__(self):
-        """If you want a mode's space to not share dimension with the screen size, call out to init yourself."""
-        self._init(constants.SCREEN_SIZE)
+        """Implementation must contain a call to _init passing in the space size before all else."""
+        raise NotImplementedError(
+            type(self).__name__ + ".__init__(self)"
+        )
 
     def _init(self, space_size: tuple[int, int]):
         self.__pressed_mouse_buttons = dict()
@@ -29,11 +29,11 @@ class ModeBase(abc.ABC):
         self._background = pygame.Surface(space_size).convert()
         self._background.fill((255, 255, 255))
         self._all_sprites = pygame.sprite.LayeredDirty()
-        self._camera = pygame.rect.Rect((0, 0), constants.SCREEN_SIZE)
+        self._camera = pygame.rect.Rect((0, 0), space_size)
         """All game modes must set the next mode when they are done.
         Don't create another mode unless you are immediately assigning it to self.next_mode
         """
-        self.next_mode = None
+        self.next_mode: ModeBase | None = None
 
     def cleanup(self):
         self._all_sprites.empty()

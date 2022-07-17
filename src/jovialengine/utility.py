@@ -17,11 +17,11 @@ def reduceNumber(number, divisor):
     return result
 
 
-def sinCurve(number):
+def sinCurve(number: float | int):
     return math.sin(number * math.pi / 2)
 
 
-def cosCurve(number):
+def cosCurve(number: float | int):
     if number == 1:
         return 0
     return math.cos(number * math.pi / 2)
