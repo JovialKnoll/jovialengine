@@ -10,6 +10,7 @@ class DisplayForTestFullscreen(display.Display):
         self.is_fullscreen = True
         self._fullscreen_offset = [50, 100]
         self.upscale = 2
+        self.screen_size = (320, 240)
 
 
 class DisplayForTestWindowed(display.Display):
@@ -17,6 +18,7 @@ class DisplayForTestWindowed(display.Display):
         self.is_fullscreen = False
         self._fullscreen_offset = None
         self.upscale = 3
+        self.screen_size = (320, 240)
 
 
 class TestDisplay(unittest.TestCase):
