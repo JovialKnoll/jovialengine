@@ -61,6 +61,21 @@ class _Game(object):
              font_height: int,
              font_antialias: bool
              ):
+        """Loads up the game and makes prepares for running.
+        This must be called once before calling run().
+        Arguments:
+        mode_module - the module holding all modes for your game
+        start_mode_cls - the class for the first mode
+        state_cls - the class for holding general game state
+        src_directory - directory of the program
+        screen_size - size of the virtual screen
+        title - title of the game (for titlebar)
+        window_icon - location of icon of the game (for titlebar)
+        font_location - location of default font for the game
+        font_size - default font size
+        font_height - default font height
+        font_antialias - default font antialias
+        """
         self.start_mode_cls = start_mode_cls
         self.state_cls = state_cls
         config.init(
@@ -88,7 +103,7 @@ class _Game(object):
     def run(self):
         """Run the game, and check if the game needs to end."""
         if not self._current_mode:
-            raise RuntimeError("error: no current mode")
+            raise RuntimeError("error: self._current_mode is not set")
         events = self._filterInput(pygame.event.get())
         self._current_mode.inputEvents(events)
         for i in range(self._getTime()):
