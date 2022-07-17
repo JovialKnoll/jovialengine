@@ -3,7 +3,7 @@ from collections import deque
 
 import pygame
 
-from . import game
+from . import display
 from .saveable import Saveable
 from . import utility
 
@@ -129,7 +129,7 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
             self.time = 0
         if self.positional_sound:
             if self.sound_channel.get_busy():
-                channel_l, channel_r = game.getGame().display.getPositionalChannelMix(self.rect.centerx)
+                channel_l, channel_r = display.getPositionalChannelMix(self.rect.centerx)
                 self.sound_channel.set_volume(channel_l, channel_r)
             else:
                 self.positional_sound = False
