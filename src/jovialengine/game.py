@@ -44,7 +44,6 @@ class _Game(object):
         font_height: int,
         font_antialias: bool
     ):
-        self.game_running = True
         self.start_mode_cls = start_mode_cls
         self.state_cls = state_cls
         config.init(
