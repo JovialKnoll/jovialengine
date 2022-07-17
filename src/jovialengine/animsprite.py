@@ -3,10 +3,9 @@ from collections import deque
 
 import pygame
 
+from . import game
 from .saveable import Saveable
 from . import utility
-
-import constants
 
 
 class Anim(Saveable):
@@ -130,17 +129,11 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
             self.time = 0
         if self.positional_sound:
             if self.sound_channel.get_busy():
-                pos = min(max(self.rect.centerx / constants.SCREEN_SIZE[0], 0), 1)
-                channel_l = self._boundChannelVolume(utility.cosCurve(pos))
-                channel_r = self._boundChannelVolume(utility.sinCurve(pos))
+                channel_l, channel_r = game.getGame().display.getPositionalChannelMix(self.rect.centerx)
                 self.sound_channel.set_volume(channel_l, channel_r)
             else:
                 self.positional_sound = False
                 self.sound_channel = None
-
-    @staticmethod
-    def _boundChannelVolume(volume):
-        return .2 + (volume * .8)
 
     def addPosAbs(self, func: str, time: int, x_or_pair, y=None,
                   sound: pygame.mixer.Sound = None, positional_sound: bool = False,

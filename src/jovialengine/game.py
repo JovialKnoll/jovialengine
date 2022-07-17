@@ -1,5 +1,7 @@
 import typing
+import os
 import functools
+from types import ModuleType
 
 import pygame
 pygame.init()
@@ -9,37 +11,32 @@ from .fontwrap import FontWrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
 from .modegamemenu import ModeGameMenuTop
+from .saveable import Saveable
 from . import config
-
-import constants
-import state
+from . import save
 
 
 class _Game(object):
     __slots__ = (
         'game_running',
+        'start_mode_cls',
+        'state_cls',
         'display',
         'font_wrap',
         'state',
-        'start_mode_cls',
-        '_current_mode',
         '_is_first_loop',
         '_max_framerate',
         '_clock',
         '_joysticks',
+        '_current_mode',
     )
 
     def __init__(self):
         self.game_running = False
-        self.display = Display()
-        if constants.FONT:
-            font = pygame.font.Font(constants.FONT, constants.FONT_SIZE)
-        else:
-            font = pygame.font.SysFont(None, constants.FONT_SIZE)
-        self.font_wrap = FontWrap(font, constants.FONT_HEIGHT, constants.FONT_ANTIALIAS)
-        self.state = state.State()
         self.start_mode_cls: typing.Type[ModeBase]
-        self._current_mode: ModeBase
+        self.state_cls: typing.Type[Saveable]
+        self.display: Display
+        self.font_wrap: FontWrap
         self._is_first_loop = True
         self._max_framerate = config.get(config.MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
@@ -48,16 +45,65 @@ class _Game(object):
             for i
             in range(pygame.joystick.get_count())
         ]
+        self._current_mode: ModeBase
+        self.state: Saveable
 
-    def load(self, start_mode_cls: typing.Type[ModeBase]):
-        self.game_running = True
+    def load(self,
+             mode_module: ModuleType,
+             start_mode_cls: typing.Type[ModeBase],
+             state_cls: typing.Type[Saveable],
+             src_directory: str,
+             screen_size: typing.Tuple[int, int],
+             title: str,
+             window_icon: str | None,
+             font_location: str | None,
+             font_size: int,
+             font_height: int,
+             font_antialias: bool
+             ):
+        """Loads up the game and makes prepares for running.
+        This must be called once before calling run().
+        Arguments:
+        mode_module - the module holding all modes for your game
+        start_mode_cls - the class for the first mode
+        state_cls - the class for holding general game state
+        src_directory - directory of the program
+        screen_size - size of the virtual screen
+        title - title of the game (for titlebar)
+        window_icon - location of icon of the game (for titlebar)
+        font_location - location of default font for the game
+        font_size - default font size
+        font_height - default font height
+        font_antialias - default font antialias
+        """
         self.start_mode_cls = start_mode_cls
+        self.state_cls = state_cls
+        config.init(
+            os.path.join(src_directory, 'config.ini')
+        )
+        save.init(
+            mode_module,
+            os.path.join(src_directory, 'saves')
+        )
+        self.display = Display(
+            os.path.join(src_directory, 'screenshots'),
+            screen_size,
+            title,
+            window_icon
+        )
+        if font_location:
+            font = pygame.font.Font(font_location, font_size)
+        else:
+            font = pygame.font.SysFont(None, font_size)
+        self.font_wrap = FontWrap(font, font_height, font_antialias)
         self._current_mode = self.start_mode_cls()
+        self.state = self.state_cls()
+        self.game_running = True
 
     def run(self):
         """Run the game, and check if the game needs to end."""
         if not self._current_mode:
-            raise RuntimeError("error: no current mode")
+            raise RuntimeError("error: self._current_mode is not set")
         events = self._filterInput(pygame.event.get())
         self._current_mode.inputEvents(events)
         for i in range(self._getTime()):
@@ -100,13 +146,7 @@ class _Game(object):
                     self.display.takeScreenshot()
                     return False
             case pygame.MOUSEMOTION | pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
-                if (
-                    event.pos[0] < 0
-                    or event.pos[1] < 0
-                    or event.pos[0] >= constants.SCREEN_SIZE[0]
-                    or event.pos[1] >= constants.SCREEN_SIZE[1]
-                ):
-                    return False
+                return self.display.isInScreen(event.pos)
             case pygame.JOYDEVICEREMOVED:
                 self._joysticks = [
                     joystick
