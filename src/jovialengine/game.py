@@ -1,6 +1,5 @@
 import typing
 import os
-import functools
 from types import ModuleType
 
 import pygame
