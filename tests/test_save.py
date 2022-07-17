@@ -3,11 +3,14 @@ import os
 
 import jovialengine.save as save
 
+import mode
+
 
 class TestSave(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         save.init(
+            mode,
             os.path.join('.', 'saves')
         )
 
