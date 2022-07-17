@@ -18,64 +18,34 @@ from . import save
 
 class _Game(object):
     __slots__ = (
-        'game_running',
         'start_mode_cls',
         'state_cls',
         'display',
         'font_wrap',
-        'state',
-        '_is_first_loop',
-        '_max_framerate',
         '_clock',
+        '_max_framerate',
         '_joysticks',
+        '_is_first_loop',
         '_current_mode',
+        'state',
+        'game_running',
     )
 
-    def __init__(self):
-        self.game_running = False
-        self.start_mode_cls: typing.Type[ModeBase]
-        self.state_cls: typing.Type[Saveable]
-        self.display: Display
-        self.font_wrap: FontWrap
-        self._is_first_loop = True
-        self._max_framerate = config.get(config.MAX_FRAMERATE)
-        self._clock = pygame.time.Clock()
-        self._joysticks = [
-            pygame.joystick.Joystick(i)
-            for i
-            in range(pygame.joystick.get_count())
-        ]
-        self._current_mode: ModeBase
-        self.state: Saveable
-
-    def load(self,
-             mode_module: ModuleType,
-             start_mode_cls: typing.Type[ModeBase],
-             state_cls: typing.Type[Saveable],
-             src_directory: str,
-             screen_size: typing.Tuple[int, int],
-             title: str,
-             window_icon: str | None,
-             font_location: str | None,
-             font_size: int,
-             font_height: int,
-             font_antialias: bool
-             ):
-        """Loads up the game and makes prepares for running.
-        This must be called once before calling run().
-        Arguments:
-        mode_module - the module holding all modes for your game
-        start_mode_cls - the class for the first mode
-        state_cls - the class for holding general game state
-        src_directory - directory of the program
-        screen_size - size of the virtual screen
-        title - title of the game (for titlebar)
-        window_icon - location of icon of the game (for titlebar)
-        font_location - location of default font for the game
-        font_size - default font size
-        font_height - default font height
-        font_antialias - default font antialias
-        """
+    def __init__(
+        self,
+        mode_module: ModuleType,
+        start_mode_cls: typing.Type[ModeBase],
+        state_cls: typing.Type[Saveable],
+        src_directory: str,
+        screen_size: typing.Tuple[int, int],
+        title: str,
+        window_icon: str | None,
+        font_location: str | None,
+        font_size: int,
+        font_height: int,
+        font_antialias: bool
+    ):
+        self.game_running = True
         self.start_mode_cls = start_mode_cls
         self.state_cls = state_cls
         config.init(
@@ -96,6 +66,14 @@ class _Game(object):
         else:
             font = pygame.font.SysFont(None, font_size)
         self.font_wrap = FontWrap(font, font_height, font_antialias)
+        self._clock = pygame.time.Clock()
+        self._max_framerate = config.get(config.MAX_FRAMERATE)
+        self._joysticks = [
+            pygame.joystick.Joystick(i)
+            for i
+            in range(pygame.joystick.get_count())
+        ]
+        self._is_first_loop = True
         self._current_mode = self.start_mode_cls()
         self.state = self.state_cls()
         self.game_running = True
@@ -177,6 +155,51 @@ class _Game(object):
         return self._clock.tick(self._max_framerate)
 
 
-@functools.cache
+_game: _Game
+
+
+def initGame(
+    mode_module: ModuleType,
+    start_mode_cls: typing.Type[ModeBase],
+    state_cls: typing.Type[Saveable],
+    src_directory: str,
+    screen_size: typing.Tuple[int, int],
+    title: str,
+    window_icon: str | None,
+    font_location: str | None,
+    font_size: int,
+    font_height: int,
+    font_antialias: bool
+):
+    """Loads up the game and prepares it for running.
+    Arguments:
+    mode_module - the module holding all modes for your game
+    start_mode_cls - the class for the first mode
+    state_cls - the class for holding general game state
+    src_directory - directory of the program
+    screen_size - size of the virtual screen
+    title - title of the game (for titlebar)
+    window_icon - location of icon of the game (for titlebar)
+    font_location - location of default font for the game
+    font_size - default font size
+    font_height - default font height
+    font_antialias - default font antialias
+    """
+    global _game
+    _game = _Game(
+        mode_module,
+        start_mode_cls,
+        state_cls,
+        src_directory,
+        screen_size,
+        title,
+        window_icon,
+        font_location,
+        font_size,
+        font_height,
+        font_antialias
+    )
+
+
 def getGame():
-    return _Game()
+    return _game
