@@ -1,9 +1,5 @@
 import pygame
 
-from . import config
-
-import constants
-
 
 class Action(object):
     ACTION_ID_NONE = -1
