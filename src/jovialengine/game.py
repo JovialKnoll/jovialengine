@@ -155,7 +155,7 @@ class _Game(object):
         return self._clock.tick(self._max_framerate)
 
 
-_game: _Game
+_game: _Game | None = None
 
 
 def initGame(
@@ -186,6 +186,8 @@ def initGame(
     font_antialias - default font antialias
     """
     global _game
+    if _game:
+        raise RuntimeError("error: _game is already set")
     _game = _Game(
         mode_module,
         start_mode_cls,
@@ -199,6 +201,7 @@ def initGame(
         font_height,
         font_antialias
     )
+    return _game
 
 
 def getGame():
