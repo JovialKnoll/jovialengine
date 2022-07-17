@@ -16,7 +16,7 @@ class DisplayForTest(display.Display):
 
 class GameForTest(game._Game):
     def __init__(self):
-        self.game_running = False
+        self.running = False
         self._is_first_loop = False
         self._joysticks = []
         self.display = DisplayForTest()
