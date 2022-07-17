@@ -6,9 +6,6 @@ import jovialengine.display as display
 
 
 class TestDisplay(unittest.TestCase):
-    displayForTestFullscreen: display.Display = None
-    displayForTestWindowed: display.Display = None
-
     @classmethod
     def setUpClass(cls):
         display.upscale = 3
