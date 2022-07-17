@@ -50,7 +50,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
 class ModeGameMenuTop(ModeGameMenu):
     def _input(self, event):
         if event.type == pygame.QUIT:
-            game.getGame().game_running = False
+            game.getGame().running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.next_mode = self._previous_mode
@@ -69,7 +69,7 @@ class ModeGameMenuTop(ModeGameMenu):
                 self._background = self._getOldScreen()
                 self._last_disp_text = None
             elif event.key == pygame.K_5:
-                game.getGame().game_running = False
+                game.getGame().running = False
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT

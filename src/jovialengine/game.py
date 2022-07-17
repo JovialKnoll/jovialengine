@@ -27,7 +27,7 @@ class _Game(object):
         '_is_first_loop',
         '_current_mode',
         'state',
-        'game_running',
+        'running',
     )
 
     def __init__(
@@ -74,13 +74,13 @@ class _Game(object):
         self._is_first_loop = True
         self._current_mode: ModeBase | None = None
         self.state: Saveable | None = None
-        self.game_running = False
+        self.running = False
 
     def start(self):
         """Start the game, must be called before run()."""
         self._current_mode = self.start_mode_cls()
         self.state = self.state_cls()
-        self.game_running = True
+        self.running = True
 
     def run(self):
         """Run the game, and check if the game needs to end."""
@@ -99,10 +99,10 @@ class _Game(object):
                 pygame.mixer.unpause()
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
-        if not self.game_running:
+        if not self.running:
             config.save()
         self._is_first_loop = False
-        return self.game_running
+        return self.running
 
     def _filterInput(self, events: typing.Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
