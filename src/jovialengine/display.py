@@ -196,10 +196,10 @@ class Display(object):
 
     def isInScreen(self, pos: typing.Tuple[int, int]):
         return (
-            pos[0] < 0
-            or pos[1] < 0
-            or pos[0] >= self.screen_size[0]
-            or pos[1] >= self.screen_size[1]
+            pos[0] >= 0
+            or pos[1] >= 0
+            or pos[0] < self.screen_size[0]
+            or pos[1] < self.screen_size[1]
         )
 
     def getBlurredScreen(self, mode: ModeBase):

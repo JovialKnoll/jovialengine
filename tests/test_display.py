@@ -102,7 +102,7 @@ class TestDisplay(unittest.TestCase):
         # Act
         result = self.displayForTestWindowed.getPositionalChannelMix(90)
         # Assert
-        self.assertEqual(result, 0.3)
+        self.assertEqual(result, (0.9231914344987546, 0.5420440747442257))
 
 
 if __name__ == '__main__':

@@ -146,7 +146,7 @@ class _Game(object):
                     self.display.takeScreenshot()
                     return False
             case pygame.MOUSEMOTION | pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
-                return not self.display.isInScreen(event.pos)
+                return self.display.isInScreen(event.pos)
             case pygame.JOYDEVICEREMOVED:
                 self._joysticks = [
                     joystick
