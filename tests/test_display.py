@@ -48,7 +48,7 @@ class TestDisplay(unittest.TestCase):
         event_dict = {
             'pos': (400, 800),
             'rel': (100, 200),
-            'buttons': (1),
+            'buttons': (1,),
         }
         event = pygame.event.Event(pygame.MOUSEMOTION, event_dict)
         # Act
@@ -56,7 +56,7 @@ class TestDisplay(unittest.TestCase):
         # Assert
         self.assertEqual(result_event.pos, (175, 350))
         self.assertEqual(result_event.rel, (50, 100))
-        self.assertEqual(result_event.buttons, (1))
+        self.assertEqual(result_event.buttons, (1,))
 
     def test_scaleMouseInput_windowed_button(self):
         # Arrange
@@ -76,7 +76,7 @@ class TestDisplay(unittest.TestCase):
         event_dict = {
             'pos': (400, 800),
             'rel': (100, 200),
-            'buttons': (1),
+            'buttons': (1,),
         }
         event = pygame.event.Event(pygame.MOUSEMOTION, event_dict)
         # Act
@@ -84,7 +84,7 @@ class TestDisplay(unittest.TestCase):
         # Assert
         self.assertEqual(result_event.pos, (133, 266))
         self.assertEqual(result_event.rel, (33, 66))
-        self.assertEqual(result_event.buttons, (1))
+        self.assertEqual(result_event.buttons, (1,))
 
 
 if __name__ == '__main__':
