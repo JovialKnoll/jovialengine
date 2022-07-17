@@ -1,14 +1,13 @@
 import sys
 import os
 import json
+from types import ModuleType
 from collections import deque
 
 import pygame.math
 
 from . import game
 from .saveable import Saveable
-
-import mode
 
 
 _KEY_COLLECTION = 'COLLECTION'
@@ -22,11 +21,14 @@ _KEY_MODULE = 'MODULE'
 _KEY_CLASS = 'CLASS'
 _KEY_SAVEABLE = 'SAVEABLE'
 _SAVE_EXT = '.sav'
+_mode_module: ModuleType
 _save_directory: str
 
 
-def init(save_directory: str):
+def init(mode_module: ModuleType, save_directory: str):
+    global _mode_module
     global _save_directory
+    _mode_module = mode_module
     _save_directory = save_directory
 
 
@@ -193,7 +195,7 @@ class Save(object):
 
     def load(self):
         game.getGame().state = game.getGame().state_cls.load(self._shared_data)
-        mode_cls = getattr(mode, self._mode_name)
+        mode_cls = getattr(_mode_module, self._mode_name)
         new_mode = mode_cls.load(self._mode_data)
         return new_mode
 

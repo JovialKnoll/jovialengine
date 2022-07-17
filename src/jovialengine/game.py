@@ -1,6 +1,7 @@
 import typing
 import os
 import functools
+from types import ModuleType
 
 import pygame
 pygame.init()
@@ -48,6 +49,7 @@ class _Game(object):
         self.state: Saveable
 
     def load(self,
+             mode_module: ModuleType,
              start_mode_cls: typing.Type[ModeBase],
              state_cls: typing.Type[Saveable],
              src_directory: str,
@@ -65,6 +67,7 @@ class _Game(object):
             os.path.join(src_directory, 'config.ini')
         )
         save.init(
+            mode_module,
             os.path.join(src_directory, 'saves')
         )
         self.display = Display(
