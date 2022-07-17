@@ -8,7 +8,6 @@ import pygame.math
 from . import game
 from .saveable import Saveable
 
-import state
 import mode
 
 
@@ -193,7 +192,7 @@ class Save(object):
             return False
 
     def load(self):
-        game.getGame().state = state.State.load(self._shared_data)
+        game.getGame().state = game.getGame().state_cls.load(self._shared_data)
         mode_cls = getattr(mode, self._mode_name)
         new_mode = mode_cls.load(self._mode_data)
         return new_mode

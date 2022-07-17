@@ -7,8 +7,6 @@ from .modebase import ModeBase
 from .save import Save
 from .saveable import Saveable
 
-import state
-
 
 class ModeGameMenu(ModeBase, abc.ABC):
     _MENU_CHAR_WIDTH = 26
@@ -64,7 +62,7 @@ class ModeGameMenuTop(ModeGameMenu):
                 self.next_mode = ModeGameMenuOptions(self._previous_mode, self._background)
             elif event.key == pygame.K_4:
                 self._stopMixer()
-                game.getGame().state = state.State()
+                game.getGame().state = game.getGame().state_cls()
                 self._previous_mode = game.getGame().start_mode_cls()
                 pygame.mixer.music.pause()
                 pygame.mixer.pause()

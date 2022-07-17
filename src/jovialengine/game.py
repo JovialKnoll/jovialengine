@@ -10,16 +10,16 @@ from .fontwrap import FontWrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
 from .modegamemenu import ModeGameMenuTop
+from .saveable import Saveable
 from . import config
 from . import save
-
-import state
 
 
 class _Game(object):
     __slots__ = (
         'game_running',
         'start_mode_cls',
+        'state_cls',
         'display',
         'font_wrap',
         'state',
@@ -33,9 +33,9 @@ class _Game(object):
     def __init__(self):
         self.game_running = False
         self.start_mode_cls: typing.Type[ModeBase]
+        self.state_cls: typing.Type[Saveable]
         self.display: Display
         self.font_wrap: FontWrap
-        self.state = state.State()
         self._is_first_loop = True
         self._max_framerate = config.get(config.MAX_FRAMERATE)
         self._clock = pygame.time.Clock()
@@ -45,9 +45,11 @@ class _Game(object):
             in range(pygame.joystick.get_count())
         ]
         self._current_mode: ModeBase
+        self.state: Saveable
 
     def load(self,
              start_mode_cls: typing.Type[ModeBase],
+             state_cls: typing.Type[Saveable],
              src_directory: str,
              screen_size: typing.Tuple[int, int],
              title: str,
@@ -58,6 +60,7 @@ class _Game(object):
              font_antialias: bool
              ):
         self.start_mode_cls = start_mode_cls
+        self.state_cls = state_cls
         config.init(
             os.path.join(src_directory, 'config.ini')
         )
@@ -76,6 +79,7 @@ class _Game(object):
             font = pygame.font.SysFont(None, font_size)
         self.font_wrap = FontWrap(font, font_height, font_antialias)
         self._current_mode = self.start_mode_cls()
+        self.state = self.state_cls()
         self.game_running = True
 
     def run(self):
