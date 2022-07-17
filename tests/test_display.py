@@ -86,6 +86,24 @@ class TestDisplay(unittest.TestCase):
         self.assertEqual(result_event.rel, (33, 66))
         self.assertEqual(result_event.buttons, (1,))
 
+    def test_isInScreen_true(self):
+        # Act
+        result = self.displayForTestWindowed.isInScreen((2, 3))
+        # Assert
+        self.assertTrue(result)
+
+    def test_isInScreen_false(self):
+        # Act
+        result = self.displayForTestWindowed.isInScreen((-2, 3))
+        # Assert
+        self.assertFalse(result)
+
+    def test_getPositionalChannelMix(self):
+        # Act
+        result = self.displayForTestWindowed.getPositionalChannelMix(90)
+        # Assert
+        self.assertEqual(result, 0.3)
+
 
 if __name__ == '__main__':
     unittest.main()
