@@ -74,6 +74,12 @@ class _Game(object):
             in range(pygame.joystick.get_count())
         ]
         self._is_first_loop = True
+        self._current_mode: ModeBase | None = None
+        self.state: Saveable | None = None
+        self.game_running = False
+
+    def start(self):
+        """Start the game, must be called before run()."""
         self._current_mode = self.start_mode_cls()
         self.state = self.state_cls()
         self.game_running = True
