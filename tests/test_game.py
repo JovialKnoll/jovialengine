@@ -6,20 +6,11 @@ import jovialengine.display as display
 import jovialengine.game as game
 
 
-class DisplayForTest(display.Display):
-    def __init__(self):
-        self.is_fullscreen = False
-        self._fullscreen_offset = None
-        self.upscale = 3
-        self.screen_size = (320, 240)
-
-
 class GameForTest(game._Game):
     def __init__(self):
         self.running = False
         self._is_first_loop = False
         self._joysticks = []
-        self.display = DisplayForTest()
 
     def _handlePauseMenu(self):
         return False
@@ -31,6 +22,10 @@ class TestGame(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.gameForTest = GameForTest()
+        display.is_fullscreen = False
+        display._fullscreen_offset = None
+        display.upscale = 3
+        display.screen_size = (320, 240)
 
     def test__stillNeedsHandling_QUIT(self):
         # Arrange
