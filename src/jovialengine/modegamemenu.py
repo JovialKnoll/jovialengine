@@ -3,6 +3,7 @@ import abc
 import pygame
 
 from . import game
+from . import display
 from .modebase import ModeBase
 from .save import Save
 from .saveable import Saveable
@@ -20,7 +21,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
     )
 
     def __init__(self, previous_mode: ModeBase, old_screen=None):
-        self._init(game.getGame().display.screen_size)
+        self._init(display.screen_size)
         self._MENU_WIDTH = game.getGame().font_wrap.font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
         self._previous_mode = previous_mode
         if old_screen is None:
@@ -30,7 +31,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
         self._menu_surface = None
 
     def _getOldScreen(self):
-        return game.getGame().display.getBlurredScreen(self._previous_mode)
+        return display.getBlurredScreen(self._previous_mode)
 
     def _drawTextAlways(self, disp_text: str):
         self._last_disp_text = disp_text
@@ -278,26 +279,26 @@ class ModeGameMenuOptions(ModeGameMenu):
                     pygame.K_LEFT, pygame.K_a,
                     pygame.K_PAGEDOWN, pygame.K_MINUS,
             ):
-                game.getGame().display.changeScale(-1)
+                display.changeScale(-1)
             elif event.key in (
                     pygame.K_UP, pygame.K_w,
                     pygame.K_RIGHT, pygame.K_d,
                     pygame.K_PAGEUP, pygame.K_EQUALS,
             ):
-                game.getGame().display.changeScale(1)
+                display.changeScale(1)
             elif event.key in (pygame.K_f, pygame.K_F11,):
-                game.getGame().display.toggleFullscreen()
+                display.toggleFullscreen()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             elif '1' <= event.unicode <= '9':
                 target_scale = int(event.unicode)
-                game.getGame().display.setScale(target_scale)
+                display.setScale(target_scale)
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
-        disp_text += f"ARROWS) Upscaling: {game.getGame().display.upscale}" \
-                     f"\nF) Fullscreen: {self.getTickBox(game.getGame().display.is_fullscreen)}"
+        disp_text += f"ARROWS) Upscaling: {display.upscale}" \
+                     f"\nF) Fullscreen: {self.getTickBox(display.is_fullscreen)}"
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
 

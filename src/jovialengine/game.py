@@ -5,7 +5,7 @@ from types import ModuleType
 import pygame
 pygame.init()
 
-from .display import Display
+from . import display
 from .fontwrap import FontWrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
@@ -19,7 +19,6 @@ class _Game(object):
     __slots__ = (
         'start_mode_cls',
         'state_cls',
-        'display',
         'font_wrap',
         '_clock',
         '_max_framerate',
@@ -53,7 +52,7 @@ class _Game(object):
             mode_module,
             os.path.join(src_directory, 'saves')
         )
-        self.display = Display(
+        display.init(
             os.path.join(src_directory, 'screenshots'),
             screen_size,
             title,
@@ -90,8 +89,8 @@ class _Game(object):
         self._current_mode.inputEvents(events)
         for i in range(self._getTime()):
             self._current_mode.update(1)
-        self._current_mode.draw(self.display.screen)
-        self.display.scaleDraw()
+        self._current_mode.draw(display.screen)
+        display.scaleDraw()
         if self._current_mode.next_mode is not None:
             if isinstance(self._current_mode, ModeGameMenu) \
                     and not isinstance(self._current_mode.next_mode, ModeGameMenu):
@@ -106,7 +105,7 @@ class _Game(object):
 
     def _filterInput(self, events: typing.Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
-        events = map(self.display.scaleMouseInput, events)
+        events = map(display.scaleMouseInput, events)
         events = filter(self._stillNeedsHandling, events)
         return list(events)
 
@@ -125,10 +124,10 @@ class _Game(object):
                 if event.key == pygame.K_ESCAPE:
                     return self._handlePauseMenu()
                 elif event.key == pygame.K_F12:
-                    self.display.takeScreenshot()
+                    display.takeScreenshot()
                     return False
             case pygame.MOUSEMOTION | pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
-                return self.display.isInScreen(event.pos)
+                return display.isInScreen(event.pos)
             case pygame.JOYDEVICEREMOVED:
                 self._joysticks = [
                     joystick
