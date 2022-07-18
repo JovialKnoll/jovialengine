@@ -32,7 +32,7 @@ class TestDisplay(unittest.TestCase):
         # Act
         result_event = display.scaleMouseInput(event)
         # Assert
-        self.assertEqual(result_event.pos, (175, 350))
+        self.assertEqual(result_event.pos, (116, 233))
         self.assertEqual(result_event.button, 1)
 
     def test_scaleMouseInput_fullscreen_motion(self):
@@ -48,7 +48,7 @@ class TestDisplay(unittest.TestCase):
         result_event = display.scaleMouseInput(event)
         # Assert
         self.assertEqual(result_event.pos, (116, 233))
-        self.assertEqual(result_event.rel, (50, 100))
+        self.assertEqual(result_event.rel, (33, 66))
         self.assertEqual(result_event.buttons, (1,))
 
     def test_scaleMouseInput_windowed_button(self):
