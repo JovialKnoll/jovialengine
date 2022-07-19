@@ -6,7 +6,7 @@ import pygame
 pygame.init()
 
 from . import display
-from .input import Input
+from . import input
 from . import fontwrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
@@ -20,7 +20,6 @@ class _Game(object):
     __slots__ = (
         'start_mode_cls',
         'state_cls',
-        'input',
         '_clock',
         '_max_framerate',
         '_joysticks',
@@ -59,7 +58,7 @@ class _Game(object):
             title,
             window_icon
         )
-        self.input = Input()
+        input.init(4, 8)  # get actual numbers here
         if font_location:
             font = pygame.font.Font(font_location, font_size)
         else:
@@ -100,7 +99,7 @@ class _Game(object):
                 pygame.mixer.unpause()
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
-            self.input.clearMouseButtonStatus()
+            input.clearMouseButtonStatus()
         self._is_first_loop = False
         if not self.running:
             config.save()
@@ -110,7 +109,7 @@ class _Game(object):
         """Take care of input that game modes should not take care of."""
         result = map(display.scaleMouseInput, events)
         result = filter(self._stillNeedsHandling, result)
-        result = map(self.input.map, result)
+        result = map(input.mapEvent, result)
         return list(result)
 
     def _stillNeedsHandling(self, event: pygame.event.Event):
@@ -154,7 +153,7 @@ class _Game(object):
         if isinstance(self._current_mode, ModeGameMenu):
             return True
         self._current_mode = ModeGameMenuTop(self._current_mode)
-        self.input.clearMouseButtonStatus()
+        input.clearMouseButtonStatus()
         pygame.mixer.music.pause()
         pygame.mixer.pause()
         return False

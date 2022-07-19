@@ -20,38 +20,45 @@ class Action(object):
         self.__dict__ = event.__dict__
 
 
-class Input(object):
-    __slots__ = (
-        '__pressed_mouse_buttons',
-        'controller_states',
-    )
+_pressed_mouse_buttons: dict[int, tuple[int, int]] = dict()
+_controller_states: list[list[float | int]] | None = None
 
-    def __init__(self, max_players: int, num_inputs: int):
-        # load in input mapping from config
-        # make objects to hold onto current virtual gamepad states
-        self.__pressed_mouse_buttons = dict()
-        controller_states = [[0] * num_inputs for x in range(max_players)]
 
-    def _getAction(self, event: pygame.event.Event):
-        # do actual mapping
-        # if mapping results in setting a value in controller state that is already set
-        # for [player_id][action_id] then set action_id = Action.ACTION_ID_NONE
-        return Action(0, 0, 0, event)
+def init(max_players: int, num_inputs: int):
+    global _controller_states
+    # load in input mapping from config
+    # make objects to hold onto current virtual gamepad states
+    _controller_states = [[0] * num_inputs for x in range(max_players)]
 
-    def map(self, event: pygame.event.Event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            self.__pressed_mouse_buttons[event.button] = event.pos
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button in self.__pressed_mouse_buttons:
-                del self.__pressed_mouse_buttons[event.button]
-        action = self._getAction(event)
-        self.controller_states[action.player_id][action.action_id] = action.action_value
-        return action
 
-    def mouseButtonStatus(self, button: int):
-        if button not in self.__pressed_mouse_buttons:
-            return False
-        return self.__pressed_mouse_buttons[button]
+def _getAction(event: pygame.event.Event):
+    # do actual mapping
+    # if mapping results in setting a value in controller state that is already set
+    # for [player_id][action_id] then set action_id = Action.ACTION_ID_NONE
+    return Action(0, 0, 0, event)
 
-    def clearMouseButtonStatus(self):
-        self.__pressed_mouse_buttons = dict()
+
+def mapEvent(event: pygame.event.Event):
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        _pressed_mouse_buttons[event.button] = event.pos
+    elif event.type == pygame.MOUSEBUTTONUP:
+        if event.button in _pressed_mouse_buttons:
+            del _pressed_mouse_buttons[event.button]
+    action = _getAction(event)
+    _controller_states[action.player_id][action.action_id] = action.action_value
+    return action
+
+
+def getInputStatus(player_id: int, action_id: int):
+    return _controller_states[player_id][action_id]
+
+
+def getMouseButtonStatus(button: int):
+    if button not in _pressed_mouse_buttons:
+        return False
+    return _pressed_mouse_buttons[button]
+
+
+def clearMouseButtonStatus():
+    global _pressed_mouse_buttons
+    _pressed_mouse_buttons = dict()
