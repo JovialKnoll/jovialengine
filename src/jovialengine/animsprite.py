@@ -1,5 +1,5 @@
-import typing
 from collections import deque
+from collections.abc import Callable
 
 import pygame
 
@@ -20,7 +20,7 @@ class Anim(Saveable):
 
     def __init__(self, func: str, time: int, x_or_pair, y=None,
                  sound: pygame.mixer.Sound = None, positional_sound: bool = False,
-                 callback: typing.Callable[[], None] = None):
+                 callback: Callable[[], None] = None):
         self.func = func
         self.time = time
         self.pos = pygame.math.Vector2(x_or_pair, y)
@@ -137,14 +137,14 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
 
     def addPosAbs(self, func: str, time: int, x_or_pair, y=None,
                   sound: pygame.mixer.Sound = None, positional_sound: bool = False,
-                  callback: typing.Callable[[], None] = None):
+                  callback: Callable[[], None] = None):
         self.anims.append(
             Anim(func, time, x_or_pair, y, sound, positional_sound, callback)
         )
 
     def addPosRel(self, func: str, time: int, x_or_pair, y=None,
                   sound: pygame.mixer.Sound = None, positional_sound: bool = False,
-                  callback: typing.Callable[[], None] = None):
+                  callback: Callable[[], None] = None):
         new_pos = pygame.math.Vector2(x_or_pair, y)
         if self.anims:
             new_pos += self.anims[-1].pos
@@ -154,5 +154,5 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
 
     def addWait(self, time: int,
                 sound: pygame.mixer.Sound = None, positional_sound: bool = False,
-                callback: typing.Callable[[], None] = None):
+                callback: Callable[[], None] = None):
         self.addPosRel(AnimSprite.Binary, time, 0, 0, sound, positional_sound, callback)

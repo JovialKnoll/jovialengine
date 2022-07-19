@@ -1,5 +1,6 @@
 import abc
-import typing
+from typing import final
+from collections.abc import Iterable
 
 import pygame
 
@@ -48,8 +49,8 @@ class ModeBase(abc.ABC):
         """Handle any input that's checked directly, like joysticks etc."""
         pass
 
-    @typing.final
-    def inputActions(self, actions: typing.Iterable[Action]):
+    @final
+    def inputActions(self, actions: Iterable[Action]):
         """All game modes can take in actions."""
         for action in actions:
             self._input(action)
@@ -58,7 +59,7 @@ class ModeBase(abc.ABC):
     def _update(self, dt: int):
         pass
 
-    @typing.final
+    @final
     def update(self, dt: int):
         """All game modes can update."""
         self._update(dt)
@@ -76,7 +77,7 @@ class ModeBase(abc.ABC):
     def _drawPostCamera(self, screen: pygame.surface.Surface):
         pass
 
-    @typing.final
+    @final
     def draw(self, screen: pygame.surface.Surface):
         """All game modes can draw to the screen"""
         self._updatePreDraw(screen)
