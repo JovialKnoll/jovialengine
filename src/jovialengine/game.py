@@ -6,6 +6,7 @@ import pygame
 pygame.init()
 
 from . import display
+from . import input
 from . import fontwrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
@@ -57,6 +58,7 @@ class _Game(object):
             title,
             window_icon
         )
+        input.init(4, 8)  # get actual numbers here
         if font_location:
             font = pygame.font.Font(font_location, font_size)
         else:
@@ -84,8 +86,8 @@ class _Game(object):
         """Run the game, and check if the game needs to end."""
         if not self._current_mode:
             raise RuntimeError("error: self._current_mode is not set")
-        events = self._filterInput(pygame.event.get())
-        self._current_mode.inputEvents(events)
+        actions = self._filterInput(pygame.event.get())
+        self._current_mode.inputActions(actions)
         for i in range(self._getTime()):
             self._current_mode.update(1)
         self._current_mode.draw(display.screen)
@@ -97,15 +99,17 @@ class _Game(object):
                 pygame.mixer.unpause()
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
+            input.clearMouseButtonStatus()
+        self._is_first_loop = False
         if not self.running:
             config.save()
-        self._is_first_loop = False
         return self.running
 
     def _filterInput(self, events: Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
         result = map(display.scaleMouseInput, events)
         result = filter(self._stillNeedsHandling, result)
+        result = map(input.mapEvent, result)
         return list(result)
 
     def _stillNeedsHandling(self, event: pygame.event.Event):
@@ -149,6 +153,7 @@ class _Game(object):
         if isinstance(self._current_mode, ModeGameMenu):
             return True
         self._current_mode = ModeGameMenuTop(self._current_mode)
+        input.clearMouseButtonStatus()
         pygame.mixer.music.pause()
         pygame.mixer.pause()
         return False
