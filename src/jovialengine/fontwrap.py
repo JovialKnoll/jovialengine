@@ -74,3 +74,13 @@ class FontWrap(object):
             result.blit(img, dest)
             dest[1] += img.get_height()
         return result
+
+
+font_wrap_default: FontWrap | None = None
+
+
+def init(font: pygame.font.Font, line_height: int, antialias: bool):
+    global font_wrap_default
+    if font_wrap_default:
+        raise RuntimeError("error: font_wrap_default is already set")
+    font_wrap_default = FontWrap(font, line_height, antialias)
