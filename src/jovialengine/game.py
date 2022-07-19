@@ -1,6 +1,6 @@
-import typing
 import os
 from types import ModuleType
+from collections.abc import Iterable
 
 import pygame
 pygame.init()
@@ -31,10 +31,10 @@ class _Game(object):
     def __init__(
         self,
         mode_module: ModuleType,
-        start_mode_cls: typing.Type[ModeBase],
-        state_cls: typing.Type[Saveable],
+        start_mode_cls: type[ModeBase],
+        state_cls: type[Saveable],
         src_directory: str,
-        screen_size: typing.Tuple[int, int],
+        screen_size: tuple[int, int],
         title: str,
         window_icon: str | None,
         font_location: str | None,
@@ -102,7 +102,7 @@ class _Game(object):
         self._is_first_loop = False
         return self.running
 
-    def _filterInput(self, events: typing.Iterable[pygame.event.Event]):
+    def _filterInput(self, events: Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
         result = map(display.scaleMouseInput, events)
         result = filter(self._stillNeedsHandling, result)
@@ -162,10 +162,10 @@ _game: _Game | None = None
 
 def initGame(
     mode_module: ModuleType,
-    start_mode_cls: typing.Type[ModeBase],
-    state_cls: typing.Type[Saveable],
+    start_mode_cls: type[ModeBase],
+    state_cls: type[Saveable],
     src_directory: str,
-    screen_size: typing.Tuple[int, int],
+    screen_size: tuple[int, int],
     title: str,
     window_icon: str | None,
     font_location: str | None,
