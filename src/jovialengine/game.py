@@ -6,7 +6,7 @@ import pygame
 pygame.init()
 
 from . import display
-from .fontwrap import FontWrap
+from . import fontwrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
 from .modegamemenu import ModeGameMenuTop
@@ -19,7 +19,6 @@ class _Game(object):
     __slots__ = (
         'start_mode_cls',
         'state_cls',
-        'font_wrap',
         '_clock',
         '_max_framerate',
         '_joysticks',
@@ -62,7 +61,7 @@ class _Game(object):
             font = pygame.font.Font(font_location, font_size)
         else:
             font = pygame.font.SysFont(None, font_size)
-        self.font_wrap = FontWrap(font, font_height, font_antialias)
+        fontwrap.init(font, font_height, font_antialias)
         self._clock = pygame.time.Clock()
         self._max_framerate = config.get(config.MAX_FRAMERATE)
         self._joysticks = [
