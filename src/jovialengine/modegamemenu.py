@@ -4,7 +4,7 @@ import pygame
 
 from . import game
 from . import display
-from .fontwrap import font_wrap_default
+from .fontwrap import getDefaultFontWrap
 from .modebase import ModeBase
 from .save import Save
 from .saveable import Saveable
@@ -23,7 +23,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
 
     def __init__(self, previous_mode: ModeBase, old_screen=None):
         self._init(display.screen_size)
-        self._MENU_WIDTH = font_wrap_default.font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
+        self._MENU_WIDTH = getDefaultFontWrap().font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
         self._previous_mode = previous_mode
         if old_screen is None:
             old_screen = self._getOldScreen()
@@ -36,7 +36,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
 
     def _drawTextAlways(self, disp_text: str):
         self._last_disp_text = disp_text
-        self._menu_surface = font_wrap_default.renderInside(
+        self._menu_surface = getDefaultFontWrap().renderInside(
             self._MENU_WIDTH,
             disp_text,
             (255, 255, 255),
@@ -184,12 +184,12 @@ class ModeGameMenuSave(ModeGameMenu):
             disp_text += "\nSaved successfully.\nPress any key to go back."
         self._drawTextAlways(disp_text)
         if self._cursor_switch and not self._confirm_overwrite and self._save_success is None:
-            cursor_x = font_wrap_default.font.size(">" + self._save_name[:self._cursor_position])[0]
+            cursor_x = getDefaultFontWrap().font.size(">" + self._save_name[:self._cursor_position])[0]
             self._menu_surface.fill(
                 (255, 255, 255),
                 (
-                    (cursor_x, 4 * font_wrap_default.line_height),
-                    (1, font_wrap_default.line_height)
+                    (cursor_x, 4 * getDefaultFontWrap().line_height),
+                    (1, getDefaultFontWrap().line_height)
                 )
             )
         screen.blit(self._menu_surface, (0, 0))

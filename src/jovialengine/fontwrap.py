@@ -76,11 +76,15 @@ class FontWrap(object):
         return result
 
 
-font_wrap_default: FontWrap | None = None
+_default: FontWrap | None = None
 
 
 def init(font: pygame.font.Font, line_height: int, antialias: bool):
-    global font_wrap_default
-    if font_wrap_default:
-        raise RuntimeError("error: font_wrap_default is already set")
-    font_wrap_default = FontWrap(font, line_height, antialias)
+    global _default
+    if _default:
+        raise RuntimeError("error: _default is already set")
+    _default = FontWrap(font, line_height, antialias)
+
+
+def getDefaultFontWrap():
+    return _default
