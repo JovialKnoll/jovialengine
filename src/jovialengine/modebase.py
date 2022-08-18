@@ -25,7 +25,6 @@ class ModeBase(abc.ABC):
         )
 
     def _init(self, space_size: tuple[int, int]):
-        self.__pressed_mouse_buttons = dict()
         self._space = pygame.Surface(space_size).convert()
         self._background = pygame.Surface(space_size).convert()
         self._background.fill((255, 255, 255))
