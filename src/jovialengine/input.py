@@ -8,7 +8,7 @@ class Action(object):
     TYPE_SCREENSHOT = 1
     __slots__ = (
         'player_id',
-        'action_id',
+        'action_type',
         'action_value',
         'type',
         '__dict__',
@@ -76,12 +76,12 @@ def mapEvent(event: pygame.event.Event):
         if event.button in _pressed_mouse_buttons:
             del _pressed_mouse_buttons[event.button]
     action = _getAction(event)
-    _controller_states[action.player_id][action.action_id] = action.action_value
+    _controller_states[action.player_id][action.action_type] = action.action_value
     return action
 
 
-def getInputStatus(player_id: int, action_id: int):
-    return _controller_states[player_id][action_id]
+def getInputStatus(player_id: int, action_type: int):
+    return _controller_states[player_id][action_type]
 
 
 def getMouseButtonStatus(button: int):
