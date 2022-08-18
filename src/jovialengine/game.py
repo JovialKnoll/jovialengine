@@ -6,6 +6,7 @@ import pygame
 pygame.init()
 
 from . import display
+from . import input
 from . import fontwrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
@@ -37,6 +38,8 @@ class _Game(object):
         screen_size: tuple[int, int],
         title: str,
         window_icon: str | None,
+        max_players: int,
+        num_inputs: int,
         font_location: str | None,
         font_size: int,
         font_height: int,
@@ -56,6 +59,10 @@ class _Game(object):
             screen_size,
             title,
             window_icon
+        )
+        input.init(
+            max_players,
+            num_inputs
         )
         if font_location:
             font = pygame.font.Font(font_location, font_size)
@@ -84,8 +91,8 @@ class _Game(object):
         """Run the game, and check if the game needs to end."""
         if not self._current_mode:
             raise RuntimeError("error: self._current_mode is not set")
-        events = self._filterInput(pygame.event.get())
-        self._current_mode.inputEvents(events)
+        actions = self._filterInput(pygame.event.get())
+        self._current_mode.inputActions(actions)
         for i in range(self._getTime()):
             self._current_mode.update(1)
         self._current_mode.draw(display.screen)
@@ -97,18 +104,21 @@ class _Game(object):
                 pygame.mixer.unpause()
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
+            input.clearMouseButtonStatus()
+        self._is_first_loop = False
         if not self.running:
             config.save()
-        self._is_first_loop = False
         return self.running
 
     def _filterInput(self, events: Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
         result = map(display.scaleMouseInput, events)
-        result = filter(self._stillNeedsHandling, result)
+        result = filter(self._filterEvent, result)
+        result = map(input.mapEvent, result)
+        result = filter(self._filterAction, result)
         return list(result)
 
-    def _stillNeedsHandling(self, event: pygame.event.Event):
+    def _filterEvent(self, event: pygame.event.Event):
         """If event should be handled before all others, handle it and return False, otherwise return True.
         As an example, game-ending or display-changing events should be handled before all others.
         Also filter out bad mouse events here.
@@ -119,12 +129,6 @@ class _Game(object):
             case pygame.WINDOWMOVED:
                 if not self._is_first_loop:
                     return self._handlePauseMenu()
-            case pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    return self._handlePauseMenu()
-                elif event.key == pygame.K_F12:
-                    display.takeScreenshot()
-                    return False
             case pygame.MOUSEMOTION | pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
                 return display.isInScreen(event.pos)
             case pygame.JOYDEVICEREMOVED:
@@ -144,11 +148,21 @@ class _Game(object):
                 return False
         return True
 
+    def _filterAction(self, action: input.Action):
+        match action.action_type:
+            case input.Action.TYPE_PAUSE:
+                return self._handlePauseMenu()
+            case input.Action.TYPE_SCREENSHOT:
+                display.takeScreenshot()
+                return False
+        return True
+
     def _handlePauseMenu(self):
         # pass quit events forward to ModeGameMenu, but not to other modes
         if isinstance(self._current_mode, ModeGameMenu):
             return True
         self._current_mode = ModeGameMenuTop(self._current_mode)
+        input.clearMouseButtonStatus()
         pygame.mixer.music.pause()
         pygame.mixer.pause()
         return False
@@ -168,6 +182,8 @@ def initGame(
     screen_size: tuple[int, int],
     title: str,
     window_icon: str | None,
+    max_players: int,
+    num_inputs: int,
     font_location: str | None,
     font_size: int,
     font_height: int,
@@ -182,6 +198,8 @@ def initGame(
     screen_size - size of the virtual screen
     title - title of the game (for titlebar)
     window_icon - location of icon of the game (for titlebar)
+    max_players - maximum number of players the game supports
+    num_inputs - number of button / axis inputs for mapping to (not from)
     font_location - location of default font for the game
     font_size - default font size
     font_height - default font height
@@ -198,6 +216,8 @@ def initGame(
         screen_size,
         title,
         window_icon,
+        max_players,
+        num_inputs,
         font_location,
         font_size,
         font_height,

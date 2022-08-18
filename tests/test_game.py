@@ -27,69 +27,58 @@ class TestGame(unittest.TestCase):
         display.upscale = 3
         display.screen_size = (320, 240)
 
-    def test__stillNeedsHandling_QUIT(self):
+    def test__filterEvent_QUIT(self):
         # Arrange
         event_dict = {
         }
         event = pygame.event.Event(pygame.QUIT, event_dict)
         # Act
-        result = self.gameForTest._stillNeedsHandling(event)
+        result = self.gameForTest._filterEvent(event)
         # Assert
         self.assertFalse(result)
 
-    def test__stillNeedsHandling_WINDOWFOCUSLOST(self):
+    def test__filterEvent_WINDOWFOCUSLOST(self):
         # Arrange
         event_dict = {
         }
         event = pygame.event.Event(pygame.WINDOWFOCUSLOST, event_dict)
         # Act
-        result = self.gameForTest._stillNeedsHandling(event)
+        result = self.gameForTest._filterEvent(event)
         # Assert
         self.assertFalse(result)
 
-    def test__stillNeedsHandling_WINDOWMINIMIZED(self):
+    def test__filterEvent_WINDOWMINIMIZED(self):
         # Arrange
         event_dict = {
         }
         event = pygame.event.Event(pygame.WINDOWMINIMIZED, event_dict)
         # Act
-        result = self.gameForTest._stillNeedsHandling(event)
+        result = self.gameForTest._filterEvent(event)
         # Assert
         self.assertFalse(result)
 
-    def test__stillNeedsHandling_WINDOWMOVED(self):
+    def test__filterEvent_WINDOWMOVED(self):
         # Arrange
         event_dict = {
         }
         event = pygame.event.Event(pygame.WINDOWMOVED, event_dict)
         # Act
-        result = self.gameForTest._stillNeedsHandling(event)
+        result = self.gameForTest._filterEvent(event)
         # Assert
         self.assertFalse(result)
 
-    def test__stillNeedsHandling_KEYDOWN_ESCAPE(self):
-        # Arrange
-        event_dict = {
-            'key': pygame.K_ESCAPE,
-        }
-        event = pygame.event.Event(pygame.KEYDOWN, event_dict)
-        # Act
-        result = self.gameForTest._stillNeedsHandling(event)
-        # Assert
-        self.assertFalse(result)
-
-    def test__stillNeedsHandling_KEYDOWN_a(self):
+    def test__filterEvent_KEYDOWN_a(self):
         # Arrange
         event_dict = {
             'key': pygame.K_a,
         }
         event = pygame.event.Event(pygame.KEYDOWN, event_dict)
         # Act
-        result = self.gameForTest._stillNeedsHandling(event)
+        result = self.gameForTest._filterEvent(event)
         # Assert
         self.assertTrue(result)
 
-    def test__stillNeedsHandling_MOUSEBUTTONDOWN_IN(self):
+    def test__filterEvent_MOUSEBUTTONDOWN_IN(self):
         # Arrange
         event_dict = {
             'pos': (1, 1),
@@ -97,11 +86,11 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, event_dict)
         # Act
-        result = self.gameForTest._stillNeedsHandling(event)
+        result = self.gameForTest._filterEvent(event)
         # Assert
         self.assertTrue(result)
 
-    def test__stillNeedsHandling_MOUSEBUTTONDOWN_OUT(self):
+    def test__filterEvent_MOUSEBUTTONDOWN_OUT(self):
         # Arrange
         event_dict = {
             'pos': (-1, -1),
@@ -109,7 +98,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, event_dict)
         # Act
-        result = self.gameForTest._stillNeedsHandling(event)
+        result = self.gameForTest._filterEvent(event)
         # Assert
         self.assertFalse(result)
 
