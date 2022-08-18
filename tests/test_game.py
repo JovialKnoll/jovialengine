@@ -67,17 +67,6 @@ class TestGame(unittest.TestCase):
         # Assert
         self.assertFalse(result)
 
-    def test__filterEvent_KEYDOWN_ESCAPE(self):
-        # Arrange
-        event_dict = {
-            'key': pygame.K_ESCAPE,
-        }
-        event = pygame.event.Event(pygame.KEYDOWN, event_dict)
-        # Act
-        result = self.gameForTest._filterEvent(event)
-        # Assert
-        self.assertFalse(result)
-
     def test__filterEvent_KEYDOWN_a(self):
         # Arrange
         event_dict = {
