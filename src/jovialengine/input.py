@@ -12,7 +12,7 @@ class Action(object):
         '__dict__',
     )
 
-    def __init__(self, player_id: int, action_id: int, action_value: float | int, event: pygame.event.Event):
+    def __init__(self, player_id: int, action_id: int, action_value: float | int | None, event: pygame.event.Event):
         self.player_id = player_id
         self.action_id = action_id
         self.action_value = action_value
@@ -35,7 +35,31 @@ def _getAction(event: pygame.event.Event):
     # do actual mapping
     # if mapping results in setting a value in controller state that is already set
     # for [player_id][action_id] then set action_id = Action.ACTION_ID_NONE
-    return Action(0, 0, 0, event)
+    player_id = 0
+    action_id = Action.ACTION_ID_NONE
+    action_value = None
+    match event.type:
+        case pygame.KEYUP:
+            # key, mod, unicode, scancode
+            action_value = 0
+        case pygame.KEYDOWN:
+            # key, mod, unicode, scancode
+            action_value = 1
+        case pygame.JOYBUTTONUP:
+            # instance_id, button
+            action_value = 0
+        case pygame.JOYBUTTONDOWN:
+            # instance_id, button
+            action_value = 1
+        case pygame.JOYHATMOTION:
+            # instance_id, hat, value
+            # action_value = 1
+            pass
+        case pygame.JOYAXISMOTION:
+            # instance_id, axis, value
+            # action_value = 1
+            pass
+    return Action(player_id, action_id, action_value, event)
 
 
 def mapEvent(event: pygame.event.Event):
