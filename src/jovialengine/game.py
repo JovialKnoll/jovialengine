@@ -38,6 +38,8 @@ class _Game(object):
         screen_size: tuple[int, int],
         title: str,
         window_icon: str | None,
+        max_players: int,
+        num_inputs: int,
         font_location: str | None,
         font_size: int,
         font_height: int,
@@ -58,7 +60,10 @@ class _Game(object):
             title,
             window_icon
         )
-        input.init(4, 8)  # get actual numbers here
+        input.init(
+            max_players,
+            num_inputs
+        )
         if font_location:
             font = pygame.font.Font(font_location, font_size)
         else:
@@ -108,11 +113,12 @@ class _Game(object):
     def _filterInput(self, events: Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
         result = map(display.scaleMouseInput, events)
-        result = filter(self._stillNeedsHandling, result)
+        result = filter(self._filterEvent, result)
         result = map(input.mapEvent, result)
+        result = filter(self._filterAction, result)
         return list(result)
 
-    def _stillNeedsHandling(self, event: pygame.event.Event):
+    def _filterEvent(self, event: pygame.event.Event):
         """If event should be handled before all others, handle it and return False, otherwise return True.
         As an example, game-ending or display-changing events should be handled before all others.
         Also filter out bad mouse events here.
@@ -123,12 +129,6 @@ class _Game(object):
             case pygame.WINDOWMOVED:
                 if not self._is_first_loop:
                     return self._handlePauseMenu()
-            case pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    return self._handlePauseMenu()
-                elif event.key == pygame.K_F12:
-                    display.takeScreenshot()
-                    return False
             case pygame.MOUSEMOTION | pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
                 return display.isInScreen(event.pos)
             case pygame.JOYDEVICEREMOVED:
@@ -145,6 +145,15 @@ class _Game(object):
                     for i
                     in range(pygame.joystick.get_count())
                 ]
+                return False
+        return True
+
+    def _filterAction(self, action: input.Action):
+        match action.action_type:
+            case input.Action.TYPE_PAUSE:
+                return self._handlePauseMenu()
+            case input.Action.TYPE_SCREENSHOT:
+                display.takeScreenshot()
                 return False
         return True
 
@@ -173,6 +182,8 @@ def initGame(
     screen_size: tuple[int, int],
     title: str,
     window_icon: str | None,
+    max_players: int,
+    num_inputs: int,
     font_location: str | None,
     font_size: int,
     font_height: int,
@@ -187,6 +198,8 @@ def initGame(
     screen_size - size of the virtual screen
     title - title of the game (for titlebar)
     window_icon - location of icon of the game (for titlebar)
+    max_players - maximum number of players the game supports
+    num_inputs - number of button / axis inputs for mapping to (not from)
     font_location - location of default font for the game
     font_size - default font size
     font_height - default font height
@@ -203,6 +216,8 @@ def initGame(
         screen_size,
         title,
         window_icon,
+        max_players,
+        num_inputs,
         font_location,
         font_size,
         font_height,

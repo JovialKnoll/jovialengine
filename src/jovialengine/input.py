@@ -2,8 +2,10 @@ import pygame
 
 
 class Action(object):
-    ACTION_ID_NONE = -1
-    ACTION_ID_MOUSE = -2
+    TYPE_NONE = -1
+    TYPE_MOUSE = -2
+    TYPE_PAUSE = 0
+    TYPE_SCREENSHOT = 1
     __slots__ = (
         'player_id',
         'action_id',
@@ -12,9 +14,9 @@ class Action(object):
         '__dict__',
     )
 
-    def __init__(self, player_id: int, action_id: int, action_value: float | int | None, event: pygame.event.Event):
+    def __init__(self, player_id: int, action_type: int, action_value: float | int | None, event: pygame.event.Event):
         self.player_id = player_id
-        self.action_id = action_id
+        self.action_type = action_type
         self.action_value = action_value
         self.type = event.type
         self.__dict__ = event.__dict__
@@ -34,9 +36,9 @@ def init(max_players: int, num_inputs: int):
 def _getAction(event: pygame.event.Event):
     # do actual mapping
     # if mapping results in setting a value in controller state that is already set
-    # for [player_id][action_id] then set action_id = Action.ACTION_ID_NONE
+    # for [player_id][action_type] then set action_type = Action.TYPE_NONE
     player_id = 0
-    action_id = Action.ACTION_ID_NONE
+    action_type = Action.TYPE_NONE
     action_value = None
     match event.type:
         case pygame.KEYUP:
@@ -45,6 +47,11 @@ def _getAction(event: pygame.event.Event):
         case pygame.KEYDOWN:
             # key, mod, unicode, scancode
             action_value = 1
+            # replace the below with proper mapping later
+            if event.key == pygame.K_ESCAPE:
+                action_type = Action.TYPE_PAUSE
+            elif event.key == pygame.K_F12:
+                action_type = Action.TYPE_SCREENSHOT
         case pygame.JOYBUTTONUP:
             # instance_id, button
             action_value = 0
@@ -59,7 +66,7 @@ def _getAction(event: pygame.event.Event):
             # instance_id, axis, value
             # action_value = 1
             pass
-    return Action(player_id, action_id, action_value, event)
+    return Action(player_id, action_type, action_value, event)
 
 
 def mapEvent(event: pygame.event.Event):
