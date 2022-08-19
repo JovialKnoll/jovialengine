@@ -11,11 +11,13 @@ _DEFAULTS = {
 }
 _SECTION = 'Game'
 _config = configparser.ConfigParser(_DEFAULTS, default_section=_SECTION)
-_config_file: str
+_config_file: str | None = None
 
 
 def init(config_file: str):
     global _config_file
+    if _config_file:
+        raise RuntimeError("error: _config_file is already set")
     _config_file = config_file
     _config.read(_config_file)
     for section in _config.sections():

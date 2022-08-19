@@ -21,7 +21,7 @@ _fullscreen_flags: int
 is_fullscreen: bool
 upscale: int
 _disp_res: tuple[int, int]
-screen: pygame.Surface
+screen: pygame.Surface | None = None
 _fullscreen_offset: tuple[int, int] | None
 _full_screen: pygame.Surface | None
 _disp_screen: pygame.Surface
@@ -42,6 +42,8 @@ def init(
     global screen
     global _fullscreen_offset
     global _full_screen
+    if screen:
+        raise RuntimeError("error: screen is already set")
     _screenshot_directory = screenshot_directory
     screen_size = screen_size_in
     _title = title

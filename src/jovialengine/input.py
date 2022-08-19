@@ -22,15 +22,19 @@ class Action(object):
         self.__dict__ = event.__dict__
 
 
-_pressed_mouse_buttons: dict[int, tuple[int, int]] = dict()
 _controller_states: list[list[float | int]] | None = None
+_pressed_mouse_buttons: dict[int, tuple[int, int]]
 
 
 def init(max_players: int, num_inputs: int):
     global _controller_states
+    global _pressed_mouse_buttons
+    if _controller_states:
+        raise RuntimeError("error: _controller_states is already set")
     # load in input mapping from config
     # make objects to hold onto current virtual gamepad states
     _controller_states = [[0] * num_inputs for x in range(max_players)]
+    _pressed_mouse_buttons = dict()
 
 
 def _getAction(event: pygame.event.Event):
