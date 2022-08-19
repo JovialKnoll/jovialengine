@@ -199,7 +199,7 @@ def initGame(
     title - title of the game (for titlebar)
     window_icon - location of icon of the game (for titlebar)
     max_players - maximum number of players the game supports
-    num_inputs - number of button / axis inputs for mapping to (not from)
+    num_inputs - number of virtual inputs that button / axis inputs map to
     font_location - location of default font for the game
     font_size - default font size
     font_height - default font height
