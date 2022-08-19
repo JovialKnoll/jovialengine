@@ -4,6 +4,7 @@ import pygame
 
 from . import game
 from . import display
+from . import input
 from .fontwrap import getDefaultFontWrap
 from .modebase import ModeBase
 from .save import Save
@@ -53,10 +54,10 @@ class ModeGameMenuTop(ModeGameMenu):
     def _input(self, action):
         if action.type == pygame.QUIT:
             game.getGame().running = False
+        elif action.action_type == input.Action.TYPE_PAUSE:
+            self.next_mode = self._previous_mode
         elif action.type == pygame.KEYDOWN:
-            if action.key == pygame.K_ESCAPE:
-                self.next_mode = self._previous_mode
-            elif action.key == pygame.K_1:
+            if action.key == pygame.K_1:
                 self.next_mode = ModeGameMenuSave(self._previous_mode, self._background)
             elif action.key == pygame.K_2:
                 self.next_mode = ModeGameMenuLoad(self._previous_mode, self._background)
@@ -107,22 +108,22 @@ class ModeGameMenuSave(ModeGameMenu):
     def _input(self, action):
         if action.type == pygame.QUIT:
             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+        elif self._save_success and action.type == pygame.KEYDOWN:
+            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+        elif action.action_type == input.Action.TYPE_PAUSE:
+            if self._confirm_overwrite:
+                self._confirm_overwrite = False
+                self._save_success = None
+            else:
+                self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
         elif action.type == pygame.KEYDOWN:
             char = action.unicode
             length = len(self._save_name)
-            if self._save_success:
-                self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-            elif action.key == pygame.K_ESCAPE:
-                if self._confirm_overwrite:
-                    self._confirm_overwrite = False
-                    self._save_success = None
-                else:
-                    self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-            elif action.key == pygame.K_RETURN:
+            if action.key == pygame.K_RETURN:
                 if self._save_name and isinstance(self._previous_mode, Saveable):
                     if Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
                         self._confirm_overwrite = True
-                    elif not self._save_success:
+                    else:
                         new_save = Save.getFromMode(self._save_name, self._previous_mode)
                         self._save_success = new_save.save()
             elif action.key == pygame.K_LEFT:
@@ -215,8 +216,10 @@ class ModeGameMenuLoad(ModeGameMenu):
     def _input(self, action):
         if action.type == pygame.QUIT:
             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+        elif action.action_type == input.Action.TYPE_PAUSE:
+            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
         elif action.type == pygame.KEYDOWN:
-            if action.key == pygame.K_ESCAPE or self._loaded_save:
+            if self._loaded_save:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             elif self._deleted_save:
                 self._deleted_save = False
@@ -274,6 +277,8 @@ class ModeGameMenuOptions(ModeGameMenu):
     def _input(self, action):
         if action.type == pygame.QUIT:
             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+        elif action.action_type == input.Action.TYPE_PAUSE:
+            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
         elif action.type == pygame.KEYUP:
             if action.key in (
                     pygame.K_DOWN, pygame.K_s,
@@ -290,9 +295,7 @@ class ModeGameMenuOptions(ModeGameMenu):
             elif action.key in (pygame.K_f, pygame.K_F11,):
                 display.toggleFullscreen()
         elif action.type == pygame.KEYDOWN:
-            if action.key == pygame.K_ESCAPE:
-                self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-            elif '1' <= action.unicode <= '9':
+            if '1' <= action.unicode <= '9':
                 target_scale = int(action.unicode)
                 display.setScale(target_scale)
 
