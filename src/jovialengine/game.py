@@ -108,6 +108,8 @@ class _Game(object):
         self._is_first_loop = False
         if not self.running:
             config.save()
+            self._current_mode = None
+            self.state = None
         return self.running
 
     def _filterInput(self, events: Iterable[pygame.event.Event]):
