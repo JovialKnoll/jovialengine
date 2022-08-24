@@ -110,6 +110,7 @@ class _Game(object):
             config.save()
             self._current_mode = None
             self.state = None
+            pygame.quit()
         return self.running
 
     def _filterInput(self, events: Iterable[pygame.event.Event]):
