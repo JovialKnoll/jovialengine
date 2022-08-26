@@ -10,8 +10,8 @@ class TestSave(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         save.init(
-            mode,
-            os.path.join('.', 'saves')
+            os.path.join('.', 'saves'),
+            mode
         )
 
     def test0_getAllFromFiles(self):
