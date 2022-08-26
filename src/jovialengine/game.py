@@ -61,6 +61,7 @@ class _Game(object):
             window_icon
         )
         input.init(
+            os.path.join(src_directory, 'input.cfg'),
             max_players,
             num_inputs
         )

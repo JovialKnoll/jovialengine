@@ -1,3 +1,5 @@
+import os
+
 import pygame
 
 
@@ -22,19 +24,38 @@ class Action(object):
         self.__dict__ = event.__dict__
 
 
-_controller_states: list[list[float | int]] | None = None
+_input_file: str | None = None
+_controller_states: list[list[float | int]]
 _pressed_mouse_buttons: dict[int, tuple[int, int]]
 
 
-def init(max_players: int, num_inputs: int):
+def init(input_file: str, max_players: int, num_inputs: int):
+    global _input_file
     global _controller_states
     global _pressed_mouse_buttons
-    if _controller_states:
-        raise RuntimeError("error: _controller_states is already set")
+    if _input_file:
+        raise RuntimeError("error: _input_file is already set")
+    _input_file = input_file
+    if os.path.exists(_input_file):
+        _parseFile()
     # load in input mapping from config
     # make objects to hold onto current virtual gamepad states
     _controller_states = [[0] * num_inputs for x in range(max_players)]
     _pressed_mouse_buttons = dict()
+
+
+def _parseFile():
+    with open(_input_file, 'r') as file:
+        # read in custom file format here
+        # save into dictionary / dictionaries for fast comparisons
+        pass
+
+
+def save():
+    # save on confirming changes to key mappings
+    with open(_input_file, 'w') as file:
+        # write in custom file format here
+        pass
 
 
 def _getAction(event: pygame.event.Event):
