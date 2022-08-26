@@ -21,17 +21,17 @@ _KEY_MODULE = 'MODULE'
 _KEY_CLASS = 'CLASS'
 _KEY_SAVEABLE = 'SAVEABLE'
 _SAVE_EXT = '.sav'
-_mode_module: ModuleType
 _save_directory: str | None = None
+_mode_module: ModuleType
 
 
-def init(mode_module: ModuleType, save_directory: str):
-    global _mode_module
+def init(save_directory: str, mode_module: ModuleType):
     global _save_directory
+    global _mode_module
     if _save_directory:
         raise RuntimeError("error: _save_directory is already set")
-    _mode_module = mode_module
     _save_directory = save_directory
+    _mode_module = mode_module
 
 
 class _SaveableJSONEncoder(json.JSONEncoder):

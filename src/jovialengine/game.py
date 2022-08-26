@@ -51,8 +51,8 @@ class _Game(object):
             os.path.join(src_directory, 'config.ini')
         )
         save.init(
-            mode_module,
-            os.path.join(src_directory, 'saves')
+            os.path.join(src_directory, 'saves'),
+            mode_module
         )
         display.init(
             os.path.join(src_directory, 'screenshots'),
