@@ -42,17 +42,16 @@ class ModeBase(abc.ABC):
         """Handle any input that requires looking at pygame events directly, like typing."""
         pass
 
-    def _postInput(self):
-        """Handle any input that's checked directly, like joysticks etc."""
+    def _inputState(self, input_state):
+        """Handle all other input."""
         pass
 
     @final
-    def input(self, events: Iterable[pygame.event.Event]):
-        # todo: decide how to pass in input state and previous input state (make new object in input module with helpful functions?)
+    def input(self, events: Iterable[pygame.event.Event], input_state):
         """All game modes can take in actions."""
         for event in events:
             self._inputEvent(event)
-        self._postInput()
+        self._inputState(input_state)
 
     def _update(self, dt: int):
         pass

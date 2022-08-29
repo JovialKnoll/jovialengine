@@ -93,7 +93,7 @@ class _Game(object):
         if not self._current_mode:
             raise RuntimeError("error: self._current_mode is not set")
         events = self._filterInput(pygame.event.get())
-        self._current_mode.input(events, )
+        self._current_mode.input(events, input.getInputState())
         for i in range(self._getTime()):
             self._current_mode.update(1)
         self._current_mode.draw(display.screen)

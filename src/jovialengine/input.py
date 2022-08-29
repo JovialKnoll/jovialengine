@@ -74,6 +74,10 @@ def wasInputPressed(player_id: int, action_type: int):
         and _controller_states_prev[player_id][action_type] == 0
 
 
+def getInputState():
+    return "new class with state and helpful functions, probably"
+
+
 def takeEvent(event: pygame.event.Event):
     if event.type == pygame.MOUSEBUTTONDOWN:
         _pressed_mouse_buttons[event.button] = event.pos
