@@ -92,8 +92,8 @@ class _Game(object):
         """Run the game, and check if the game needs to end."""
         if not self._current_mode:
             raise RuntimeError("error: self._current_mode is not set")
-        actions = self._filterInput(pygame.event.get())
-        self._current_mode.inputActions(actions)
+        events = self._filterInput(pygame.event.get())
+        self._current_mode.input(events, )
         for i in range(self._getTime()):
             self._current_mode.update(1)
         self._current_mode.draw(display.screen)
@@ -105,7 +105,7 @@ class _Game(object):
                 pygame.mixer.unpause()
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
-            input.clearMouseButtonStatus()
+            input.startNewMode()
         self._is_first_loop = False
         if not self.running:
             config.save()
@@ -116,11 +116,22 @@ class _Game(object):
 
     def _filterInput(self, events: Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
-        result = map(display.scaleMouseInput, events)
-        result = filter(self._filterEvent, result)
-        result = map(input.mapEvent, result)
-        result = filter(self._filterAction, result)
-        return list(result)
+        events = map(display.scaleMouseInput, events)
+        events = filter(self._filterEvent, events)
+        events = list(events)
+        for event in events:
+            input.takeEvent(event)
+        if input.wasInputPressed(0, input.TYPE_SCREENSHOT):
+            display.takeScreenshot()
+        if any(map(self._isPauseEvent, events)) or input.wasInputPressed(0, input.TYPE_PAUSE):
+            # if already in pause menu no need to do this stuff
+            if not isinstance(self._current_mode, ModeGameMenu):
+                self._current_mode = ModeGameMenuTop(self._current_mode)
+                input.startNewMode()
+                pygame.mixer.music.pause()
+                pygame.mixer.pause()
+                events = []
+        return events
 
     def _filterEvent(self, event: pygame.event.Event):
         """If event should be handled before all others, handle it and return False, otherwise return True.
@@ -128,11 +139,6 @@ class _Game(object):
         Also filter out bad mouse events here.
         """
         match event.type:
-            case pygame.QUIT | pygame.WINDOWFOCUSLOST | pygame.WINDOWMINIMIZED:
-                return self._handlePauseMenu()
-            case pygame.WINDOWMOVED:
-                if not self._is_first_loop:
-                    return self._handlePauseMenu()
             case pygame.MOUSEMOTION | pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
                 return display.isInScreen(event.pos)
             case pygame.JOYDEVICEREMOVED:
@@ -152,24 +158,9 @@ class _Game(object):
                 return False
         return True
 
-    def _filterAction(self, action: input.Action):
-        match action.action_type:
-            case input.Action.TYPE_PAUSE:
-                return self._handlePauseMenu()
-            case input.Action.TYPE_SCREENSHOT:
-                display.takeScreenshot()
-                return False
-        return True
-
-    def _handlePauseMenu(self):
-        # pass quit events forward to ModeGameMenu, but not to other modes
-        if isinstance(self._current_mode, ModeGameMenu):
-            return True
-        self._current_mode = ModeGameMenuTop(self._current_mode)
-        input.clearMouseButtonStatus()
-        pygame.mixer.music.pause()
-        pygame.mixer.pause()
-        return False
+    def _isPauseEvent(self, event: pygame.event.Event):
+        return event.type in (pygame.QUIT, pygame.WINDOWFOCUSLOST, pygame.WINDOWMINIMIZED) \
+            or (event.type == pygame.WINDOWMOVED and not self._is_first_loop)
 
     def _getTime(self):
         return self._clock.tick(self._max_framerate)

@@ -38,21 +38,20 @@ class ModeBase(abc.ABC):
     def cleanup(self):
         self._all_sprites.empty()
 
-    @abc.abstractmethod
-    def _input(self, action: Action):
-        raise NotImplementedError(
-            type(self).__name__ + "._input(self, action)"
-        )
+    def _inputEvent(self, event: pygame.event.Event):
+        """Handle any input that requires looking at pygame events directly, like typing."""
+        pass
 
     def _postInput(self):
         """Handle any input that's checked directly, like joysticks etc."""
         pass
 
     @final
-    def inputActions(self, actions: Iterable[Action]):
+    def input(self, events: Iterable[pygame.event.Event]):
+        # todo: decide how to pass in input state and previous input state (make new object in input module with helpful functions?)
         """All game modes can take in actions."""
-        for action in actions:
-            self._input(action)
+        for event in events:
+            self._inputEvent(event)
         self._postInput()
 
     def _update(self, dt: int):
