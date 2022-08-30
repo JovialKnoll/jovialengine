@@ -27,45 +27,45 @@ class TestGame(unittest.TestCase):
         display.upscale = 3
         display.screen_size = (320, 240)
 
-    def test__filterEvent_QUIT(self):
+    def test__isPauseEvent_QUIT(self):
         # Arrange
         event_dict = {
         }
         event = pygame.event.Event(pygame.QUIT, event_dict)
         # Act
-        result = self.gameForTest._filterEvent(event)
+        result = self.gameForTest._isPauseEvent(event)
         # Assert
-        self.assertFalse(result)
+        self.assertTrue(result)
 
-    def test__filterEvent_WINDOWFOCUSLOST(self):
+    def test__isPauseEvent_WINDOWFOCUSLOST(self):
         # Arrange
         event_dict = {
         }
         event = pygame.event.Event(pygame.WINDOWFOCUSLOST, event_dict)
         # Act
-        result = self.gameForTest._filterEvent(event)
+        result = self.gameForTest._isPauseEvent(event)
         # Assert
-        self.assertFalse(result)
+        self.assertTrue(result)
 
-    def test__filterEvent_WINDOWMINIMIZED(self):
+    def test__isPauseEvent_WINDOWMINIMIZED(self):
         # Arrange
         event_dict = {
         }
         event = pygame.event.Event(pygame.WINDOWMINIMIZED, event_dict)
         # Act
-        result = self.gameForTest._filterEvent(event)
+        result = self.gameForTest._isPauseEvent(event)
         # Assert
-        self.assertFalse(result)
+        self.assertTrue(result)
 
-    def test__filterEvent_WINDOWMOVED(self):
+    def test__isPauseEvent_WINDOWMOVED(self):
         # Arrange
         event_dict = {
         }
         event = pygame.event.Event(pygame.WINDOWMOVED, event_dict)
         # Act
-        result = self.gameForTest._filterEvent(event)
+        result = self.gameForTest._isPauseEvent(event)
         # Assert
-        self.assertFalse(result)
+        self.assertTrue(result)
 
     def test__filterEvent_KEYDOWN_a(self):
         # Arrange
