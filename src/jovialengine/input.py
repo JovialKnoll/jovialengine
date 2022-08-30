@@ -59,8 +59,8 @@ def save():
         pass
 
 
-def getInputStatus(player_id: int, action_type: int):
-    return _controller_states[player_id][action_type]
+def getInputStatus(player_id: int, event_type: int):
+    return _controller_states[player_id][event_type]
 
 
 def getMouseButtonStatus(button: int):
@@ -69,9 +69,9 @@ def getMouseButtonStatus(button: int):
     return _pressed_mouse_buttons[button]
 
 
-def wasInputPressed(player_id: int, action_type: int):
-    return _controller_states[player_id][action_type] == 1 \
-        and _controller_states_prev[player_id][action_type] == 0
+def wasInputPressed(player_id: int, event_type: int):
+    return _controller_states[player_id][event_type] == 1 \
+        and _controller_states_prev[player_id][event_type] == 0
 
 
 def getInputState():
@@ -86,34 +86,34 @@ def takeEvent(event: pygame.event.Event):
             del _pressed_mouse_buttons[event.button]
     # do actual mapping
     # if mapping results in setting a value in controller state that is already set
-    # for [player_id][action_type] then set action_type = Action.TYPE_NONE
+    # for [player_id][event_type] then set event_type = TYPE_NONE
     player_id = 0
-    action_type = TYPE_NONE
-    action_value = None
+    event_type = TYPE_NONE
+    event_value = None
     match event.type:
         case pygame.KEYUP:
             # key, mod, unicode, scancode
-            action_value = 0
+            event_value = 0
         case pygame.KEYDOWN:
             # key, mod, unicode, scancode
-            action_value = 1
+            event_value = 1
             # replace the below with proper mapping later
             if event.key == pygame.K_ESCAPE:
-                action_type = TYPE_PAUSE
+                event_type = TYPE_PAUSE
             elif event.key == pygame.K_F12:
-                action_type = TYPE_SCREENSHOT
+                event_type = TYPE_SCREENSHOT
         case pygame.JOYBUTTONUP:
             # instance_id, button
-            action_value = 0
+            event_value = 0
         case pygame.JOYBUTTONDOWN:
             # instance_id, button
-            action_value = 1
+            event_value = 1
         case pygame.JOYHATMOTION:
             # instance_id, hat, value
-            # action_value = 1
+            # event_value = 1
             pass
         case pygame.JOYAXISMOTION:
             # instance_id, axis, value
-            # action_value = 1
+            # event_value = 1
             pass
-    _controller_states[player_id][action_type] = action_value
+    _controller_states[player_id][event_type] = event_value

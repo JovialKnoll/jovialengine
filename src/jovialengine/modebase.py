@@ -4,8 +4,6 @@ from collections.abc import Iterable
 
 import pygame
 
-from .input import Action
-
 
 class ModeBase(abc.ABC):
     """This is an abstract object for game modes.
@@ -48,7 +46,7 @@ class ModeBase(abc.ABC):
 
     @final
     def input(self, events: Iterable[pygame.event.Event], input_state):
-        """All game modes can take in actions."""
+        """All game modes can take in input."""
         for event in events:
             self._inputEvent(event)
         self._inputState(input_state)
