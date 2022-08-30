@@ -119,8 +119,7 @@ class _Game(object):
         events = map(display.scaleMouseInput, events)
         events = filter(self._filterEvent, events)
         events = list(events)
-        for event in events:
-            input.takeEvent(event)
+        input.takeEvents(events)
         if input.wasInputPressed(0, input.TYPE_SCREENSHOT):
             display.takeScreenshot()
         if any(map(self._isPauseEvent, events)) or input.wasInputPressed(0, input.TYPE_PAUSE):

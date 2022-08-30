@@ -1,5 +1,6 @@
 import os
 import copy
+from collections.abc import Iterable
 
 import pygame
 
@@ -37,10 +38,11 @@ def startNewMode():
     global _pressed_mouse_buttons
     _controller_states = [[0] * _num_inputs for x in range(_max_players)]
     _pressed_mouse_buttons = dict()
-    copyToPrev()
+    _copyToPrev()
 
 
-def copyToPrev():
+def _copyToPrev():
+    """This should be called before having the input take in events."""
     global _controller_states_prev
     _controller_states_prev = copy.deepcopy(_controller_states)
 
@@ -78,42 +80,44 @@ def getInputState():
     return "new class with state and helpful functions, probably"
 
 
-def takeEvent(event: pygame.event.Event):
-    if event.type == pygame.MOUSEBUTTONDOWN:
-        _pressed_mouse_buttons[event.button] = event.pos
-    elif event.type == pygame.MOUSEBUTTONUP:
-        if event.button in _pressed_mouse_buttons:
-            del _pressed_mouse_buttons[event.button]
-    # do actual mapping
-    # if mapping results in setting a value in controller state that is already set
-    # for [player_id][event_type] then set event_type = TYPE_NONE
-    player_id = 0
-    event_type = TYPE_NONE
-    event_value = None
-    match event.type:
-        case pygame.KEYUP:
-            # key, mod, unicode, scancode
-            event_value = 0
-        case pygame.KEYDOWN:
-            # key, mod, unicode, scancode
-            event_value = 1
-            # replace the below with proper mapping later
-            if event.key == pygame.K_ESCAPE:
-                event_type = TYPE_PAUSE
-            elif event.key == pygame.K_F12:
-                event_type = TYPE_SCREENSHOT
-        case pygame.JOYBUTTONUP:
-            # instance_id, button
-            event_value = 0
-        case pygame.JOYBUTTONDOWN:
-            # instance_id, button
-            event_value = 1
-        case pygame.JOYHATMOTION:
-            # instance_id, hat, value
-            # event_value = 1
-            pass
-        case pygame.JOYAXISMOTION:
-            # instance_id, axis, value
-            # event_value = 1
-            pass
-    _controller_states[player_id][event_type] = event_value
+def takeEvents(events: Iterable[pygame.event.Event]):
+    _copyToPrev()
+    for event in events:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            _pressed_mouse_buttons[event.button] = event.pos
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if event.button in _pressed_mouse_buttons:
+                del _pressed_mouse_buttons[event.button]
+        # do actual mapping
+        # if mapping results in setting a value in controller state that is already set
+        # for [player_id][event_type] then set event_type = TYPE_NONE
+        player_id = 0
+        event_type = TYPE_NONE
+        event_value = None
+        match event.type:
+            case pygame.KEYUP:
+                # key, mod, unicode, scancode
+                event_value = 0
+            case pygame.KEYDOWN:
+                # key, mod, unicode, scancode
+                event_value = 1
+                # replace the below with proper mapping later
+                if event.key == pygame.K_ESCAPE:
+                    event_type = TYPE_PAUSE
+                elif event.key == pygame.K_F12:
+                    event_type = TYPE_SCREENSHOT
+            case pygame.JOYBUTTONUP:
+                # instance_id, button
+                event_value = 0
+            case pygame.JOYBUTTONDOWN:
+                # instance_id, button
+                event_value = 1
+            case pygame.JOYHATMOTION:
+                # instance_id, hat, value
+                # event_value = 1
+                pass
+            case pygame.JOYAXISMOTION:
+                # instance_id, axis, value
+                # event_value = 1
+                pass
+        _controller_states[player_id][event_type] = event_value

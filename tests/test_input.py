@@ -1,8 +1,6 @@
 import unittest
 import os
 
-import pygame
-
 import jovialengine.input as input
 
 
