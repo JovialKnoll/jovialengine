@@ -4,8 +4,6 @@ from collections.abc import Iterable
 
 import pygame
 
-from .input import Action
-
 
 class ModeBase(abc.ABC):
     """This is an abstract object for game modes.
@@ -38,22 +36,20 @@ class ModeBase(abc.ABC):
     def cleanup(self):
         self._all_sprites.empty()
 
-    @abc.abstractmethod
-    def _input(self, action: Action):
-        raise NotImplementedError(
-            type(self).__name__ + "._input(self, action)"
-        )
+    def _inputEvent(self, event: pygame.event.Event):
+        """Handle any input that requires looking at pygame events directly, like typing."""
+        pass
 
-    def _postInput(self):
-        """Handle any input that's checked directly, like joysticks etc."""
+    def _inputState(self, input_state):
+        """Handle all other input."""
         pass
 
     @final
-    def inputActions(self, actions: Iterable[Action]):
-        """All game modes can take in actions."""
-        for action in actions:
-            self._input(action)
-        self._postInput()
+    def input(self, events: Iterable[pygame.event.Event], input_state):
+        """All game modes can take in input."""
+        for event in events:
+            self._inputEvent(event)
+        self._inputState(input_state)
 
     def _update(self, dt: int):
         pass
