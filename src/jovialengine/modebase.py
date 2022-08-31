@@ -4,6 +4,8 @@ from collections.abc import Iterable
 
 import pygame
 
+from .inputframe import InputFrame
+
 
 class ModeBase(abc.ABC):
     """This is an abstract object for game modes.
@@ -40,16 +42,16 @@ class ModeBase(abc.ABC):
         """Handle any input that requires looking at pygame events directly, like typing."""
         pass
 
-    def _inputState(self, input_state):
+    def _inputFrame(self, input_frame: InputFrame):
         """Handle all other input."""
         pass
 
     @final
-    def input(self, events: Iterable[pygame.event.Event], input_state):
+    def input(self, events: Iterable[pygame.event.Event], input_frame: InputFrame):
         """All game modes can take in input."""
         for event in events:
             self._inputEvent(event)
-        self._inputState(input_state)
+        self._inputFrame(input_frame)
 
     def _update(self, dt: int):
         pass

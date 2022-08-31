@@ -4,6 +4,8 @@ from collections.abc import Iterable
 
 import pygame
 
+from .inputframe import ControllerStateChange, InputFrame
+
 
 TYPE_NONE = -1
 TYPE_MOUSE = -2
@@ -14,6 +16,7 @@ _max_players: int
 _num_inputs: int
 _controller_states: list[list[float | int]]
 _controller_states_prev: list[list[float | int]]
+_controller_state_changes: list[ControllerStateChange]
 _pressed_mouse_buttons: dict[int, tuple[int, int]]
 
 
@@ -35,16 +38,13 @@ def init(input_file: str, max_players: int, num_inputs: int):
 
 def startNewMode():
     global _controller_states
+    global _controller_states_prev
+    global _controller_state_changes
     global _pressed_mouse_buttons
     _controller_states = [[0] * _num_inputs for x in range(_max_players)]
+    _controller_states_prev = [[0] * _num_inputs for x in range(_max_players)]
+    _controller_state_changes = []
     _pressed_mouse_buttons = dict()
-    _copyToPrev()
-
-
-def _copyToPrev():
-    """This should be called before having the input take in events."""
-    global _controller_states_prev
-    _controller_states_prev = copy.deepcopy(_controller_states)
 
 
 def _parseFile():
@@ -61,27 +61,11 @@ def save():
         pass
 
 
-def getInputStatus(player_id: int, event_type: int):
-    return _controller_states[player_id][event_type]
-
-
-def getMouseButtonStatus(button: int):
-    if button not in _pressed_mouse_buttons:
-        return False
-    return _pressed_mouse_buttons[button]
-
-
-def wasInputPressed(player_id: int, event_type: int):
-    return _controller_states[player_id][event_type] == 1 \
-        and _controller_states_prev[player_id][event_type] == 0
-
-
-def getInputState():
-    return "new class with state and helpful functions, probably"
-
-
 def takeEvents(events: Iterable[pygame.event.Event]):
-    _copyToPrev()
+    global _controller_states_prev
+    global _controller_state_changes
+    _controller_states_prev = copy.deepcopy(_controller_states)
+    _controller_state_changes = []
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
             _pressed_mouse_buttons[event.button] = event.pos
@@ -94,30 +78,34 @@ def takeEvents(events: Iterable[pygame.event.Event]):
         player_id = 0
         event_type = TYPE_NONE
         event_value = None
+        key = getattr(event, 'key', None)
+        instance_id = getattr(event, 'instance_id', None)
+        button = getattr(event, 'button', None)
+        axis = getattr(event, 'axis', None)
+        # replace the below with proper mapping later
+        if key == pygame.K_ESCAPE:
+            event_type = TYPE_PAUSE
+        elif key == pygame.K_F12:
+            event_type = TYPE_SCREENSHOT
+
         match event.type:
-            case pygame.KEYUP:
-                # key, mod, unicode, scancode
+            case pygame.KEYUP | pygame.JOYBUTTONUP:
                 event_value = 0
-            case pygame.KEYDOWN:
-                # key, mod, unicode, scancode
+            case pygame.KEYDOWN | pygame.JOYBUTTONDOWN:
                 event_value = 1
-                # replace the below with proper mapping later
-                if event.key == pygame.K_ESCAPE:
-                    event_type = TYPE_PAUSE
-                elif event.key == pygame.K_F12:
-                    event_type = TYPE_SCREENSHOT
-            case pygame.JOYBUTTONUP:
-                # instance_id, button
-                event_value = 0
-            case pygame.JOYBUTTONDOWN:
-                # instance_id, button
-                event_value = 1
+            case pygame.JOYAXISMOTION:
+                event_value = event.value
+                pass
             case pygame.JOYHATMOTION:
                 # instance_id, hat, value
                 # event_value = 1
                 pass
-            case pygame.JOYAXISMOTION:
-                # instance_id, axis, value
-                # event_value = 1
-                pass
-        _controller_states[player_id][event_type] = event_value
+        if _controller_states[player_id][event_type] != event_value:
+            _controller_state_changes.append(
+                ControllerStateChange(player_id, event_type, event_value)
+            )
+            _controller_states[player_id][event_type] = event_value
+
+
+def getInputFrame():
+    return InputFrame(_controller_states, _controller_states_prev, _controller_state_changes)

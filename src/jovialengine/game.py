@@ -93,7 +93,20 @@ class _Game(object):
         if not self._current_mode:
             raise RuntimeError("error: self._current_mode is not set")
         events = self._filterInput(pygame.event.get())
-        self._current_mode.input(events, input.getInputState())
+        input.takeEvents(events)
+        input_frame = input.getInputFrame()
+        if input_frame.wasInputPressed(0, input.TYPE_SCREENSHOT):
+            display.takeScreenshot()
+        if any(map(self._isPauseEvent, events)) or input_frame.wasInputPressed(0, input.TYPE_PAUSE):
+            # if already in pause menu no need to do this stuff
+            if not isinstance(self._current_mode, ModeGameMenu):
+                self._current_mode = ModeGameMenuTop(self._current_mode)
+                input.startNewMode()
+                input_frame = input.getInputFrame()
+                pygame.mixer.music.pause()
+                pygame.mixer.pause()
+                events = []
+        self._current_mode.input(events, input_frame)
         for i in range(self._getTime()):
             self._current_mode.update(1)
         self._current_mode.draw(display.screen)
@@ -118,19 +131,7 @@ class _Game(object):
         """Take care of input that game modes should not take care of."""
         events = map(display.scaleMouseInput, events)
         events = filter(self._filterEvent, events)
-        events = list(events)
-        input.takeEvents(events)
-        if input.wasInputPressed(0, input.TYPE_SCREENSHOT):
-            display.takeScreenshot()
-        if any(map(self._isPauseEvent, events)) or input.wasInputPressed(0, input.TYPE_PAUSE):
-            # if already in pause menu no need to do this stuff
-            if not isinstance(self._current_mode, ModeGameMenu):
-                self._current_mode = ModeGameMenuTop(self._current_mode)
-                input.startNewMode()
-                pygame.mixer.music.pause()
-                pygame.mixer.pause()
-                events = []
-        return events
+        return list(events)
 
     def _filterEvent(self, event: pygame.event.Event):
         """If event should be handled before all others, handle it and return False, otherwise return True.
