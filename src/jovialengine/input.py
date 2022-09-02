@@ -17,7 +17,6 @@ _num_inputs: int
 _controller_states: list[list[float | int]]
 _controller_states_prev: list[list[float | int]]
 _controller_state_changes: list[ControllerStateChange]
-_pressed_mouse_buttons: dict[int, tuple[int, int]]
 
 
 def init(input_file: str, max_players: int, num_inputs: int):
@@ -40,11 +39,9 @@ def startNewMode():
     global _controller_states
     global _controller_states_prev
     global _controller_state_changes
-    global _pressed_mouse_buttons
     _controller_states = [[0] * _num_inputs for x in range(_max_players)]
     _controller_states_prev = [[0] * _num_inputs for x in range(_max_players)]
     _controller_state_changes = []
-    _pressed_mouse_buttons = dict()
 
 
 def _parseFile():
@@ -67,11 +64,6 @@ def takeEvents(events: Iterable[pygame.event.Event]):
     _controller_states_prev = copy.deepcopy(_controller_states)
     _controller_state_changes = []
     for event in events:
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            _pressed_mouse_buttons[event.button] = event.pos
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button in _pressed_mouse_buttons:
-                del _pressed_mouse_buttons[event.button]
         # do actual mapping
         # if mapping results in setting a value in controller state that is already set
         # for [player_id][event_type] then set event_type = TYPE_NONE
@@ -89,9 +81,9 @@ def takeEvents(events: Iterable[pygame.event.Event]):
             event_type = TYPE_SCREENSHOT
 
         match event.type:
-            case pygame.KEYUP | pygame.JOYBUTTONUP:
+            case pygame.KEYUP | pygame.JOYBUTTONUP | pygame.MOUSEBUTTONUP:
                 event_value = 0
-            case pygame.KEYDOWN | pygame.JOYBUTTONDOWN:
+            case pygame.KEYDOWN | pygame.JOYBUTTONDOWN | pygame.MOUSEBUTTONDOWN:
                 event_value = 1
             case pygame.JOYAXISMOTION:
                 event_value = event.value
