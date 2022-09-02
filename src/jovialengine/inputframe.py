@@ -38,3 +38,6 @@ class InputFrame(object):
                     and state_change.new_value == 1:
                 return True
         return False
+
+    def getCurrentValue(self, player_id: int, event_type: int):
+        return self._controller_states[player_id][event_type]
