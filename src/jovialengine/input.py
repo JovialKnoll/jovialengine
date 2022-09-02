@@ -1,5 +1,6 @@
 import os
 import copy
+import enum
 from collections.abc import Iterable
 
 import pygame
@@ -7,10 +8,18 @@ import pygame
 from .inputframe import ControllerStateChange, InputFrame
 
 
+class InputType(enum.Enum):
+    KEYBOARD = enum.auto()
+    MOUSE = enum.auto()
+    CON_BUTTON = enum.auto()
+    CON_HAT = enum.auto()
+    CON_AXIS = enum.auto()
+
+
 TYPE_NONE = -1
-TYPE_MOUSE = -2
 TYPE_PAUSE = 0
 TYPE_SCREENSHOT = 1
+INPUT_TYPE_START_POS = 2
 _input_file: str | None = None
 _max_players: int
 _num_inputs: int
@@ -64,39 +73,50 @@ def takeEvents(events: Iterable[pygame.event.Event]):
     _controller_states_prev = copy.deepcopy(_controller_states)
     _controller_state_changes = []
     for event in events:
-        # do actual mapping
-        # if mapping results in setting a value in controller state that is already set
-        # for [player_id][event_type] then set event_type = TYPE_NONE
-        player_id = 0
-        event_type = TYPE_NONE
-        event_value = None
-        key = getattr(event, 'key', None)
-        instance_id = getattr(event, 'instance_id', None)
-        button = getattr(event, 'button', None)
-        axis = getattr(event, 'axis', None)
-        # replace the below with proper mapping later
-        if key == pygame.K_ESCAPE:
-            event_type = TYPE_PAUSE
-        elif key == pygame.K_F12:
-            event_type = TYPE_SCREENSHOT
-
         match event.type:
-            case pygame.KEYUP | pygame.JOYBUTTONUP | pygame.MOUSEBUTTONUP:
-                event_value = 0
-            case pygame.KEYDOWN | pygame.JOYBUTTONDOWN | pygame.MOUSEBUTTONDOWN:
-                event_value = 1
-            case pygame.JOYAXISMOTION:
-                event_value = event.value
-                pass
+            case pygame.KEYUP | pygame.KEYDOWN:
+                player_id, event_type = _mapEvent(InputType.KEYBOARD, event.key)
+                _logEvent(player_id, event_type, 1 if event.type == pygame.KEYDOWN else 0)
+            case pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
+                player_id, event_type = _mapEvent(InputType.MOUSE, event.button)
+                _logEvent(player_id, event_type, 1 if event.type == pygame.MOUSEBUTTONDOWN else 0)
+            case pygame.JOYBUTTONUP | pygame.JOYBUTTONDOWN:
+                player_id, event_type = _mapEvent(InputType.CON_BUTTON, event.button)
+                _logEvent(player_id, event_type, 1 if event.type == pygame.JOYBUTTONDOWN else 0)
             case pygame.JOYHATMOTION:
-                # instance_id, hat, value
-                # event_value = 1
+                hat_value_left_right_up_down = (
+                    1 if event.value[0] == -1 else 0,
+                    1 if event.value[0] == 1 else 0,
+                    1 if event.value[1] == 1 else 0,
+                    1 if event.value[1] == -1 else 0,
+                )
+                for i, event_value in enumerate(hat_value_left_right_up_down):
+                    player_id, event_type = _mapEvent(InputType.CON_HAT, event.hat * 4 + i)
+                    _logEvent(player_id, event_type, event_value)
+            case pygame.JOYAXISMOTION:
+                # event.value
                 pass
-        if _controller_states[player_id][event_type] != event_value:
-            _controller_state_changes.append(
-                ControllerStateChange(player_id, event_type, event_value)
-            )
-            _controller_states[player_id][event_type] = event_value
+
+
+def _mapEvent(input_type: InputType, input_id: int):
+    # fill out these based on mapping
+    player_id = 0
+    event_type = TYPE_NONE
+    # replace the below with proper mapping later
+    if input_type == InputType.KEYBOARD:
+        if input_id == pygame.K_ESCAPE:
+            event_type = TYPE_PAUSE
+        elif input_id == pygame.K_F12:
+            event_type = TYPE_SCREENSHOT
+    return player_id, event_type
+
+
+def _logEvent(player_id: int, event_type: int, event_value: float | int):
+    if _controller_states[player_id][event_type] != event_value:
+        _controller_state_changes.append(
+            ControllerStateChange(player_id, event_type, event_value)
+        )
+        _controller_states[player_id][event_type] = event_value
 
 
 def getInputFrame():
