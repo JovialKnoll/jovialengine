@@ -23,7 +23,7 @@ class TestInput(unittest.TestCase):
     def test_init(self):
         # Assert
         self.assertEqual(len(input._controller_states), 1)
-        self.assertEqual(len(input._controller_states[0]), 10)
+        self.assertEqual(len(input._controller_states[0]), 8)
 
 
 if __name__ == '__main__':
