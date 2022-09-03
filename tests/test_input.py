@@ -10,7 +10,14 @@ class TestInput(unittest.TestCase):
         input.init(
             os.path.join('.', 'input.cfg'),
             1,
-            10
+            (
+                "Left",
+                "Right",
+                "Up",
+                "Down",
+                "Confirm",
+                "Cancel",
+            )
         )
 
     def test_init(self):
