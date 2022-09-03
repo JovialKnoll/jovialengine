@@ -67,7 +67,7 @@ def save():
     # save on confirming changes to key mappings
     with open(_input_file, 'w') as file:
         # write in custom file format here
-        #
+        # input_name:input_type.name-controller_id-input_id
         pass
 
 
@@ -113,6 +113,7 @@ def _mapEvent(input_type: InputType, input_id: int, controller_id: int = 0):
     # fill out these based on mapping
     player_id = 0
     event_type = TYPE_NONE
+
     # replace the below with proper mapping later
     if input_type == InputType.KEYBOARD:
         if input_id == pygame.K_ESCAPE:
