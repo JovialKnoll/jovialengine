@@ -22,16 +22,18 @@ TYPE_SCREENSHOT = 1
 INPUT_TYPE_START_POS = 2
 _input_file: str | None = None
 _max_players: int
+_input_names: tuple[str]
 _num_inputs: int
 _controller_states: list[list[float | int]]
 _controller_states_prev: list[list[float | int]]
 _controller_state_changes: list[ControllerStateChange]
 
 
-def init(input_file: str, max_players: int, num_inputs: int):
+def init(input_file: str, max_players: int, input_names: tuple[str]):
     global _input_file
-    global _num_inputs
     global _max_players
+    global _input_names
+    global _num_inputs
     if _input_file:
         raise RuntimeError("error: _input_file is already set")
     _input_file = input_file
@@ -40,7 +42,8 @@ def init(input_file: str, max_players: int, num_inputs: int):
     # load in input mapping from config
     # make objects to hold onto current virtual gamepad states
     _max_players = max_players
-    _num_inputs = num_inputs
+    _input_names = input_names
+    _num_inputs = INPUT_TYPE_START_POS + len(input_names)
     startNewMode()
 
 
@@ -64,6 +67,7 @@ def save():
     # save on confirming changes to key mappings
     with open(_input_file, 'w') as file:
         # write in custom file format here
+        #
         pass
 
 

@@ -39,7 +39,7 @@ class _Game(object):
         title: str,
         window_icon: str | None,
         max_players: int,
-        num_inputs: int,
+        input_names: tuple[str],
         font_location: str | None,
         font_size: int,
         font_height: int,
@@ -63,7 +63,7 @@ class _Game(object):
         input.init(
             os.path.join(src_directory, 'input.cfg'),
             max_players,
-            num_inputs
+            input_names
         )
         if font_location:
             font = pygame.font.Font(font_location, font_size)
@@ -178,7 +178,7 @@ def initGame(
     title: str,
     window_icon: str | None,
     max_players: int,
-    num_inputs: int,
+    input_names: tuple[str],
     font_location: str | None,
     font_size: int,
     font_height: int,
@@ -212,7 +212,7 @@ def initGame(
         title,
         window_icon,
         max_players,
-        num_inputs,
+        input_names,
         font_location,
         font_size,
         font_height,
