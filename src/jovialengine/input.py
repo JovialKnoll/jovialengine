@@ -81,7 +81,7 @@ def takeEvents(events: Iterable[pygame.event.Event]):
                 player_id, event_type = _mapEvent(InputType.MOUSE, event.button)
                 _logEvent(player_id, event_type, 1 if event.type == pygame.MOUSEBUTTONDOWN else 0)
             case pygame.JOYBUTTONUP | pygame.JOYBUTTONDOWN:
-                player_id, event_type = _mapEvent(InputType.CON_BUTTON, event.button)
+                player_id, event_type = _mapEvent(InputType.CON_BUTTON, event.button, event.instance_id)
                 _logEvent(player_id, event_type, 1 if event.type == pygame.JOYBUTTONDOWN else 0)
             case pygame.JOYHATMOTION:
                 hat_value_left_right_up_down = (
@@ -91,14 +91,21 @@ def takeEvents(events: Iterable[pygame.event.Event]):
                     1 if event.value[1] == -1 else 0,
                 )
                 for i, event_value in enumerate(hat_value_left_right_up_down):
-                    player_id, event_type = _mapEvent(InputType.CON_HAT, event.hat * 4 + i)
+                    player_id, event_type = _mapEvent(InputType.CON_HAT, event.hat * 4 + i, event.instance_id)
                     _logEvent(player_id, event_type, event_value)
             case pygame.JOYAXISMOTION:
+                axis_value_back_forth = (
+                    event.value * -1 if event.value < 0 else 0,
+                    event.value if event.value > 0 else 0,
+                )
+                for i, event_value in enumerate(axis_value_back_forth):
+                    player_id, event_type = _mapEvent(InputType.CON_AXIS, event.axis * 2 + i, event.instance_id)
+                    _logEvent(player_id, event_type, event_value)
                 # event.value
                 pass
 
 
-def _mapEvent(input_type: InputType, input_id: int):
+def _mapEvent(input_type: InputType, input_id: int, controller_id: int = 0):
     # fill out these based on mapping
     player_id = 0
     event_type = TYPE_NONE
