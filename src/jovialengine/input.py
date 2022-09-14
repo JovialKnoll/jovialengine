@@ -16,34 +16,76 @@ class InputType(enum.Enum):
     CON_AXIS = enum.auto()
 
 
+class InputDefault(object):
+    __slots__ = (
+        'player_id',
+        'event_type',
+        'input_type',
+        'input_id',
+        'controller_id',
+    )
+
+    def __init__(
+        self,
+        player_id: int,
+        event_type: int,
+        input_type: InputType,
+        input_id: int,
+        controller_id: int = 0
+    ):
+        self.player_id = player_id
+        self.event_type = event_type
+        self.input_type = input_type
+        self.input_id = input_id
+        self.controller_id = controller_id
+
+    def getMapKey(self):
+        return (
+            self.input_type,
+            self.input_id,
+            self.controller_id,
+        )
+
+    def getMapValue(self):
+        return (
+            self.player_id,
+            self.event_type,
+        )
+
+
 TYPE_NONE = -1
 TYPE_PAUSE = 0
 TYPE_SCREENSHOT = 1
-INPUT_TYPE_START_POS = 2
+EVENT_TYPE_START_POS = 2
 _input_file: str | None = None
 _max_players: int
-_input_names: tuple[str]
+_event_names: tuple[str]
 _num_inputs: int
 _controller_states: list[list[float | int]]
 _controller_states_prev: list[list[float | int]]
 _controller_state_changes: list[ControllerStateChange]
+_input_mapping: dict[tuple[InputType, int, int], tuple[int, int]]
 
 
-def init(input_file: str, max_players: int, input_names: tuple[str]):
+def init(input_file: str, max_players: int, event_names: tuple[str], input_defaults: tuple[InputDefault]):
     global _input_file
     global _max_players
-    global _input_names
+    global _event_names
     global _num_inputs
     if _input_file:
         raise RuntimeError("error: _input_file is already set")
     _input_file = input_file
     if os.path.exists(_input_file):
-        _parseFile()
-    # load in input mapping from config
-    # make objects to hold onto current virtual gamepad states
+        with open(_input_file, 'r') as file:
+            # read in custom file format here
+            # save into dictionary / dictionaries for fast comparisons
+            pass
+    else:
+        for input_default in input_defaults:
+            _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
     _max_players = max_players
-    _input_names = input_names
-    _num_inputs = INPUT_TYPE_START_POS + len(input_names)
+    _event_names = event_names
+    _num_inputs = EVENT_TYPE_START_POS + len(event_names)
     startNewMode()
 
 
@@ -56,19 +98,12 @@ def startNewMode():
     _controller_state_changes = []
 
 
-def _parseFile():
-    with open(_input_file, 'r') as file:
-        # read in custom file format here
-        # save into dictionary / dictionaries for fast comparisons
-        pass
-
-
 def save():
     # save on confirming changes to key mappings
     with open(_input_file, 'w') as file:
         # write in custom file format here
-        # input_name:input_type-name-controller_id-input_id
-        # input_name:input_type-name-controller_id-input_id,input_type-name-controller_id-input_id
+        # player_id;event_name:input_type.name-controller_id-input_id
+        # player_id;event_name:input_type.name-controller_id-input_id,input_type-name-controller_id-input_id
         pass
 
 
@@ -106,8 +141,6 @@ def takeEvents(events: Iterable[pygame.event.Event]):
                 for i, event_value in enumerate(axis_value_back_forth):
                     player_id, event_type = _mapEvent(InputType.CON_AXIS, event.axis * 2 + i, event.instance_id)
                     _logEvent(player_id, event_type, event_value)
-                # event.value
-                pass
 
 
 def _mapEvent(input_type: InputType, input_id: int, controller_id: int = 0):
