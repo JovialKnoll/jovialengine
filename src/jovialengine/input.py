@@ -40,10 +40,10 @@ class InputDefault(object):
         self.controller_id = controller_id
 
     def getMapKey(self):
-        return (
+        return _getMapKey(
             self.input_type,
             self.input_id,
-            self.controller_id,
+            self.controller_id
         )
 
     def getMapValue(self):
@@ -143,21 +143,29 @@ def takeEvents(events: Iterable[pygame.event.Event]):
                     _logEvent(player_id, event_type, event_value)
 
 
+def _getMapKey(input_type: InputType, input_id: int, controller_id: int):
+    return (
+        input_type,
+        input_id,
+        controller_id,
+    )
+
+
 def _mapEvent(input_type: InputType, input_id: int, controller_id: int = 0):
-    # fill out these based on mapping
-    player_id = 0
-    event_type = TYPE_NONE
     # replace the below with proper mapping later
     if input_type == InputType.KEYBOARD:
         if input_id == pygame.K_ESCAPE:
-            event_type = TYPE_PAUSE
+            return 0, TYPE_PAUSE
         elif input_id == pygame.K_F12:
-            event_type = TYPE_SCREENSHOT
-    return player_id, event_type
+            return 0, TYPE_SCREENSHOT
+    return _input_mapping.get(
+        _getMapKey(input_type, input_id, controller_id),
+        (0, TYPE_NONE,)
+    )
 
 
 def _logEvent(player_id: int, event_type: int, event_value: float | int):
-    if _controller_states[player_id][event_type] != event_value:
+    if event_type != TYPE_NONE and _controller_states[player_id][event_type] != event_value:
         _controller_state_changes.append(
             ControllerStateChange(player_id, event_type, event_value)
         )
