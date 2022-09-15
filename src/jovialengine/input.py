@@ -61,6 +61,7 @@ _input_file: str | None = None
 _max_players: int
 _event_names: tuple[str]
 _num_inputs: int
+_input_defaults: tuple[InputDefault]
 _input_mapping: dict[tuple[InputType, int, int], tuple[int, int]]
 _controller_states: list[list[float | int]]
 _controller_states_prev: list[list[float | int]]
@@ -72,6 +73,7 @@ def init(input_file: str, max_players: int, event_names: tuple[str], input_defau
     global _max_players
     global _event_names
     global _num_inputs
+    global _input_defaults
     global _input_mapping
     if _input_file:
         raise RuntimeError("error: _input_file is already set")
@@ -79,6 +81,7 @@ def init(input_file: str, max_players: int, event_names: tuple[str], input_defau
     _max_players = max_players
     _event_names = event_names
     _num_inputs = EVENT_TYPE_START_POS + len(event_names)
+    _input_defaults = input_defaults
     _input_mapping = dict()
     if os.path.exists(_input_file):
         with open(_input_file, 'r') as file:
