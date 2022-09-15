@@ -110,6 +110,8 @@ def resetDefaultMapping():
 def save():
     # save on confirming changes to key mappings
     with open(_input_file, 'w') as file:
+        for key, value in _input_mapping.items():
+            pass
         # write in custom file format here
         # player_id;event_name:input_type.name-controller_id-input_id
         # player_id;event_name:input_type.name-controller_id-input_id,input_type-name-controller_id-input_id
