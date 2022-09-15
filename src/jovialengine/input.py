@@ -108,14 +108,27 @@ def resetDefaultMapping():
 
 
 def save():
-    # save on confirming changes to key mappings
+    mapping_to_write: dict[tuple[int, int], list[tuple[InputType, int, int]]] = dict()
+    for key, value in _input_mapping.items():
+        if value not in mapping_to_write:
+            mapping_to_write[value] = []
+        mapping_to_write[value].append(key)
     with open(_input_file, 'w') as file:
-        for key, value in _input_mapping.items():
-            pass
-        # write in custom file format here
-        # player_id;event_name:input_type.name-controller_id-input_id
-        # player_id;event_name:input_type.name-controller_id-input_id,input_type-name-controller_id-input_id
-        pass
+        for write_key, write_value in mapping_to_write.items():
+            line = '{};{}:{}'.format(
+                write_key[0],
+                write_key[1],
+                ','.join(
+                    [
+                        f'{item[0].name}-{item[1]}-{item[2]}'
+                        for item
+                        in write_value
+                    ]
+                )
+            )
+            print(line, file=file)
+        # player_id;event_name:input_type.name-input_id-controller_id
+        # player_id;event_name:input_type.name-input_id-controller_id,input_type-name-input_id-controller_id
 
 
 def takeEvents(events: Iterable[pygame.event.Event]):
