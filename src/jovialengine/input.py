@@ -57,6 +57,10 @@ TYPE_NONE = -1
 TYPE_PAUSE = 0
 TYPE_SCREENSHOT = 1
 EVENT_TYPE_START_POS = 2
+ENGINE_INPUT_DEFAULTS = (
+    InputDefault(0, TYPE_PAUSE, InputType.KEYBOARD, pygame.K_ESCAPE),
+    InputDefault(0, TYPE_SCREENSHOT, InputType.KEYBOARD, pygame.K_F12),
+)
 _input_file: str | None = None
 _max_players: int
 _event_names: tuple[str]
@@ -103,8 +107,21 @@ def startNewMode():
 def resetDefaultMapping():
     global _input_mapping
     _input_mapping = dict()
+    for input_default in ENGINE_INPUT_DEFAULTS:
+        _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
     for input_default in _input_defaults:
         _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
+
+
+def _getSaveInput(input_type: InputType, input_id: int, controller_id: int):
+    result = f'{input_type.name}-'
+    if input_type == InputType.KEYBOARD:
+        result += pygame.key.name(input_id)
+    else:
+        result += str(input_id)
+    if input_type in (InputType.CON_BUTTON, InputType.CON_HAT, InputType.CON_AXIS):
+        result += f'-{controller_id}'
+    return result
 
 
 def save():
@@ -117,10 +134,10 @@ def save():
         for write_key, write_value in mapping_to_write.items():
             line = '{};{}:{}'.format(
                 write_key[0],
-                write_key[1],
+                _event_names[write_key[1] - EVENT_TYPE_START_POS],
                 ','.join(
                     [
-                        f'{item[0].name}-{item[1]}-{item[2]}'
+                        _getSaveInput(item[0], item[1], item[2])
                         for item
                         in write_value
                     ]
@@ -176,12 +193,6 @@ def _getMapKey(input_type: InputType, input_id: int, controller_id: int):
 
 
 def _mapEvent(input_type: InputType, input_id: int, controller_id: int = 0):
-    # replace the below with proper mapping later
-    if input_type == InputType.KEYBOARD:
-        if input_id == pygame.K_ESCAPE:
-            return 0, TYPE_PAUSE
-        elif input_id == pygame.K_F12:
-            return 0, TYPE_SCREENSHOT
     return _input_mapping.get(
         _getMapKey(input_type, input_id, controller_id),
         (0, TYPE_NONE,)

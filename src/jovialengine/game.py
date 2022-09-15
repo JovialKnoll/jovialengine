@@ -124,6 +124,7 @@ class _Game(object):
         self._is_first_loop = False
         if not self.running:
             config.save()
+            input.save()
             self._current_mode = None
             self.state = None
             pygame.quit()
