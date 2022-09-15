@@ -74,7 +74,6 @@ def init(input_file: str, max_players: int, event_names: tuple[str], input_defau
     global _event_names
     global _num_inputs
     global _input_defaults
-    global _input_mapping
     if _input_file:
         raise RuntimeError("error: _input_file is already set")
     _input_file = input_file
@@ -82,15 +81,13 @@ def init(input_file: str, max_players: int, event_names: tuple[str], input_defau
     _event_names = event_names
     _num_inputs = EVENT_TYPE_START_POS + len(event_names)
     _input_defaults = input_defaults
-    _input_mapping = dict()
     if os.path.exists(_input_file):
         with open(_input_file, 'r') as file:
             # read in custom file format here
             # save into dictionary / dictionaries for fast comparisons
             pass
     else:
-        for input_default in input_defaults:
-            _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
+        resetDefaultMapping()
     startNewMode()
 
 
@@ -101,6 +98,13 @@ def startNewMode():
     _controller_states = [[0] * _num_inputs for x in range(_max_players)]
     _controller_states_prev = [[0] * _num_inputs for x in range(_max_players)]
     _controller_state_changes = []
+
+
+def resetDefaultMapping():
+    global _input_mapping
+    _input_mapping = dict()
+    for input_default in _input_defaults:
+        _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
 
 
 def save():
