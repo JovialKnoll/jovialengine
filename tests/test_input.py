@@ -1,6 +1,8 @@
 import unittest
 import os
 
+import pygame
+
 import jovialengine.input as input
 
 
@@ -17,6 +19,9 @@ class TestInput(unittest.TestCase):
                 "Down",
                 "Confirm",
                 "Cancel",
+            ),
+            (
+                input.InputDefault(0, input.EVENT_TYPE_START_POS, input.InputType.KEYBOARD, pygame.K_a),
             )
         )
 
