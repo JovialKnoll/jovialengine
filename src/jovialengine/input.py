@@ -132,16 +132,17 @@ def save():
         mapping_to_write[value].append(key)
     with open(_input_file, 'w') as file:
         for write_key, write_value in mapping_to_write.items():
+            inputs = ','.join(
+                [
+                    _getSaveInput(item[0], item[1], item[2])
+                    for item
+                    in write_value
+                ]
+            )
             line = '{};{}:{}'.format(
                 write_key[0],
                 _event_names[write_key[1] - EVENT_TYPE_START_POS],
-                ','.join(
-                    [
-                        _getSaveInput(item[0], item[1], item[2])
-                        for item
-                        in write_value
-                    ]
-                )
+                inputs
             )
             print(line, file=file)
         # player_id;event_name:input_type.name-input_id-controller_id
