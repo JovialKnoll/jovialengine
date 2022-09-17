@@ -56,11 +56,15 @@ class InputDefault(object):
 TYPE_NONE = -1
 TYPE_PAUSE = 0
 TYPE_SCREENSHOT = 1
-EVENT_TYPE_START_POS = 2
+ENGINE_INPUT_NAMES = (
+    "Pause",
+    "Screenshot",
+)
 ENGINE_INPUT_DEFAULTS = (
     InputDefault(0, TYPE_PAUSE, InputType.KEYBOARD, pygame.K_ESCAPE),
     InputDefault(0, TYPE_SCREENSHOT, InputType.KEYBOARD, pygame.K_F12),
 )
+EVENT_TYPE_START_POS = len(ENGINE_INPUT_NAMES)
 _input_file: str | None = None
 _max_players: int
 _event_names: tuple[str]
@@ -82,7 +86,7 @@ def init(input_file: str, max_players: int, event_names: tuple[str], input_defau
         raise RuntimeError("error: _input_file is already set")
     _input_file = input_file
     _max_players = max_players
-    _event_names = event_names
+    _event_names = ENGINE_INPUT_NAMES + event_names
     _num_inputs = EVENT_TYPE_START_POS + len(event_names)
     _input_defaults = input_defaults
     if os.path.exists(_input_file):
@@ -113,6 +117,24 @@ def resetDefaultMapping():
 def _load():
     global _input_mapping
     with open(_input_file, 'r') as file:
+        for line in file:
+            line_parts = line.strip().split(';')
+            player_id = int(line_parts[0].strip())
+            line_parts = line_parts[1].strip().split(':')
+            event_name = line_parts[0].strip()
+            # event_type = get from event_name
+            input_sections = line_parts[1].strip().split(',')
+            for input_section in input_sections:
+                if not input_section:
+                    continue
+                input_parts = input_section.strip().split('-')
+                input_type_name = input_parts[0]
+                # input_type = get from input_type_name
+                input_id_or_name = input_parts[1]
+                # input_id = get from input_id_or_name based on input_type
+                controller_id = 0
+                if len(input_parts) == 3:
+                    controller_id = input_parts[2]
         # read in custom file format here
         # save into dictionary / dictionaries for fast comparisons
         pass
@@ -146,7 +168,7 @@ def save():
             )
             line = '{};{}:{}'.format(
                 write_key[0],
-                _event_names[write_key[1] - EVENT_TYPE_START_POS],
+                _event_names[write_key[1]],
                 inputs
             )
             print(line, file=file)
