@@ -86,10 +86,7 @@ def init(input_file: str, max_players: int, event_names: tuple[str], input_defau
     _num_inputs = EVENT_TYPE_START_POS + len(event_names)
     _input_defaults = input_defaults
     if os.path.exists(_input_file):
-        with open(_input_file, 'r') as file:
-            # read in custom file format here
-            # save into dictionary / dictionaries for fast comparisons
-            pass
+        _load()
     else:
         resetDefaultMapping()
     startNewMode()
@@ -111,6 +108,14 @@ def resetDefaultMapping():
         _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
     for input_default in _input_defaults:
         _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
+
+
+def _load():
+    global _input_mapping
+    with open(_input_file, 'r') as file:
+        # read in custom file format here
+        # save into dictionary / dictionaries for fast comparisons
+        pass
 
 
 def _getSaveInput(input_type: InputType, input_id: int, controller_id: int):
