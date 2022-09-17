@@ -127,14 +127,14 @@ def _load():
             player_id = int(line_parts[0].strip())
             line_parts = line_parts[1].strip().split(_EVENT_SEP)
             event_name = line_parts[0].strip()
-            # event_type = get from event_name
+            event_type = _event_names.index(event_name)
             input_sections = line_parts[1].strip().split(_INPUT_SEP)
             for input_section in input_sections:
                 if not input_section:
                     continue
                 input_parts = input_section.strip().split(_PART_SEP)
                 input_type_name = input_parts[0]
-                # input_type = get from input_type_name
+                input_type = InputType[input_type_name]
                 input_id_or_name = input_parts[1]
                 # input_id = get from input_id_or_name based on input_type
                 controller_id = 0
