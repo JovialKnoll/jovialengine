@@ -114,20 +114,25 @@ def resetDefaultMapping():
         _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
 
 
+_PLAYER_SEP = ';'
+_EVENT_SEP = ':'
+_INPUT_SEP = ','
+_PART_SEP = '-'
+
 def _load():
     global _input_mapping
     with open(_input_file, 'r') as file:
         for line in file:
-            line_parts = line.strip().split(';')
+            line_parts = line.strip().split(_PLAYER_SEP)
             player_id = int(line_parts[0].strip())
-            line_parts = line_parts[1].strip().split(':')
+            line_parts = line_parts[1].strip().split(_EVENT_SEP)
             event_name = line_parts[0].strip()
             # event_type = get from event_name
-            input_sections = line_parts[1].strip().split(',')
+            input_sections = line_parts[1].strip().split(_INPUT_SEP)
             for input_section in input_sections:
                 if not input_section:
                     continue
-                input_parts = input_section.strip().split('-')
+                input_parts = input_section.strip().split(_PART_SEP)
                 input_type_name = input_parts[0]
                 # input_type = get from input_type_name
                 input_id_or_name = input_parts[1]
@@ -141,13 +146,13 @@ def _load():
 
 
 def _getSaveInput(input_type: InputType, input_id: int, controller_id: int):
-    result = f'{input_type.name}-'
+    result = f'{input_type.name}{_PART_SEP}'
     if input_type == InputType.KEYBOARD:
         result += pygame.key.name(input_id)
     else:
         result += str(input_id)
     if input_type in (InputType.CON_BUTTON, InputType.CON_HAT, InputType.CON_AXIS):
-        result += f'-{controller_id}'
+        result += f'{_PART_SEP}{controller_id}'
     return result
 
 
@@ -159,14 +164,14 @@ def save():
         mapping_to_write[value].append(key)
     with open(_input_file, 'w') as file:
         for write_key, write_value in mapping_to_write.items():
-            inputs = ','.join(
+            inputs = _INPUT_SEP.join(
                 [
                     _getSaveInput(item[0], item[1], item[2])
                     for item
                     in write_value
                 ]
             )
-            line = '{};{}:{}'.format(
+            line = ('{}' + _PLAYER_SEP + '{}' + _EVENT_SEP + '{}').format(
                 write_key[0],
                 _event_names[write_key[1]],
                 inputs
