@@ -108,9 +108,7 @@ def startNewMode():
 def resetDefaultMapping():
     global _input_mapping
     _input_mapping = dict()
-    for input_default in ENGINE_INPUT_DEFAULTS:
-        _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
-    for input_default in _input_defaults:
+    for input_default in ENGINE_INPUT_DEFAULTS + _input_defaults:
         _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
 
 
@@ -122,6 +120,7 @@ _PART_SEP = '-'
 
 def _load():
     global _input_mapping
+    _input_mapping = dict()
     with open(_input_file, 'r') as file:
         for line in file:
             line_parts = line.strip().split(_PLAYER_SEP)
@@ -145,9 +144,7 @@ def _load():
                 controller_id = 0
                 if len(input_parts) == 3:
                     controller_id = int(input_parts[2])
-        # read in custom file format here
-        # save into dictionary / dictionaries for fast comparisons
-        pass
+                _input_mapping[_getMapKey(input_type, input_id, controller_id)] = (player_id, event_type)
 
 
 def _getSaveInput(input_type: InputType, input_id: int, controller_id: int):
