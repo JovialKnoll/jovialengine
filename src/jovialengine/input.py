@@ -119,6 +119,7 @@ _EVENT_SEP = ':'
 _INPUT_SEP = ','
 _PART_SEP = '-'
 
+
 def _load():
     global _input_mapping
     with open(_input_file, 'r') as file:
@@ -136,10 +137,14 @@ def _load():
                 input_type_name = input_parts[0]
                 input_type = InputType[input_type_name]
                 input_id_or_name = input_parts[1]
-                # input_id = get from input_id_or_name based on input_type
+                input_id: int
+                if input_type == InputType.KEYBOARD:
+                    input_id = pygame.key.key_code(input_id_or_name)
+                else:
+                    input_id = int(input_id_or_name)
                 controller_id = 0
                 if len(input_parts) == 3:
-                    controller_id = input_parts[2]
+                    controller_id = int(input_parts[2])
         # read in custom file format here
         # save into dictionary / dictionaries for fast comparisons
         pass
@@ -177,8 +182,6 @@ def save():
                 inputs
             )
             print(line, file=file)
-        # player_id;event_name:input_type.name-input_id-controller_id
-        # player_id;event_name:input_type.name-input_id-controller_id,input_type-name-input_id-controller_id
 
 
 def takeEvents(events: Iterable[pygame.event.Event]):
