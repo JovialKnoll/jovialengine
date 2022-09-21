@@ -56,15 +56,15 @@ class InputDefault(object):
 TYPE_NONE = -1
 TYPE_PAUSE = 0
 TYPE_SCREENSHOT = 1
-ENGINE_INPUT_NAMES = (
+_ENGINE_INPUT_NAMES = (
     "Pause",
     "Screenshot",
 )
-ENGINE_INPUT_DEFAULTS = (
+_ENGINE_INPUT_DEFAULTS = (
     InputDefault(0, TYPE_PAUSE, InputType.KEYBOARD, pygame.K_ESCAPE),
     InputDefault(0, TYPE_SCREENSHOT, InputType.KEYBOARD, pygame.K_F12),
 )
-EVENT_TYPE_START_POS = len(ENGINE_INPUT_NAMES)
+EVENT_TYPE_START_POS = len(_ENGINE_INPUT_NAMES)
 _input_file: str | None = None
 _max_players: int
 _event_names: tuple[str]
@@ -86,7 +86,7 @@ def init(input_file: str, max_players: int, event_names: tuple[str], input_defau
         raise RuntimeError("error: _input_file is already set")
     _input_file = input_file
     _max_players = max_players
-    _event_names = ENGINE_INPUT_NAMES + event_names
+    _event_names = _ENGINE_INPUT_NAMES + event_names
     _num_inputs = EVENT_TYPE_START_POS + len(event_names)
     _input_defaults = input_defaults
     if os.path.exists(_input_file):
@@ -108,7 +108,7 @@ def startNewMode():
 def resetDefaultMapping():
     global _input_mapping
     _input_mapping = dict()
-    for input_default in ENGINE_INPUT_DEFAULTS + _input_defaults:
+    for input_default in _ENGINE_INPUT_DEFAULTS + _input_defaults:
         _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
 
 
