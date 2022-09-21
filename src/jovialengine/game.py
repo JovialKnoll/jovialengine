@@ -95,6 +95,7 @@ class _Game(object):
         if not self._current_mode:
             raise RuntimeError("error: self._current_mode is not set")
         events = self._filterInput(pygame.event.get())
+        # todo: make takeEvents return events so I can filter out screenshot press etc
         input.takeEvents(events)
         input_frame = input.getInputFrame()
         if input_frame.wasInputPressed(0, input.TYPE_SCREENSHOT):
