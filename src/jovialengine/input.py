@@ -243,8 +243,7 @@ def _logEvent(player_id: int, event_type: int, event_value: float | int):
             ControllerStateChange(player_id, event_type, event_value)
         )
         _controller_states[player_id][event_type] = event_value
-    # engine events don't need to be passed as events to game modes
-    return event_type == TYPE_NONE or event_type >= EVENT_TYPE_START_POS
+    return event_type != TYPE_SCREENSHOT
 
 
 def getInputFrame():
