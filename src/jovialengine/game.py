@@ -39,7 +39,8 @@ class _Game(object):
         title: str,
         window_icon: str | None,
         max_players: int,
-        num_inputs: int,
+        event_names: tuple[str],
+        input_defaults: tuple[input.InputDefault],
         font_location: str | None,
         font_size: int,
         font_height: int,
@@ -63,7 +64,8 @@ class _Game(object):
         input.init(
             os.path.join(src_directory, 'input.cfg'),
             max_players,
-            num_inputs
+            event_names,
+            input_defaults
         )
         if font_location:
             font = pygame.font.Font(font_location, font_size)
@@ -93,7 +95,20 @@ class _Game(object):
         if not self._current_mode:
             raise RuntimeError("error: self._current_mode is not set")
         events = self._filterInput(pygame.event.get())
-        self._current_mode.input(events, input.getInputState())
+        events = input.takeEvents(events)
+        input_frame = input.getInputFrame()
+        if input_frame.wasInputPressed(0, input.TYPE_SCREENSHOT):
+            display.takeScreenshot()
+        if any(map(self._isPauseEvent, events)) or input_frame.wasInputPressed(0, input.TYPE_PAUSE):
+            # if already in pause menu no need to do this stuff
+            if not isinstance(self._current_mode, ModeGameMenu):
+                self._current_mode = ModeGameMenuTop(self._current_mode)
+                input.startNewMode()
+                input_frame = input.getInputFrame()
+                pygame.mixer.music.pause()
+                pygame.mixer.pause()
+                events = []
+        self._current_mode.input(events, input_frame)
         for i in range(self._getTime()):
             self._current_mode.update(1)
         self._current_mode.draw(display.screen)
@@ -109,6 +124,7 @@ class _Game(object):
         self._is_first_loop = False
         if not self.running:
             config.save()
+            input.save()
             self._current_mode = None
             self.state = None
             pygame.quit()
@@ -118,19 +134,7 @@ class _Game(object):
         """Take care of input that game modes should not take care of."""
         events = map(display.scaleMouseInput, events)
         events = filter(self._filterEvent, events)
-        events = list(events)
-        input.takeEvents(events)
-        if input.wasInputPressed(0, input.TYPE_SCREENSHOT):
-            display.takeScreenshot()
-        if any(map(self._isPauseEvent, events)) or input.wasInputPressed(0, input.TYPE_PAUSE):
-            # if already in pause menu no need to do this stuff
-            if not isinstance(self._current_mode, ModeGameMenu):
-                self._current_mode = ModeGameMenuTop(self._current_mode)
-                input.startNewMode()
-                pygame.mixer.music.pause()
-                pygame.mixer.pause()
-                events = []
-        return events
+        return list(events)
 
     def _filterEvent(self, event: pygame.event.Event):
         """If event should be handled before all others, handle it and return False, otherwise return True.
@@ -177,7 +181,8 @@ def initGame(
     title: str,
     window_icon: str | None,
     max_players: int,
-    num_inputs: int,
+    event_names: tuple[str],
+    input_defaults: tuple[input.InputDefault],
     font_location: str | None,
     font_size: int,
     font_height: int,
@@ -193,7 +198,8 @@ def initGame(
     title - title of the game (for titlebar)
     window_icon - location of icon of the game (for titlebar)
     max_players - maximum number of players the game supports
-    num_inputs - number of virtual inputs that button / axis inputs map to
+    event_names - names for virtual inputs that button / axis inputs map to
+    input_defaults - default input mappings
     font_location - location of default font for the game
     font_size - default font size
     font_height - default font height
@@ -211,7 +217,8 @@ def initGame(
         title,
         window_icon,
         max_players,
-        num_inputs,
+        event_names,
+        input_defaults,
         font_location,
         font_size,
         font_height,

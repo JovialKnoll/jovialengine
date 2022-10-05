@@ -4,7 +4,6 @@ import pygame
 
 from . import game
 from . import display
-from . import input
 from .fontwrap import getDefaultFontWrap
 from .modebase import ModeBase
 from .save import Save
