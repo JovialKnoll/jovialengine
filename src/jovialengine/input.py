@@ -215,6 +215,7 @@ def takeEvents(events: Iterable[pygame.event.Event]):
                 for i, event_value in enumerate(axis_value_back_forth):
                     player_id, event_type = _mapEvent(InputType.CON_AXIS, event.axis * 2 + i, event.instance_id)
                     _logEvent(player_id, event_type, event_value)
+    return events
 
 
 def _getMapKey(input_type: InputType, input_id: int, controller_id: int):
