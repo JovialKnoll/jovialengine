@@ -185,13 +185,13 @@ def _takeEvent(event: pygame.event.Event):
     match event.type:
         case pygame.KEYUP | pygame.KEYDOWN:
             player_id, event_type = _mapEvent(InputType.KEYBOARD, event.key)
-            _logEvent(player_id, event_type, 1 if event.type == pygame.KEYDOWN else 0)
+            return _logEvent(player_id, event_type, 1 if event.type == pygame.KEYDOWN else 0)
         case pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
             player_id, event_type = _mapEvent(InputType.MOUSE, event.button)
-            _logEvent(player_id, event_type, 1 if event.type == pygame.MOUSEBUTTONDOWN else 0)
+            return _logEvent(player_id, event_type, 1 if event.type == pygame.MOUSEBUTTONDOWN else 0)
         case pygame.JOYBUTTONUP | pygame.JOYBUTTONDOWN:
             player_id, event_type = _mapEvent(InputType.CON_BUTTON, event.button, event.instance_id)
-            _logEvent(player_id, event_type, 1 if event.type == pygame.JOYBUTTONDOWN else 0)
+            return _logEvent(player_id, event_type, 1 if event.type == pygame.JOYBUTTONDOWN else 0)
         case pygame.JOYHATMOTION:
             hat_value_left_right_up_down = (
                 1 if event.value[0] == -1 else 0,
@@ -243,6 +243,8 @@ def _logEvent(player_id: int, event_type: int, event_value: float | int):
             ControllerStateChange(player_id, event_type, event_value)
         )
         _controller_states[player_id][event_type] = event_value
+    # engine events don't need to be passed as events to game modes
+    return event_type == TYPE_NONE or event_type >= EVENT_TYPE_START_POS
 
 
 def getInputFrame():
