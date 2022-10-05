@@ -181,41 +181,45 @@ def save():
             print(line, file=file)
 
 
+def _takeEvent(event: pygame.event.Event):
+    match event.type:
+        case pygame.KEYUP | pygame.KEYDOWN:
+            player_id, event_type = _mapEvent(InputType.KEYBOARD, event.key)
+            _logEvent(player_id, event_type, 1 if event.type == pygame.KEYDOWN else 0)
+        case pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
+            player_id, event_type = _mapEvent(InputType.MOUSE, event.button)
+            _logEvent(player_id, event_type, 1 if event.type == pygame.MOUSEBUTTONDOWN else 0)
+        case pygame.JOYBUTTONUP | pygame.JOYBUTTONDOWN:
+            player_id, event_type = _mapEvent(InputType.CON_BUTTON, event.button, event.instance_id)
+            _logEvent(player_id, event_type, 1 if event.type == pygame.JOYBUTTONDOWN else 0)
+        case pygame.JOYHATMOTION:
+            hat_value_left_right_up_down = (
+                1 if event.value[0] == -1 else 0,
+                1 if event.value[0] == 1 else 0,
+                1 if event.value[1] == 1 else 0,
+                1 if event.value[1] == -1 else 0,
+            )
+            for i, event_value in enumerate(hat_value_left_right_up_down):
+                player_id, event_type = _mapEvent(InputType.CON_HAT, event.hat * 4 + i, event.instance_id)
+                _logEvent(player_id, event_type, event_value)
+        case pygame.JOYAXISMOTION:
+            axis_value_back_forth = (
+                event.value * -1 if event.value < 0 else 0,
+                event.value if event.value > 0 else 0,
+            )
+            for i, event_value in enumerate(axis_value_back_forth):
+                player_id, event_type = _mapEvent(InputType.CON_AXIS, event.axis * 2 + i, event.instance_id)
+                _logEvent(player_id, event_type, event_value)
+    return True
+
+
 def takeEvents(events: Iterable[pygame.event.Event]):
     global _controller_states_prev
     global _controller_state_changes
     _controller_states_prev = copy.deepcopy(_controller_states)
     _controller_state_changes = []
-    for event in events:
-        match event.type:
-            case pygame.KEYUP | pygame.KEYDOWN:
-                player_id, event_type = _mapEvent(InputType.KEYBOARD, event.key)
-                _logEvent(player_id, event_type, 1 if event.type == pygame.KEYDOWN else 0)
-            case pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
-                player_id, event_type = _mapEvent(InputType.MOUSE, event.button)
-                _logEvent(player_id, event_type, 1 if event.type == pygame.MOUSEBUTTONDOWN else 0)
-            case pygame.JOYBUTTONUP | pygame.JOYBUTTONDOWN:
-                player_id, event_type = _mapEvent(InputType.CON_BUTTON, event.button, event.instance_id)
-                _logEvent(player_id, event_type, 1 if event.type == pygame.JOYBUTTONDOWN else 0)
-            case pygame.JOYHATMOTION:
-                hat_value_left_right_up_down = (
-                    1 if event.value[0] == -1 else 0,
-                    1 if event.value[0] == 1 else 0,
-                    1 if event.value[1] == 1 else 0,
-                    1 if event.value[1] == -1 else 0,
-                )
-                for i, event_value in enumerate(hat_value_left_right_up_down):
-                    player_id, event_type = _mapEvent(InputType.CON_HAT, event.hat * 4 + i, event.instance_id)
-                    _logEvent(player_id, event_type, event_value)
-            case pygame.JOYAXISMOTION:
-                axis_value_back_forth = (
-                    event.value * -1 if event.value < 0 else 0,
-                    event.value if event.value > 0 else 0,
-                )
-                for i, event_value in enumerate(axis_value_back_forth):
-                    player_id, event_type = _mapEvent(InputType.CON_AXIS, event.axis * 2 + i, event.instance_id)
-                    _logEvent(player_id, event_type, event_value)
-    return events
+    events = filter(_takeEvent, events)
+    return list(events)
 
 
 def _getMapKey(input_type: InputType, input_id: int, controller_id: int):
