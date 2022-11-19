@@ -4,6 +4,7 @@ import pygame
 
 from . import game
 from . import display
+from . import utility
 from .fontwrap import getDefaultFontWrap
 from .modebase import ModeBase
 from .save import Save
@@ -11,6 +12,8 @@ from .saveable import Saveable
 
 
 class ModeGameMenu(ModeBase, abc.ABC):
+    _TEXT_COLOR = (255, 255, 255)
+    _BACKGROUND_COLOR = (0, 0, 0)
     _MENU_CHAR_WIDTH = 26
     _SHARED_DISP_TEXT = "Options:\nESC) Go Back\n"
 
@@ -19,17 +22,19 @@ class ModeGameMenu(ModeBase, abc.ABC):
         '_previous_mode',
         '_last_disp_text',
         '_menu_surface',
+        '_selected_option',
     )
 
-    def __init__(self, previous_mode: ModeBase, old_screen=None):
+    def __init__(self, previous_mode: ModeBase, old_screen: pygame.Surface | None = None):
         self._init(display.screen_size)
         self._MENU_WIDTH = getDefaultFontWrap().font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
         self._previous_mode = previous_mode
         if old_screen is None:
             old_screen = self._getOldScreen()
         self._background = old_screen
-        self._last_disp_text = None
-        self._menu_surface = None
+        self._last_disp_text: str | None = None
+        self._menu_surface: pygame.Surface
+        self._selected_option = 0
 
     def _getOldScreen(self):
         return display.getBlurredScreen(self._previous_mode)
@@ -39,8 +44,8 @@ class ModeGameMenu(ModeBase, abc.ABC):
         self._menu_surface = getDefaultFontWrap().renderInside(
             self._MENU_WIDTH,
             disp_text,
-            (255, 255, 255),
-            (0, 0, 0)
+            self._TEXT_COLOR,
+            self._BACKGROUND_COLOR
         )
         self._menu_surface.set_alpha(235)
 
@@ -119,7 +124,9 @@ class ModeGameMenuSave(ModeGameMenu):
                 else:
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             elif event.key == pygame.K_RETURN:
-                if self._save_name and isinstance(self._previous_mode, Saveable):
+                if isinstance(self._previous_mode, Saveable):
+                    if not self._save_name:
+                        self._save_name = utility.getDateTimeFileName()
                     if Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
                         self._confirm_overwrite = True
                     else:
@@ -172,7 +179,7 @@ class ModeGameMenuSave(ModeGameMenu):
         if not isinstance(self._previous_mode, Saveable):
             disp_text += "\nYou can't save now."
         elif not self._save_success:
-            disp_text += "ENTER) Save\nType a save name:\n>"
+            disp_text += "ENTER) Save\nType a save name (or leave blank for default):\n>"
             if self._save_name:
                 disp_text += self._save_name
             if self._confirm_overwrite and self._save_success is None:
@@ -185,10 +192,11 @@ class ModeGameMenuSave(ModeGameMenu):
         self._drawTextAlways(disp_text)
         if self._cursor_switch and not self._confirm_overwrite and self._save_success is None:
             cursor_x = getDefaultFontWrap().font.size(">" + self._save_name[:self._cursor_position])[0]
+            cursor_y = self._menu_surface.get_height() - getDefaultFontWrap().line_height
             self._menu_surface.fill(
-                (255, 255, 255),
+                self._TEXT_COLOR,
                 (
-                    (cursor_x, 4 * getDefaultFontWrap().line_height),
+                    (cursor_x, cursor_y),
                     (1, getDefaultFontWrap().line_height)
                 )
             )
