@@ -50,18 +50,34 @@ class ModeGameMenu(ModeBase, abc.ABC):
         return display.getBlurredScreen(self._previous_mode)
 
     def _getAction(self, event: pygame.event.Event):
-        result = MenuAction.NOTHING
-        if event.type == pygame.JOYHATMOTION:
-            if event.value[0] == -1 != self._previous_hat[0]:
-                result = MenuAction.LEFT
-            elif event.value[0] == 1 != self._previous_hat[0]:
-                result = MenuAction.RIGHT
-            elif event.value[1] == 1 != self._previous_hat[1]:
-                result = MenuAction.UP
-            elif event.value[1] == -1 != self._previous_hat[1]:
-                result = MenuAction.DOWN
-            self._previous_hat = event.value
-        return result
+        match event.type:
+            case pygame.JOYHATMOTION:
+                result = MenuAction.NOTHING
+                if event.value[0] == -1 != self._previous_hat[0]:
+                    result = MenuAction.LEFT
+                elif event.value[0] == 1 != self._previous_hat[0]:
+                    result = MenuAction.RIGHT
+                elif event.value[1] == 1 != self._previous_hat[1]:
+                    result = MenuAction.UP
+                elif event.value[1] == -1 != self._previous_hat[1]:
+                    result = MenuAction.DOWN
+                self._previous_hat = event.value
+                return result
+            case pygame.KEYUP:
+                match event.key:
+                    case pygame.K_LEFT:
+                        return MenuAction.LEFT
+                    case pygame.K_RIGHT:
+                        return MenuAction.RIGHT
+                    case pygame.K_PAGEUP:
+                        return MenuAction.UP
+                    case pygame.K_DOWN:
+                        return MenuAction.DOWN
+                    case pygame.K_RETURN:
+                        return MenuAction.CONFIRM
+                    case pygame.K_ESCAPE:
+                        return MenuAction.REJECT
+        return MenuAction.NOTHING
 
     def _drawTextAlways(self, disp_text: str):
         self._last_disp_text = disp_text
