@@ -22,7 +22,6 @@ class ModeGameMenu(ModeBase, abc.ABC):
         '_previous_mode',
         '_last_disp_text',
         '_menu_surface',
-        '_selected_option',
     )
 
     def __init__(self, previous_mode: ModeBase, old_screen: pygame.Surface | None = None):
@@ -34,7 +33,6 @@ class ModeGameMenu(ModeBase, abc.ABC):
         self._background = old_screen
         self._last_disp_text: str | None = None
         self._menu_surface: pygame.Surface
-        self._selected_option = 0
 
     def _getOldScreen(self):
         return display.getBlurredScreen(self._previous_mode)
