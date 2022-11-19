@@ -20,6 +20,7 @@ class MenuAction(enum.Enum):
     DOWN = enum.auto()
     CONFIRM = enum.auto()
     REJECT = enum.auto()
+    QUIT = enum.auto()
 
 
 class ModeGameMenu(ModeBase, abc.ABC):
@@ -51,6 +52,8 @@ class ModeGameMenu(ModeBase, abc.ABC):
 
     def _getAction(self, event: pygame.event.Event):
         match event.type:
+            case pygame.QUIT:
+                return MenuAction.QUIT
             case pygame.JOYHATMOTION:
                 result = MenuAction.NOTHING
                 if event.value[0] == -1 != self._previous_hat[0]:
@@ -320,34 +323,23 @@ class ModeGameMenuLoad(ModeGameMenu):
 
 class ModeGameMenuOptions(ModeGameMenu):
     def _inputEvent(self, event):
-        if event.type == pygame.QUIT:
-            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-        elif event.type == pygame.KEYUP:
-            if event.key in (
-                    pygame.K_DOWN, pygame.K_s,
-                    pygame.K_LEFT, pygame.K_a,
-                    pygame.K_PAGEDOWN, pygame.K_MINUS,
-            ):
-                display.changeScale(-1)
-            elif event.key in (
-                    pygame.K_UP, pygame.K_w,
-                    pygame.K_RIGHT, pygame.K_d,
-                    pygame.K_PAGEUP, pygame.K_EQUALS,
-            ):
-                display.changeScale(1)
-            elif event.key in (pygame.K_f, pygame.K_F11,):
-                display.toggleFullscreen()
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
+        match self._getAction(event):
+            case MenuAction.QUIT | MenuAction.REJECT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-            elif '1' <= event.unicode <= '9':
-                target_scale = int(event.unicode)
-                display.setScale(target_scale)
+            case MenuAction.LEFT | MenuAction.DOWN:
+                display.changeScale(-1)
+            case MenuAction.RIGHT | MenuAction.UP:
+                display.changeScale(1)
+            case MenuAction.CONFIRM:
+                display.toggleFullscreen()
+        if event.type == pygame.KEYDOWN and '1' <= event.unicode <= '9':
+            target_scale = int(event.unicode)
+            display.setScale(target_scale)
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         disp_text += f"ARROWS) Upscaling: {display.upscale}" \
-                     f"\nF) Fullscreen: {self.getTickBox(display.is_fullscreen)}"
+                     f"\nENTER) Fullscreen: {self.getTickBox(display.is_fullscreen)}"
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
 
