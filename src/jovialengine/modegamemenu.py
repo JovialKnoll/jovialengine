@@ -1,4 +1,5 @@
 import abc
+import enum
 
 import pygame
 
@@ -9,6 +10,16 @@ from .fontwrap import getDefaultFontWrap
 from .modebase import ModeBase
 from .save import Save
 from .saveable import Saveable
+
+
+class MenuAction(enum.Enum):
+    NOTHING = enum.auto()
+    LEFT = enum.auto()
+    RIGHT = enum.auto()
+    UP = enum.auto()
+    DOWN = enum.auto()
+    CONFIRM = enum.auto()
+    REJECT = enum.auto()
 
 
 class ModeGameMenu(ModeBase, abc.ABC):
@@ -33,9 +44,24 @@ class ModeGameMenu(ModeBase, abc.ABC):
         self._background = old_screen
         self._last_disp_text: str | None = None
         self._menu_surface: pygame.Surface
+        self._previous_hat = (0, 0)
 
     def _getOldScreen(self):
         return display.getBlurredScreen(self._previous_mode)
+
+    def _getAction(self, event: pygame.event.Event):
+        result = MenuAction.NOTHING
+        if event.type == pygame.JOYHATMOTION:
+            if event.value[0] == -1 != self._previous_hat[0]:
+                result = MenuAction.LEFT
+            elif event.value[0] == 1 != self._previous_hat[0]:
+                result = MenuAction.RIGHT
+            elif event.value[1] == 1 != self._previous_hat[1]:
+                result = MenuAction.UP
+            elif event.value[1] == -1 != self._previous_hat[1]:
+                result = MenuAction.DOWN
+            self._previous_hat = event.value
+        return result
 
     def _drawTextAlways(self, disp_text: str):
         self._last_disp_text = disp_text
