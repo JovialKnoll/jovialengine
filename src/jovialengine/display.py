@@ -1,13 +1,12 @@
 import sys
 import os
 import math
-from datetime import datetime
 
 import pygame
 
 from . import config
-from .modebase import ModeBase
 from . import utility
+from .modebase import ModeBase
 
 
 _screenshot_directory: str
@@ -266,6 +265,6 @@ def takeScreenshot():
         os.mkdir(_screenshot_directory)
     except FileExistsError:
         pass
-    file_name = f"{datetime.utcnow().isoformat().replace(':', '')}.png"
+    file_name = f"{utility.getDateTimeFileName()}.png"
     file_path = os.path.join(_screenshot_directory, file_name)
     pygame.image.save(screen, file_path)

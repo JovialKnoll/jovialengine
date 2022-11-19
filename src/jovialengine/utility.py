@@ -1,5 +1,6 @@
 import random
 import math
+from datetime import datetime
 
 
 def getIntMovement(tracking, vel, dt):
@@ -59,3 +60,7 @@ def decIncSpeedLerp(start, end, mix):
         return decSpeedLerp(start, midpoint, mix*2)
     else:
         return incSpeedLerp(midpoint, end, (mix - 0.5)*2)
+
+
+def getDateTimeFileName():
+    return datetime.utcnow().isoformat().replace(':', '')

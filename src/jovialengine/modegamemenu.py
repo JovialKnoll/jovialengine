@@ -4,6 +4,7 @@ import pygame
 
 from . import game
 from . import display
+from . import utility
 from .fontwrap import getDefaultFontWrap
 from .modebase import ModeBase
 from .save import Save
@@ -123,7 +124,9 @@ class ModeGameMenuSave(ModeGameMenu):
                 else:
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             elif event.key == pygame.K_RETURN:
-                if self._save_name and isinstance(self._previous_mode, Saveable):
+                if isinstance(self._previous_mode, Saveable):
+                    if not self._save_name:
+                        self._save_name = utility.getDateTimeFileName()
                     if Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
                         self._confirm_overwrite = True
                     else:
