@@ -264,10 +264,14 @@ class ModeGameMenuLoad(ModeGameMenu):
         self._deleted_save = False
 
     def _inputEvent(self, event):
-        if event.type == pygame.QUIT:
-            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE or self._loaded_save:
+        match self._getAction(event):
+            case MenuAction.QUIT | MenuAction.REJECT:
+                self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+
+
+
+        if event.type == pygame.KEYDOWN:
+            if self._loaded_save:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             elif self._deleted_save:
                 self._deleted_save = False
