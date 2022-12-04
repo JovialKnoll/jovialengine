@@ -247,12 +247,16 @@ class ModeGameMenuSave(ModeGameMenu):
 
 
 class ModeGameMenuLoad(ModeGameMenu):
+    OPTION_LOAD = 0
+    OPTION_DELETE = 1
+
     __slots__ = (
         '_saves',
         '_save_index',
         '_loaded_save',
-        '_confirm_delete',
         '_deleted_save',
+        '_confirm_delete',
+        '_selected_save',
     )
 
     def __init__(self, previous_mode, old_screen=None):
@@ -260,55 +264,74 @@ class ModeGameMenuLoad(ModeGameMenu):
         self._saves = Save.getAllFromFiles()
         self._save_index = 0
         self._loaded_save = False
-        self._confirm_delete = False
         self._deleted_save = False
+        self._confirm_delete = False
+        self._selected_save = False
+        self._selected_save_option = self.OPTION_LOAD
 
     def _inputEvent(self, event):
-        match self._getAction(event):
-            case MenuAction.QUIT | MenuAction.REJECT:
+        action = self._getAction(event)
+        if action == MenuAction.NOTHING:
+            return
+        elif action == MenuAction.QUIT:
+            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+        elif self._loaded_save:
+            if action == MenuAction.CONFIRM:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-
-
-
-        if event.type == pygame.KEYDOWN:
-            if self._loaded_save:
-                self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-            elif self._deleted_save:
+        elif self._deleted_save:
+            if action == MenuAction.CONFIRM:
                 self._deleted_save = False
-            elif self._confirm_delete:
-                if event.key == pygame.K_RETURN:
-                    self._confirm_delete = False
-                    self._saves[self._save_index].delete()
-                    del self._saves[self._save_index]
-                    self._save_index = max(0, min(len(self._saves) - 1, self._save_index))
-                    self._deleted_save = True
-                else:
-                    self._confirm_delete = False
-            elif len(self._saves) > 0:
-                if event.key in (pygame.K_UP, pygame.K_LEFT):
-                    self._save_index = max(self._save_index - 1, 0)
-                elif event.key in (pygame.K_DOWN, pygame.K_RIGHT):
-                    self._save_index = min(self._save_index + 1, len(self._saves) - 1)
-                elif event.key == pygame.K_RETURN:
+        elif self._confirm_delete:
+            if action == MenuAction.CONFIRM:
+                self._confirm_delete = False
+                self._saves[self._save_index].delete()
+                del self._saves[self._save_index]
+                self._save_index = max(0, min(len(self._saves) - 1, self._save_index))
+                self._deleted_save = True
+            elif action == MenuAction.REJECT:
+                self._confirm_delete = False
+        elif self._selected_save:
+            if action in (MenuAction.UP, MenuAction.LEFT):
+                self._selected_save_option -= 1
+                self._selected_save_option %= 2
+            elif action in (MenuAction.DOWN, MenuAction.RIGHT):
+                self._selected_save_option += 1
+                self._selected_save_option %= 2
+            elif action == MenuAction.CONFIRM:
+                if self._selected_save_option == self.OPTION_LOAD:
+                    self._selected_save = False
                     self._stopMixer()
                     self._previous_mode = self._saves[self._save_index].load()
                     pygame.mixer.music.pause()
                     pygame.mixer.pause()
                     self._background = self._getOldScreen()
                     self._loaded_save = True
-                elif event.key == pygame.K_DELETE:
+                elif self._selected_save_option == self.OPTION_DELETE:
+                    self._selected_save = False
                     self._confirm_delete = True
+            elif action == MenuAction.REJECT:
+                self._selected_save = False
+        elif len(self._saves) > 0:
+            if action in (MenuAction.UP, MenuAction.LEFT):
+                self._save_index = max(self._save_index - 1, 0)
+            elif action in (MenuAction.DOWN, MenuAction.RIGHT):
+                self._save_index = min(self._save_index + 1, len(self._saves) - 1)
+            elif action == MenuAction.CONFIRM:
+                self._selected_save = True
+                self._selected_save_option = self.OPTION_LOAD
+        elif action == MenuAction.REJECT:
+            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         if len(self._saves) == 0:
             disp_text += "\nThere are no saves to select from."
         elif self._loaded_save:
-            disp_text += "\nLoaded successfully.\nPress any key to go back."
+            disp_text += "\nLoaded successfully.\nPress ENTER to continue."
         elif self._deleted_save:
-            disp_text += "\nDeleted successfully.\nPress any key to continue."
+            disp_text += "\nDeleted successfully.\nPress ENTER to continue."
         else:
-            disp_text += "ENTER) Load\nDEL) Delete\nARROW KEYS) Select a save:"
+            disp_text += "ARROW KEYS + ENTER) Select a save:"
             for i in range(-1, 2):
                 disp_text += "\n"
                 this_index = self._save_index + i
@@ -320,7 +343,11 @@ class ModeGameMenuLoad(ModeGameMenu):
                     disp_text += self._saves[this_index].save_name
             if self._confirm_delete:
                 disp_text += "\nAre you sure you want to delete?" \
-                    + "\nPress ENTER to confirm, or any other key to go back."
+                    + "\nPress ENTER to confirm, or any ESCAPE to go back."
+            elif self._selected_save:
+                disp_text += "\nWhat would you like to do? (ARROW KEYS)" \
+                    + f"\n{0}Load_{0}Delete" \
+                    + "\nPress ENTER to select, or any ESCAPE to go back."
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
 
