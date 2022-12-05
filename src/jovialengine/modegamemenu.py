@@ -34,6 +34,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
         '_previous_mode',
         '_last_disp_text',
         '_menu_surface',
+        '_previous_hat',
     )
 
     def __init__(self, previous_mode: ModeBase, old_screen: pygame.Surface | None = None):
@@ -72,7 +73,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
                         return MenuAction.LEFT
                     case pygame.K_RIGHT:
                         return MenuAction.RIGHT
-                    case pygame.K_PAGEUP:
+                    case pygame.K_UP:
                         return MenuAction.UP
                     case pygame.K_DOWN:
                         return MenuAction.DOWN
