@@ -339,6 +339,9 @@ class ModeGameMenuLoad(ModeGameMenu):
                 text += self._saves[this_index].save_name
         return text
 
+    def _getOptionStatus(self, option: int):
+        return ">" if self._selected_save_option == option else "_"
+
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         match self._state:
@@ -358,7 +361,8 @@ class ModeGameMenuLoad(ModeGameMenu):
             case self.STATE_SELECTED_SAVE:
                 disp_text += self._getLoadOptionsText()
                 disp_text += "\nWhat would you like to do? (ARROW KEYS)" \
-                    + f"\n{0}Load_{0}Delete" \
+                    + f"\n{self._getOptionStatus(self.OPTION_LOAD)}Load" \
+                    + f"_{self._getOptionStatus(self.OPTION_DELETE)}Delete" \
                     + "\nPress ENTER to select, or ESCAPE to go back."
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
