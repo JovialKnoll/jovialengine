@@ -252,7 +252,6 @@ class ModeGameMenuLoad(ModeGameMenu):
     STATE_DELETED_SAVE = 2
     STATE_CONFIRM_DELETE = 3
     STATE_SELECTED_SAVE = 4
-
     OPTION_LOAD = 0
     OPTION_DELETE = 1
 
