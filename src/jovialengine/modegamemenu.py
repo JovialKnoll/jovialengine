@@ -351,12 +351,12 @@ class ModeGameMenuLoad(ModeGameMenu):
             case self.STATE_CONFIRM_DELETE:
                 disp_text += self._getLoadOptionsText()
                 disp_text += "\nAre you sure you want to delete?" \
-                    + "\nPress ENTER to confirm, or any ESCAPE to go back."
+                    + "\nPress ENTER to confirm, or ESCAPE to go back."
             case self.STATE_SELECTED_SAVE:
                 disp_text += self._getLoadOptionsText()
                 disp_text += "\nWhat would you like to do? (ARROW KEYS)" \
                     + f"\n{0}Load_{0}Delete" \
-                    + "\nPress ENTER to select, or any ESCAPE to go back."
+                    + "\nPress ENTER to select, or ESCAPE to go back."
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
 
