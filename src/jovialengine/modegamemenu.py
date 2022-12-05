@@ -220,6 +220,7 @@ class ModeGameMenuSave(ModeGameMenu):
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
+        draw_cursor = False
         if not isinstance(self._previous_mode, Saveable):
             disp_text += "\nYou can't save now."
         elif not self._save_success:
@@ -231,10 +232,12 @@ class ModeGameMenuSave(ModeGameMenu):
                     + "\nPress ENTER again to confirm, or ESC to go back."
             elif self._save_success is False:
                 disp_text += "\nSave failed.\nPress ENTER to try again, or ESC to go back."
+            else:
+                draw_cursor = True
         else:
             disp_text += "\nSaved successfully.\nPress any key to go back."
         self._drawTextAlways(disp_text)
-        if self._cursor_switch and not self._confirm_overwrite and self._save_success is None:
+        if self._cursor_switch and draw_cursor:
             cursor_x = getDefaultFontWrap().font.size(">" + self._save_name[:self._cursor_position])[0]
             cursor_y = self._menu_surface.get_height() - getDefaultFontWrap().line_height
             self._menu_surface.fill(
@@ -379,7 +382,7 @@ class ModeGameMenuOptions(ModeGameMenu):
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         disp_text += f"ARROWS) Upscaling: {display.upscale}" \
-                     f"\nENTER) Fullscreen: {self.getTickBox(display.is_fullscreen)}"
+            + f"\nENTER) Fullscreen: {self.getTickBox(display.is_fullscreen)}"
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
 
