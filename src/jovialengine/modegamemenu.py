@@ -247,26 +247,27 @@ class ModeGameMenuSave(ModeGameMenu):
 
 
 class ModeGameMenuLoad(ModeGameMenu):
+    STATE_DEFAULT = 0
+    STATE_LOADED_SAVE = 1
+    STATE_DELETED_SAVE = 2
+    STATE_CONFIRM_DELETE = 3
+    STATE_SELECTED_SAVE = 4
+
     OPTION_LOAD = 0
     OPTION_DELETE = 1
 
     __slots__ = (
         '_saves',
         '_save_index',
-        '_loaded_save',
-        '_deleted_save',
-        '_confirm_delete',
-        '_selected_save',
+        '_state',
+        '_selected_save_option',
     )
 
     def __init__(self, previous_mode, old_screen=None):
         super().__init__(previous_mode, old_screen)
         self._saves = Save.getAllFromFiles()
         self._save_index = 0
-        self._loaded_save = False
-        self._deleted_save = False
-        self._confirm_delete = False
-        self._selected_save = False
+        self._state = self.STATE_DEFAULT
         self._selected_save_option = self.OPTION_LOAD
 
     def _inputEvent(self, event):
@@ -275,76 +276,84 @@ class ModeGameMenuLoad(ModeGameMenu):
             return
         elif action == MenuAction.QUIT:
             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-        elif self._loaded_save:
-            if action == MenuAction.CONFIRM:
-                self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-        elif self._deleted_save:
-            if action == MenuAction.CONFIRM:
-                self._deleted_save = False
-        elif self._confirm_delete:
-            if action == MenuAction.CONFIRM:
-                self._confirm_delete = False
-                self._saves[self._save_index].delete()
-                del self._saves[self._save_index]
-                self._save_index = max(0, min(len(self._saves) - 1, self._save_index))
-                self._deleted_save = True
-            elif action == MenuAction.REJECT:
-                self._confirm_delete = False
-        elif self._selected_save:
-            if action in (MenuAction.UP, MenuAction.LEFT):
-                self._selected_save_option -= 1
-                self._selected_save_option %= 2
-            elif action in (MenuAction.DOWN, MenuAction.RIGHT):
-                self._selected_save_option += 1
-                self._selected_save_option %= 2
-            elif action == MenuAction.CONFIRM:
-                if self._selected_save_option == self.OPTION_LOAD:
-                    self._selected_save = False
-                    self._stopMixer()
-                    self._previous_mode = self._saves[self._save_index].load()
-                    pygame.mixer.music.pause()
-                    pygame.mixer.pause()
-                    self._background = self._getOldScreen()
-                    self._loaded_save = True
-                elif self._selected_save_option == self.OPTION_DELETE:
-                    self._selected_save = False
-                    self._confirm_delete = True
-            elif action == MenuAction.REJECT:
-                self._selected_save = False
-        elif len(self._saves) > 0:
-            if action in (MenuAction.UP, MenuAction.LEFT):
-                self._save_index = max(self._save_index - 1, 0)
-            elif action in (MenuAction.DOWN, MenuAction.RIGHT):
-                self._save_index = min(self._save_index + 1, len(self._saves) - 1)
-            elif action == MenuAction.CONFIRM:
-                self._selected_save = True
-                self._selected_save_option = self.OPTION_LOAD
-        elif action == MenuAction.REJECT:
-            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+            return
+        match self._state:
+            case self.STATE_DEFAULT:
+                if action == MenuAction.REJECT:
+                    self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+                elif len(self._saves) > 0:
+                    if action in (MenuAction.UP, MenuAction.LEFT):
+                        self._save_index = max(self._save_index - 1, 0)
+                    elif action in (MenuAction.DOWN, MenuAction.RIGHT):
+                        self._save_index = min(self._save_index + 1, len(self._saves) - 1)
+                    elif action == MenuAction.CONFIRM:
+                        self._state = self.STATE_SELECTED_SAVE
+                        self._selected_save_option = self.OPTION_LOAD
+            case self.STATE_LOADED_SAVE:
+                if action == MenuAction.CONFIRM:
+                    self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+            case self.STATE_DELETED_SAVE:
+                if action == MenuAction.CONFIRM:
+                    self._state = self.STATE_DEFAULT
+            case self.STATE_CONFIRM_DELETE:
+                if action == MenuAction.CONFIRM:
+                    self._saves[self._save_index].delete()
+                    del self._saves[self._save_index]
+                    self._save_index = max(0, min(len(self._saves) - 1, self._save_index))
+                    self._state = self.STATE_DELETED_SAVE
+                elif action == MenuAction.REJECT:
+                    self._state = self.STATE_DEFAULT
+            case self.STATE_SELECTED_SAVE:
+                if action in (MenuAction.UP, MenuAction.LEFT):
+                    self._selected_save_option -= 1
+                    self._selected_save_option %= 2
+                elif action in (MenuAction.DOWN, MenuAction.RIGHT):
+                    self._selected_save_option += 1
+                    self._selected_save_option %= 2
+                elif action == MenuAction.CONFIRM:
+                    if self._selected_save_option == self.OPTION_LOAD:
+                        self._stopMixer()
+                        self._previous_mode = self._saves[self._save_index].load()
+                        pygame.mixer.music.pause()
+                        pygame.mixer.pause()
+                        self._background = self._getOldScreen()
+                        self._state = self.STATE_LOADED_SAVE
+                    elif self._selected_save_option == self.OPTION_DELETE:
+                        self._state = self.STATE_CONFIRM_DELETE
+                elif action == MenuAction.REJECT:
+                    self._state = self.STATE_DEFAULT
+
+    def _getLoadOptionsText(self):
+        text = "ARROW KEYS + ENTER) Select a save:"
+        for i in range(-1, 2):
+            text += "\n"
+            this_index = self._save_index + i
+            if i == 0:
+                text += ">"
+            else:
+                text += "_"
+            if 0 <= this_index < len(self._saves):
+                text += self._saves[this_index].save_name
+        return text
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
-        if len(self._saves) == 0:
-            disp_text += "\nThere are no saves to select from."
-        elif self._loaded_save:
-            disp_text += "\nLoaded successfully.\nPress ENTER to continue."
-        elif self._deleted_save:
-            disp_text += "\nDeleted successfully.\nPress ENTER to continue."
-        else:
-            disp_text += "ARROW KEYS + ENTER) Select a save:"
-            for i in range(-1, 2):
-                disp_text += "\n"
-                this_index = self._save_index + i
-                if i == 0:
-                    disp_text += ">"
+        match self._state:
+            case self.STATE_DEFAULT:
+                if len(self._saves) == 0:
+                    disp_text += "\nThere are no saves to select from."
                 else:
-                    disp_text += "_"
-                if 0 <= this_index < len(self._saves):
-                    disp_text += self._saves[this_index].save_name
-            if self._confirm_delete:
+                    disp_text += self._getLoadOptionsText()
+            case self.STATE_LOADED_SAVE:
+                disp_text += "\nLoaded successfully.\nPress ENTER to continue."
+            case self.STATE_DELETED_SAVE:
+                disp_text += "\nDeleted successfully.\nPress ENTER to continue."
+            case self.STATE_CONFIRM_DELETE:
+                disp_text += self._getLoadOptionsText()
                 disp_text += "\nAre you sure you want to delete?" \
                     + "\nPress ENTER to confirm, or any ESCAPE to go back."
-            elif self._selected_save:
+            case self.STATE_SELECTED_SAVE:
+                disp_text += self._getLoadOptionsText()
                 disp_text += "\nWhat would you like to do? (ARROW KEYS)" \
                     + f"\n{0}Load_{0}Delete" \
                     + "\nPress ENTER to select, or any ESCAPE to go back."
