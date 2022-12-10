@@ -67,7 +67,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
                     result = MenuAction.DOWN
                 self._previous_hat = event.value
                 return result
-            case pygame.KEYUP:
+            case pygame.KEYDOWN:
                 match event.key:
                     case pygame.K_LEFT:
                         return MenuAction.LEFT
@@ -369,6 +369,27 @@ class ModeGameMenuLoad(ModeGameMenu):
 
 
 class ModeGameMenuOptions(ModeGameMenu):
+    def _getAction(self, event: pygame.event.Event):
+        # keydown events will be triggered again on recreating window
+        # so for this mode we need to check keyup events instead
+        if event.type == pygame.KEYUP:
+            match event.key:
+                case pygame.K_LEFT:
+                    return MenuAction.LEFT
+                case pygame.K_RIGHT:
+                    return MenuAction.RIGHT
+                case pygame.K_UP:
+                    return MenuAction.UP
+                case pygame.K_DOWN:
+                    return MenuAction.DOWN
+                case pygame.K_RETURN:
+                    return MenuAction.CONFIRM
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                return MenuAction.REJECT
+            return MenuAction.NOTHING
+        return super()._getAction(event)
+
     def _inputEvent(self, event):
         match self._getAction(event):
             case MenuAction.QUIT | MenuAction.REJECT:
