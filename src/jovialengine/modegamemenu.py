@@ -404,38 +404,36 @@ class ModeGameMenuLoad(ModeGameMenu):
 
 
 class ModeGameMenuOptions(ModeGameMenu):
-    def _getAction(self, event: pygame.event.Event):
-        # keydown events will be triggered again on recreating window
-        # so for this mode we need to check keyup events instead
-        # todo: maybe just replace this with a timeout
-        if event.type == pygame.KEYUP:
-            match event.key:
-                case pygame.K_LEFT:
-                    return MenuAction.LEFT
-                case pygame.K_RIGHT:
-                    return MenuAction.RIGHT
-                case pygame.K_UP:
-                    return MenuAction.UP
-                case pygame.K_DOWN:
-                    return MenuAction.DOWN
-                case pygame.K_RETURN:
-                    return MenuAction.CONFIRM
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                return MenuAction.REJECT
-            return MenuAction.NOTHING
-        return super()._getAction(event)
+    _TIMEOUT_MAX = 40
+
+    __slots__ = (
+        '_timeout',
+    )
+
+    def __init__(self, previous_mode, old_screen=None):
+        super().__init__(previous_mode, old_screen)
+        self._timeout = self._TIMEOUT_MAX
+
+    def _update(self, dt):
+        if self._timeout > 0:
+            self._timeout -= dt
 
     def _inputEvent(self, event):
         match self._getAction(event):
             case MenuAction.QUIT | MenuAction.REJECT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             case MenuAction.LEFT | MenuAction.DOWN:
-                display.changeScale(-1)
+                if self._timeout <= 0:
+                    display.changeScale(-1)
+                    self._timeout = self._TIMEOUT_MAX
             case MenuAction.RIGHT | MenuAction.UP:
-                display.changeScale(1)
+                if self._timeout <= 0:
+                    display.changeScale(1)
+                    self._timeout = self._TIMEOUT_MAX
             case MenuAction.CONFIRM:
-                display.toggleFullscreen()
+                if self._timeout <= 0:
+                    display.toggleFullscreen()
+                    self._timeout = self._TIMEOUT_MAX
         if event.type == pygame.KEYDOWN and '1' <= event.unicode <= '9':
             target_scale = int(event.unicode)
             display.setScale(target_scale)
