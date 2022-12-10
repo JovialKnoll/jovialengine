@@ -136,7 +136,9 @@ class ModeGameMenuTop(ModeGameMenu):
                     case 1:
                         self.next_mode = ModeGameMenuLoad(self._previous_mode, self._background)
                     case 2:
-                        self.next_mode = ModeGameMenuOptions(self._previous_mode, self._background)
+                        pressed_return = event.type == pygame.KEYDOWN \
+                            and event.key == pygame.K_RETURN
+                        self.next_mode = ModeGameMenuOptions(self._previous_mode, self._background, pressed_return)
                     case 3:
                         self._stopMixer()
                         game.getGame().state = game.getGame().state_cls()
@@ -172,7 +174,7 @@ class ModeGameMenuSave(ModeGameMenu):
         '_cursor_timer',
     )
 
-    def __init__(self, previous_mode, old_screen=None):
+    def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
         self._save_name = ''
         self._resetCursorBlink()
@@ -300,7 +302,7 @@ class ModeGameMenuLoad(ModeGameMenu):
         '_selected_save_option',
     )
 
-    def __init__(self, previous_mode, old_screen=None):
+    def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
         self._saves = Save.getAllFromFiles()
         self._save_index = 0
@@ -404,36 +406,45 @@ class ModeGameMenuLoad(ModeGameMenu):
 
 
 class ModeGameMenuOptions(ModeGameMenu):
-    _TIMEOUT_MAX = 40
-
     __slots__ = (
-        '_timeout',
+        '_pressed_return',
     )
 
-    def __init__(self, previous_mode, old_screen=None):
+    def __init__(self, previous_mode, old_screen, pressed_return: bool):
         super().__init__(previous_mode, old_screen)
-        self._timeout = self._TIMEOUT_MAX
+        self._pressed_return = pressed_return
 
-    def _update(self, dt):
-        if self._timeout > 0:
-            self._timeout -= dt
+    def _getAction(self, event: pygame.event.Event):
+        if event.type == pygame.KEYDOWN and event.key != pygame.K_ESCAPE:
+            return MenuAction.NOTHING
+        elif event.type == pygame.KEYUP:
+            match event.key:
+                case pygame.K_LEFT:
+                    return MenuAction.LEFT
+                case pygame.K_RIGHT:
+                    return MenuAction.RIGHT
+                case pygame.K_UP:
+                    return MenuAction.UP
+                case pygame.K_DOWN:
+                    return MenuAction.DOWN
+                case pygame.K_RETURN:
+                    if self._pressed_return:
+                        self._pressed_return = False
+                    else:
+                        return MenuAction.CONFIRM
+        return super()._getAction(event)
 
     def _inputEvent(self, event):
+        print(event)
         match self._getAction(event):
             case MenuAction.QUIT | MenuAction.REJECT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             case MenuAction.LEFT | MenuAction.DOWN:
-                if self._timeout <= 0:
-                    display.changeScale(-1)
-                    self._timeout = self._TIMEOUT_MAX
+                display.changeScale(-1)
             case MenuAction.RIGHT | MenuAction.UP:
-                if self._timeout <= 0:
-                    display.changeScale(1)
-                    self._timeout = self._TIMEOUT_MAX
+                display.changeScale(1)
             case MenuAction.CONFIRM:
-                if self._timeout <= 0:
-                    display.toggleFullscreen()
-                    self._timeout = self._TIMEOUT_MAX
+                display.toggleFullscreen()
         if event.type == pygame.KEYDOWN and '1' <= event.unicode <= '9':
             target_scale = int(event.unicode)
             display.setScale(target_scale)
