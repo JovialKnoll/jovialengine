@@ -375,6 +375,7 @@ class ModeGameMenuOptions(ModeGameMenu):
     def _getAction(self, event: pygame.event.Event):
         # keydown events will be triggered again on recreating window
         # so for this mode we need to check keyup events instead
+        # maybe just replace this with a timeout
         if event.type == pygame.KEYUP:
             match event.key:
                 case pygame.K_LEFT:
