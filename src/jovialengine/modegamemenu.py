@@ -152,7 +152,7 @@ class ModeGameMenuTop(ModeGameMenu):
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         disp_text += "ARROW KEYS + ENTER)"
-        for index, option in self._OPTIONS:
+        for index, option in enumerate(self._OPTIONS):
             disp_text += "\n"
             disp_text += self._getSelectedChar(self._selected == index)
             disp_text += option
