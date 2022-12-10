@@ -188,7 +188,8 @@ class ModeGameMenuSave(ModeGameMenu):
         self._cursor_timer = 0
 
     def _inputEvent(self, event):
-        match self._getAction(event):
+        action = self._getAction(event)
+        match action:
             case MenuAction.QUIT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             case MenuAction.REJECT:
@@ -208,15 +209,21 @@ class ModeGameMenuSave(ModeGameMenu):
                     else:
                         new_save = Save.getFromMode(self._save_name, self._previous_mode)
                         self._save_success = new_save.save()
-        # todo: maybe allow controller to cycle through some letters arcade style with up and down
-        if event.type == pygame.KEYDOWN:
+            case MenuAction.LEFT:
+                self._cursor_position -= 1
+                self._resetCursorBlink()
+            case MenuAction.RIGHT:
+                self._cursor_position += 1
+                self._resetCursorBlink()
+        if event.type == pygame.JOYHATMOTION:
+            # todo: maybe allow controller to cycle through some letters arcade style with up and down
+            match action:
+                case MenuAction.UP:
+                    pass
+                case MenuAction.DOWN:
+                    pass
+        elif event.type == pygame.KEYDOWN:
             match event.key:
-                case pygame.K_LEFT:
-                    self._cursor_position -= 1
-                    self._resetCursorBlink()
-                case pygame.K_RIGHT:
-                    self._cursor_position += 1
-                    self._resetCursorBlink()
                 case pygame.K_UP | pygame.K_HOME | pygame.K_PAGEUP:
                     self._cursor_position = 0
                     self._resetCursorBlink()
@@ -247,7 +254,7 @@ class ModeGameMenuSave(ModeGameMenu):
                             + self._save_name[self._cursor_position:]
                         self._cursor_position += 1
                         self._resetCursorBlink()
-            self._cursor_position = utility.clamp(self._cursor_position, 0, len(self._save_name))
+        self._cursor_position = utility.clamp(self._cursor_position, 0, len(self._save_name))
 
     def _update(self, dt):
         self._cursor_timer += dt
