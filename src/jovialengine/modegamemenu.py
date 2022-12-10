@@ -154,21 +154,19 @@ class ModeGameMenuSave(ModeGameMenu):
         self._cursor_timer = 0
 
     def _inputEvent(self, event):
-        if event.type == pygame.QUIT:
-            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-        elif event.type == pygame.KEYDOWN:
-            char = event.unicode
-            length = len(self._save_name)
-            if self._save_success:
+        match self._getAction(event):
+            case MenuAction.QUIT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-            elif event.key == pygame.K_ESCAPE:
+            case MenuAction.REJECT:
                 if self._confirm_overwrite:
                     self._confirm_overwrite = False
                     self._save_success = None
                 else:
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-            elif event.key == pygame.K_RETURN:
-                if isinstance(self._previous_mode, Saveable):
+            case MenuAction.CONFIRM:
+                if self._save_success:
+                    self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+                elif isinstance(self._previous_mode, Saveable):
                     if not self._save_name:
                         self._save_name = utility.getDateTimeFileName()
                     if Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
@@ -176,17 +174,18 @@ class ModeGameMenuSave(ModeGameMenu):
                     else:
                         new_save = Save.getFromMode(self._save_name, self._previous_mode)
                         self._save_success = new_save.save()
-            elif event.key == pygame.K_LEFT:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
                 self._cursor_position = max(self._cursor_position - 1, 0)
                 self._resetCursorBlink()
             elif event.key == pygame.K_RIGHT:
-                self._cursor_position = min(self._cursor_position + 1, length)
+                self._cursor_position = min(self._cursor_position + 1, len(self._save_name))
                 self._resetCursorBlink()
-            elif event.key in (pygame.K_UP, pygame.K_HOME):
+            elif event.key in (pygame.K_UP, pygame.K_HOME, pygame.K_PAGEUP):
                 self._cursor_position = 0
                 self._resetCursorBlink()
-            elif event.key in (pygame.K_DOWN, pygame.K_END):
-                self._cursor_position = length
+            elif event.key in (pygame.K_DOWN, pygame.K_END, pygame.K_PAGEDOWN):
+                self._cursor_position = len(self._save_name)
                 self._resetCursorBlink()
             elif event.key == pygame.K_DELETE:
                 self._save_name = self._save_name[:self._cursor_position] + self._save_name[self._cursor_position + 1:]
@@ -198,16 +197,16 @@ class ModeGameMenuSave(ModeGameMenu):
                     self._cursor_position -= 1
                 self._resetCursorBlink()
             elif (
-                length < (self._MENU_CHAR_WIDTH - 1)
+                len(self._save_name) < (self._MENU_CHAR_WIDTH - 1)
                 and (
                     # numbers
-                    ('0' <= char <= '9')
+                    ('0' <= event.unicode <= '9')
                     # or letters
                     or (96 < event.key < 123)
                 )
             ):
                 self._save_name = self._save_name[:self._cursor_position] \
-                    + char \
+                    + event.unicode \
                     + self._save_name[self._cursor_position:]
                 self._cursor_position += 1
                 self._resetCursorBlink()
@@ -223,7 +222,9 @@ class ModeGameMenuSave(ModeGameMenu):
         draw_cursor = False
         if not isinstance(self._previous_mode, Saveable):
             disp_text += "\nYou can't save now."
-        elif not self._save_success:
+        elif self._save_success:
+            disp_text += "\nSaved successfully.\nPress ENTER to continue."
+        else:
             disp_text += "ENTER) Save\nType a save name (or leave blank for default):\n>"
             if self._save_name:
                 disp_text += self._save_name
@@ -234,8 +235,6 @@ class ModeGameMenuSave(ModeGameMenu):
                 disp_text += "\nSave failed.\nPress ENTER to try again, or ESC to go back."
             else:
                 draw_cursor = True
-        else:
-            disp_text += "\nSaved successfully.\nPress any key to go back."
         self._drawTextAlways(disp_text)
         if self._cursor_switch and draw_cursor:
             cursor_x = getDefaultFontWrap().font.size(">" + self._save_name[:self._cursor_position])[0]
