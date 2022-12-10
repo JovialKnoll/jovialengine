@@ -177,10 +177,10 @@ class ModeGameMenuSave(ModeGameMenu):
         if event.type == pygame.KEYDOWN:
             match event.key:
                 case pygame.K_LEFT:
-                    self._cursor_position = max(self._cursor_position - 1, 0)
+                    self._cursor_position -= 1
                     self._resetCursorBlink()
                 case pygame.K_RIGHT:
-                    self._cursor_position = min(self._cursor_position + 1, len(self._save_name))
+                    self._cursor_position += 1
                     self._resetCursorBlink()
                 case pygame.K_UP | pygame.K_HOME | pygame.K_PAGEUP:
                     self._cursor_position = 0
@@ -193,10 +193,9 @@ class ModeGameMenuSave(ModeGameMenu):
                         + self._save_name[self._cursor_position + 1:]
                     self._resetCursorBlink()
                 case pygame.K_BACKSPACE:
-                    if self._cursor_position > 0:
-                        self._save_name = self._save_name[:self._cursor_position - 1] \
-                            + self._save_name[self._cursor_position:]
-                        self._cursor_position -= 1
+                    self._save_name = self._save_name[:self._cursor_position - 1] \
+                        + self._save_name[self._cursor_position:]
+                    self._cursor_position -= 1
                     self._resetCursorBlink()
                 case _:
                     if (
@@ -213,6 +212,7 @@ class ModeGameMenuSave(ModeGameMenu):
                             + self._save_name[self._cursor_position:]
                         self._cursor_position += 1
                         self._resetCursorBlink()
+            self._cursor_position = utility.clamp(self._cursor_position, 0, len(self._save_name))
 
     def _update(self, dt):
         self._cursor_timer += dt
@@ -288,12 +288,13 @@ class ModeGameMenuLoad(ModeGameMenu):
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
                 elif len(self._saves) > 0:
                     if action in (MenuAction.UP, MenuAction.LEFT):
-                        self._save_index = max(self._save_index - 1, 0)
+                        self._save_index -= 1
                     elif action in (MenuAction.DOWN, MenuAction.RIGHT):
-                        self._save_index = min(self._save_index + 1, len(self._saves) - 1)
+                        self._save_index += 1
                     elif action == MenuAction.CONFIRM:
                         self._state = self.STATE_SELECTED_SAVE
                         self._selected_save_option = self.OPTION_LOAD
+                    self._save_index = utility.clamp(self._save_index, 0, len(self._saves) - 1)
             case self.STATE_LOADED_SAVE:
                 if action == MenuAction.CONFIRM:
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
@@ -304,7 +305,7 @@ class ModeGameMenuLoad(ModeGameMenu):
                 if action == MenuAction.CONFIRM:
                     self._saves[self._save_index].delete()
                     del self._saves[self._save_index]
-                    self._save_index = max(0, min(len(self._saves) - 1, self._save_index))
+                    self._save_index = utility.clamp(self._save_index, 0, len(self._saves) - 1)
                     self._state = self.STATE_DELETED_SAVE
                 elif action == MenuAction.REJECT:
                     self._state = self.STATE_DEFAULT
