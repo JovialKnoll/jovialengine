@@ -54,7 +54,7 @@ def init(
     upscale = config.get(config.SCREEN_SCALE)
     if upscale == 0:
         upscale = math.ceil(_upscale_max / 2)
-    upscale = max(min(upscale, _upscale_max), 0)
+    upscale = utility.clamp(upscale, 0, _upscale_max)
     _scaleDisp()
     screen = pygame.Surface(screen_size)
     _fullscreen_offset = None
@@ -250,7 +250,7 @@ def getBlurredScreen(mode: ModeBase):
 
 
 def getPositionalChannelMix(x: int | float):
-    pos = min(max(x / screen_size[0], 0), 1)
+    pos = utility.clamp(x / screen_size[0], 0, 1)
     channel_l = _boundChannelVolume(utility.cosCurve(pos))
     channel_r = _boundChannelVolume(utility.sinCurve(pos))
     return channel_l, channel_r
