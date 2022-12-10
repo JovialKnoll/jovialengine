@@ -83,6 +83,10 @@ class ModeGameMenu(ModeBase, abc.ABC):
                         return MenuAction.REJECT
         return MenuAction.NOTHING
 
+    @staticmethod
+    def _getSelectedChar(is_selected: bool):
+        return ">" if is_selected else "_"
+
     def _drawTextAlways(self, disp_text: str):
         self._last_disp_text = disp_text
         self._menu_surface = getDefaultFontWrap().renderInside(
@@ -99,32 +103,59 @@ class ModeGameMenu(ModeBase, abc.ABC):
 
 
 class ModeGameMenuTop(ModeGameMenu):
+    _OPTIONS = [
+        "Save",
+        "Load",
+        "Options",
+        "Restart",
+        "Quit",
+    ]
+
+    __slots__ = (
+        '_selected',
+    )
+
+    def __init__(self, previous_mode, old_screen=None):
+        super().__init__(previous_mode, old_screen)
+        self._selected = 0
+
     def _inputEvent(self, event):
-        if event.type == pygame.QUIT:
-            game.getGame().running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                self.next_mode = self._previous_mode
-            elif event.key == pygame.K_1:
-                self.next_mode = ModeGameMenuSave(self._previous_mode, self._background)
-            elif event.key == pygame.K_2:
-                self.next_mode = ModeGameMenuLoad(self._previous_mode, self._background)
-            elif event.key == pygame.K_3:
-                self.next_mode = ModeGameMenuOptions(self._previous_mode, self._background)
-            elif event.key == pygame.K_4:
-                self._stopMixer()
-                game.getGame().state = game.getGame().state_cls()
-                self._previous_mode = game.getGame().start_mode_cls()
-                pygame.mixer.music.pause()
-                pygame.mixer.pause()
-                self._background = self._getOldScreen()
-                self._last_disp_text = None
-            elif event.key == pygame.K_5:
+        match self._getAction(event):
+            case MenuAction.QUIT:
                 game.getGame().running = False
+            case MenuAction.REJECT:
+                self.next_mode = self._previous_mode
+            case MenuAction.UP | MenuAction.LEFT:
+                self._selected -= 1
+            case MenuAction.DOWN | MenuAction.RIGHT:
+                self._selected += 1
+            case MenuAction.CONFIRM:
+                match self._selected:
+                    case 0:
+                        self.next_mode = ModeGameMenuSave(self._previous_mode, self._background)
+                    case 1:
+                        self.next_mode = ModeGameMenuLoad(self._previous_mode, self._background)
+                    case 2:
+                        self.next_mode = ModeGameMenuOptions(self._previous_mode, self._background)
+                    case 3:
+                        self._stopMixer()
+                        game.getGame().state = game.getGame().state_cls()
+                        self._previous_mode = game.getGame().start_mode_cls()
+                        pygame.mixer.music.pause()
+                        pygame.mixer.pause()
+                        self._background = self._getOldScreen()
+                        self._last_disp_text = None
+                    case 4:
+                        game.getGame().running = False
+        self._selected = utility.clamp(self._selected, 0, 4)
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
-        disp_text += "1) Save\n2) Load\n3) Options\n4) Restart\n5) Quit"
+        disp_text += "ARROW KEYS + ENTER)"
+        for index, option in self._OPTIONS:
+            disp_text += "\n"
+            disp_text += self._getSelectedChar(self._selected == index)
+            disp_text += option
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
 
@@ -344,7 +375,7 @@ class ModeGameMenuLoad(ModeGameMenu):
         return text
 
     def _getOptionStatus(self, option: int):
-        return ">" if self._selected_save_option == option else "_"
+        return self._getSelectedChar(self._selected_save_option == option)
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
@@ -411,7 +442,7 @@ class ModeGameMenuOptions(ModeGameMenu):
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
-        disp_text += f"ARROWS) Upscaling: {display.upscale}" \
+        disp_text += f"ARROW KEYS) Upscaling: {display.upscale}" \
             + f"\nENTER) Fullscreen: {self.getTickBox(display.is_fullscreen)}"
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
