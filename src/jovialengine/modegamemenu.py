@@ -52,6 +52,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
         return display.getBlurredScreen(self._previous_mode)
 
     def _getAction(self, event: pygame.event.Event):
+        # todo: make controller buttons work, not just hats
         match event.type:
             case pygame.QUIT:
                 return MenuAction.QUIT
