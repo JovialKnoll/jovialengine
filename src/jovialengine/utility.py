@@ -3,6 +3,10 @@ import math
 from datetime import datetime
 
 
+def clamp(number, minimum, maximum):
+    return max(minimum, min(maximum, number))
+
+
 def getIntMovement(tracking, vel, dt):
     tracking += vel * dt
     tracking_int = int(tracking)
