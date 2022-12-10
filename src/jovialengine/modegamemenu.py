@@ -174,6 +174,7 @@ class ModeGameMenuSave(ModeGameMenu):
                     else:
                         new_save = Save.getFromMode(self._save_name, self._previous_mode)
                         self._save_success = new_save.save()
+        # todo: maybe allow controller to cycle through some letters arcade style with up and down
         if event.type == pygame.KEYDOWN:
             match event.key:
                 case pygame.K_LEFT:
@@ -375,7 +376,7 @@ class ModeGameMenuOptions(ModeGameMenu):
     def _getAction(self, event: pygame.event.Event):
         # keydown events will be triggered again on recreating window
         # so for this mode we need to check keyup events instead
-        # maybe just replace this with a timeout
+        # todo: maybe just replace this with a timeout
         if event.type == pygame.KEYUP:
             match event.key:
                 case pygame.K_LEFT:
