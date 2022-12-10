@@ -175,41 +175,44 @@ class ModeGameMenuSave(ModeGameMenu):
                         new_save = Save.getFromMode(self._save_name, self._previous_mode)
                         self._save_success = new_save.save()
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                self._cursor_position = max(self._cursor_position - 1, 0)
-                self._resetCursorBlink()
-            elif event.key == pygame.K_RIGHT:
-                self._cursor_position = min(self._cursor_position + 1, len(self._save_name))
-                self._resetCursorBlink()
-            elif event.key in (pygame.K_UP, pygame.K_HOME, pygame.K_PAGEUP):
-                self._cursor_position = 0
-                self._resetCursorBlink()
-            elif event.key in (pygame.K_DOWN, pygame.K_END, pygame.K_PAGEDOWN):
-                self._cursor_position = len(self._save_name)
-                self._resetCursorBlink()
-            elif event.key == pygame.K_DELETE:
-                self._save_name = self._save_name[:self._cursor_position] + self._save_name[self._cursor_position + 1:]
-                self._resetCursorBlink()
-            elif event.key == pygame.K_BACKSPACE:
-                if self._cursor_position > 0:
-                    self._save_name = self._save_name[:self._cursor_position - 1] \
-                        + self._save_name[self._cursor_position:]
-                    self._cursor_position -= 1
-                self._resetCursorBlink()
-            elif (
-                len(self._save_name) < (self._MENU_CHAR_WIDTH - 1)
-                and (
-                    # numbers
-                    ('0' <= event.unicode <= '9')
-                    # or letters
-                    or (96 < event.key < 123)
-                )
-            ):
-                self._save_name = self._save_name[:self._cursor_position] \
-                    + event.unicode \
-                    + self._save_name[self._cursor_position:]
-                self._cursor_position += 1
-                self._resetCursorBlink()
+            match event.key:
+                case pygame.K_LEFT:
+                    self._cursor_position = max(self._cursor_position - 1, 0)
+                    self._resetCursorBlink()
+                case pygame.K_RIGHT:
+                    self._cursor_position = min(self._cursor_position + 1, len(self._save_name))
+                    self._resetCursorBlink()
+                case pygame.K_UP | pygame.K_HOME | pygame.K_PAGEUP:
+                    self._cursor_position = 0
+                    self._resetCursorBlink()
+                case pygame.K_DOWN | pygame.K_END | pygame.K_PAGEDOWN:
+                    self._cursor_position = len(self._save_name)
+                    self._resetCursorBlink()
+                case pygame.K_DELETE:
+                    self._save_name = self._save_name[:self._cursor_position] \
+                        + self._save_name[self._cursor_position + 1:]
+                    self._resetCursorBlink()
+                case pygame.K_BACKSPACE:
+                    if self._cursor_position > 0:
+                        self._save_name = self._save_name[:self._cursor_position - 1] \
+                            + self._save_name[self._cursor_position:]
+                        self._cursor_position -= 1
+                    self._resetCursorBlink()
+                case _:
+                    if (
+                        len(self._save_name) < (self._MENU_CHAR_WIDTH - 1)
+                        and (
+                            # numbers
+                            ('0' <= event.unicode <= '9')
+                            # or letters
+                            or (96 < event.key < 123)
+                        )
+                    ):
+                        self._save_name = self._save_name[:self._cursor_position] \
+                            + event.unicode \
+                            + self._save_name[self._cursor_position:]
+                        self._cursor_position += 1
+                        self._resetCursorBlink()
 
     def _update(self, dt):
         self._cursor_timer += dt
