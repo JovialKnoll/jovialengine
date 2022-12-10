@@ -217,10 +217,13 @@ class ModeGameMenuSave(ModeGameMenu):
                 self._resetCursorBlink()
         if event.type == pygame.JOYHATMOTION:
             # todo: maybe allow controller to cycle through some letters arcade style with up and down
-            match action:
-                case MenuAction.UP:
-                    pass
-                case MenuAction.DOWN:
+            if action in (MenuAction.UP, MenuAction.DOWN,):
+                if self._cursor_position == len(self._save_name):
+                    if self._cursor_position < (self._MENU_CHAR_WIDTH - 1):
+                        # add additional character
+                        pass
+                else:
+                    # rotate character
                     pass
         elif event.type == pygame.KEYDOWN:
             match event.key:
