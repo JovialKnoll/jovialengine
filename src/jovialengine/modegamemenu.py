@@ -194,6 +194,7 @@ class ModeGameMenuSave(ModeGameMenu):
             if self._cursor_position < (self._MENU_CHAR_WIDTH - 1):
                 char_pos = max(direction - 1, -1)
                 self._save_name += self._CONTROLLER_CHARS[char_pos]
+                self._cursor_position += 1
                 self._resetCursorBlink()
         else:
             char_pos = self._CONTROLLER_CHARS.find(
