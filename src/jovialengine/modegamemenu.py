@@ -204,6 +204,11 @@ class ModeGameMenuSave(ModeGameMenu):
                 + self._CONTROLLER_CHARS[new_char_pos] \
                 + self._save_name[self._cursor_position:]
 
+    def _backspace(self):
+        self._save_name = self._save_name[:self._cursor_position - 1] + self._save_name[self._cursor_position:]
+        self._cursor_position -= 1
+        self._resetCursorBlink()
+
     def _inputEvent(self, event):
         action = self._getAction(event)
         match action:
@@ -213,6 +218,8 @@ class ModeGameMenuSave(ModeGameMenu):
                 if self._confirm_overwrite:
                     self._confirm_overwrite = False
                     self._save_success = None
+                elif event.type == pygame.JOYBUTTONDOWN and self._cursor_position > 0:
+                    self._backspace()
                 else:
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             case MenuAction.CONFIRM:
@@ -250,10 +257,7 @@ class ModeGameMenuSave(ModeGameMenu):
                         + self._save_name[self._cursor_position + 1:]
                     self._resetCursorBlink()
                 case pygame.K_BACKSPACE:
-                    self._save_name = self._save_name[:self._cursor_position - 1] \
-                        + self._save_name[self._cursor_position:]
-                    self._cursor_position -= 1
-                    self._resetCursorBlink()
+                    self._backspace()
                 case _:
                     if (
                         len(self._save_name) < (self._MENU_CHAR_WIDTH - 1)
