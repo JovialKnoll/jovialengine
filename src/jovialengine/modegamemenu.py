@@ -241,12 +241,13 @@ class ModeGameMenuSave(ModeGameMenu):
             case MenuAction.RIGHT:
                 self._cursor_position += 1
                 self._resetCursorBlink()
-        if event.type == pygame.JOYHATMOTION:
-            if action == MenuAction.UP:
-                self._controllerType(-1)
-            elif action == MenuAction.DOWN:
-                self._controllerType(1)
-        elif event.type == pygame.KEYDOWN:
+            case MenuAction.UP:
+                if event.type == pygame.JOYHATMOTION:
+                    self._controllerType(-1)
+            case MenuAction.DOWN:
+                if event.type == pygame.JOYHATMOTION:
+                    self._controllerType(1)
+        if event.type == pygame.KEYDOWN:
             match event.key:
                 case pygame.K_UP | pygame.K_HOME | pygame.K_PAGEUP:
                     self._cursor_position = 0
