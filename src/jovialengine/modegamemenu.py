@@ -1,5 +1,6 @@
 import abc
 import enum
+import string
 
 import pygame
 
@@ -164,6 +165,7 @@ class ModeGameMenuTop(ModeGameMenu):
 
 
 class ModeGameMenuSave(ModeGameMenu):
+    _CONTROLLER_CHARS = string.ascii_lowercase + string.digits
     _CURSOR_TIME = 500
 
     __slots__ = (
@@ -186,6 +188,21 @@ class ModeGameMenuSave(ModeGameMenu):
     def _resetCursorBlink(self):
         self._cursor_switch = True
         self._cursor_timer = 0
+
+    def _controllerType(self, direction: int):
+        if self._cursor_position == len(self._save_name):
+            if self._cursor_position < (self._MENU_CHAR_WIDTH - 1):
+                char_pos = max(direction - 1, -1)
+                self._save_name += self._CONTROLLER_CHARS[char_pos]
+                self._resetCursorBlink()
+        else:
+            char_pos = self._CONTROLLER_CHARS.find(
+                self._save_name[self._cursor_position].lower()
+            )
+            new_char_pos = (char_pos + direction) % len(self._CONTROLLER_CHARS)
+            self._save_name = self._save_name[:self._cursor_position] \
+                + self._CONTROLLER_CHARS[new_char_pos] \
+                + self._save_name[self._cursor_position:]
 
     def _inputEvent(self, event):
         action = self._getAction(event)
@@ -216,15 +233,10 @@ class ModeGameMenuSave(ModeGameMenu):
                 self._cursor_position += 1
                 self._resetCursorBlink()
         if event.type == pygame.JOYHATMOTION:
-            # todo: maybe allow controller to cycle through some letters arcade style with up and down
-            if action in (MenuAction.UP, MenuAction.DOWN,):
-                if self._cursor_position == len(self._save_name):
-                    if self._cursor_position < (self._MENU_CHAR_WIDTH - 1):
-                        # add additional character
-                        pass
-                else:
-                    # rotate character
-                    pass
+            if action == MenuAction.UP:
+                self._controllerType(-1)
+            elif action == MenuAction.DOWN:
+                self._controllerType(1)
         elif event.type == pygame.KEYDOWN:
             match event.key:
                 case pygame.K_UP | pygame.K_HOME | pygame.K_PAGEUP:
