@@ -194,7 +194,6 @@ class ModeGameMenuSave(ModeGameMenu):
             if self._cursor_position < (self._MENU_CHAR_WIDTH - 1):
                 char_pos = max(direction - 1, -1)
                 self._save_name += self._CONTROLLER_CHARS[char_pos]
-                self._cursor_position += 1
                 self._resetCursorBlink()
         else:
             char_pos = self._CONTROLLER_CHARS.find(
@@ -203,7 +202,7 @@ class ModeGameMenuSave(ModeGameMenu):
             new_char_pos = (char_pos + direction) % len(self._CONTROLLER_CHARS)
             self._save_name = self._save_name[:self._cursor_position] \
                 + self._CONTROLLER_CHARS[new_char_pos] \
-                + self._save_name[self._cursor_position:]
+                + self._save_name[self._cursor_position + 1:]
 
     def _backspace(self):
         self._save_name = self._save_name[:self._cursor_position - 1] + self._save_name[self._cursor_position:]
