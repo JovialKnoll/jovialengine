@@ -212,8 +212,7 @@ class ModeGameMenuSave(ModeGameMenu):
         self._resetCursorBlink()
 
     def _inputEvent(self, event):
-        action = self._getAction(event)
-        match action:
+        match self._getAction(event):
             case MenuAction.QUIT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             case MenuAction.REJECT:
