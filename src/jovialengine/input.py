@@ -108,7 +108,11 @@ def startNewMode():
 def resetDefaultMapping():
     global _input_mapping
     _input_mapping = dict()
-    for input_default in _ENGINE_INPUT_DEFAULTS + _input_defaults:
+    controller_pause = tuple(
+        InputDefault(i, TYPE_PAUSE, InputType.CON_BUTTON, 7, i)
+        for i in range(_max_players)
+    )
+    for input_default in _ENGINE_INPUT_DEFAULTS + controller_pause + _input_defaults:
         _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
 
 
