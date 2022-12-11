@@ -321,8 +321,7 @@ class ModeGameMenuLoad(ModeGameMenu):
     STATE_DEFAULT = 0
     STATE_LOADED_SAVE = 1
     STATE_DELETED_SAVE = 2
-    STATE_CONFIRM_DELETE = 3
-    STATE_SELECTED_SAVE = 4
+    STATE_SELECTED_SAVE = 3
     OPTION_LOAD = 0
     OPTION_DELETE = 1
 
@@ -361,18 +360,10 @@ class ModeGameMenuLoad(ModeGameMenu):
                         self._selected_save_option = self.OPTION_LOAD
                     self._save_index = utility.clamp(self._save_index, 0, len(self._saves) - 1)
             case self.STATE_LOADED_SAVE:
-                if action == MenuAction.CONFIRM:
+                if action in (MenuAction.CONFIRM, MenuAction.REJECT):
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             case self.STATE_DELETED_SAVE:
-                if action == MenuAction.CONFIRM:
-                    self._state = self.STATE_DEFAULT
-            case self.STATE_CONFIRM_DELETE:
-                if action == MenuAction.CONFIRM:
-                    self._saves[self._save_index].delete()
-                    del self._saves[self._save_index]
-                    self._save_index = utility.clamp(self._save_index, 0, len(self._saves) - 1)
-                    self._state = self.STATE_DELETED_SAVE
-                elif action == MenuAction.REJECT:
+                if action in (MenuAction.CONFIRM, MenuAction.REJECT):
                     self._state = self.STATE_DEFAULT
             case self.STATE_SELECTED_SAVE:
                 if action in (MenuAction.UP, MenuAction.LEFT):
@@ -390,7 +381,10 @@ class ModeGameMenuLoad(ModeGameMenu):
                         self._background = self._getOldScreen()
                         self._state = self.STATE_LOADED_SAVE
                     elif self._selected_save_option == self.OPTION_DELETE:
-                        self._state = self.STATE_CONFIRM_DELETE
+                        self._saves[self._save_index].delete()
+                        del self._saves[self._save_index]
+                        self._save_index = utility.clamp(self._save_index, 0, len(self._saves) - 1)
+                        self._state = self.STATE_DELETED_SAVE
                 elif action == MenuAction.REJECT:
                     self._state = self.STATE_DEFAULT
 
@@ -422,10 +416,6 @@ class ModeGameMenuLoad(ModeGameMenu):
                 disp_text += "\nLoaded successfully.\nPress ENTER to continue."
             case self.STATE_DELETED_SAVE:
                 disp_text += "\nDeleted successfully.\nPress ENTER to continue."
-            case self.STATE_CONFIRM_DELETE:
-                disp_text += self._getLoadOptionsText()
-                disp_text += "\nAre you sure you want to delete?" \
-                    + "\nPress ENTER to confirm, or ESCAPE to go back."
             case self.STATE_SELECTED_SAVE:
                 disp_text += self._getLoadOptionsText()
                 disp_text += f"\n{self._getOptionStatus(self.OPTION_LOAD)}Load" \
