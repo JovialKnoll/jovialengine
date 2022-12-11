@@ -462,7 +462,6 @@ class ModeGameMenuOptions(ModeGameMenu):
         return super()._getAction(event)
 
     def _inputEvent(self, event):
-        print(event)
         match self._getAction(event):
             case MenuAction.QUIT | MenuAction.REJECT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
