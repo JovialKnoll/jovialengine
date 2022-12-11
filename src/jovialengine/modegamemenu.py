@@ -69,8 +69,10 @@ class ModeGameMenu(ModeBase, abc.ABC):
                 self._previous_hat = event.value
                 return result
             case pygame.JOYBUTTONDOWN:
-                # todo: make controller buttons work, not just hats
-                pass
+                if event.button == 0:
+                    return MenuAction.CONFIRM
+                else:
+                    return MenuAction.REJECT
             case pygame.KEYDOWN:
                 match event.key:
                     case pygame.K_LEFT:
