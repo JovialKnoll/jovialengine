@@ -38,7 +38,7 @@ class InputFrame(object):
                 return True
         return False
 
-    def wasInputPressed(self, event_type: int, player_id: int):
+    def wasPlayerInputPressed(self, player_id: int, event_type: int):
         for state_change in self._controller_state_changes:
             if state_change.player_id == player_id \
                     and state_change.event_type == event_type \

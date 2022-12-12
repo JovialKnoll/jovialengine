@@ -97,7 +97,7 @@ class _Game(object):
         events = self._filterInput(pygame.event.get())
         events = input.takeEvents(events)
         input_frame = input.getInputFrame()
-        if input_frame.wasInputPressed(0, input.TYPE_SCREENSHOT):
+        if input_frame.wasPlayerInputPressed(0, input.TYPE_SCREENSHOT):
             display.takeScreenshot()
         if any(map(self._isPauseEvent, events)) or input_frame.wasInputPressed(input.TYPE_PAUSE):
             # if already in pause menu no need to do this stuff
