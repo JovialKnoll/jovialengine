@@ -99,7 +99,7 @@ class _Game(object):
         input_frame = input.getInputFrame()
         if input_frame.wasInputPressed(0, input.TYPE_SCREENSHOT):
             display.takeScreenshot()
-        if any(map(self._isPauseEvent, events)) or input_frame.wasInputPressed(0, input.TYPE_PAUSE):
+        if any(map(self._isPauseEvent, events)) or input_frame.wasInputPressed(input.TYPE_PAUSE):
             # if already in pause menu no need to do this stuff
             if not isinstance(self._current_mode, ModeGameMenu):
                 self._current_mode = ModeGameMenuTop(self._current_mode)
