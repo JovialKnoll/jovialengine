@@ -100,8 +100,8 @@ def startNewMode():
     global _controller_states
     global _controller_states_prev
     global _controller_state_changes
-    _controller_states = [[0] * _num_inputs for x in range(_max_players)]
-    _controller_states_prev = [[0] * _num_inputs for x in range(_max_players)]
+    _controller_states = [[0] * _num_inputs for _ in range(_max_players)]
+    _controller_states_prev = [[0] * _num_inputs for _ in range(_max_players)]
     _controller_state_changes = []
 
 
