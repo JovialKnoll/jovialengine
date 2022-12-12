@@ -224,6 +224,7 @@ def initGame(
         font_height,
         font_antialias
     )
+    _game.start()
     return _game
 
 
