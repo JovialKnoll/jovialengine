@@ -113,6 +113,7 @@ class ModeGameMenuTop(ModeGameMenu):
         "Save",
         "Load",
         "Options",
+        "Controls",
         "Restart",
         "Quit",
     ]
@@ -146,6 +147,8 @@ class ModeGameMenuTop(ModeGameMenu):
                             and event.key == pygame.K_RETURN
                         self.next_mode = ModeGameMenuOptions(self._previous_mode, self._background, pressed_return)
                     case 3:
+                        self.next_mode = ModeGameMenuControls(self._previous_mode, self._background)
+                    case 4:
                         self._stopMixer()
                         game.getGame().state = game.getGame().state_cls()
                         self._previous_mode = game.getGame().start_mode_cls()
@@ -153,7 +156,7 @@ class ModeGameMenuTop(ModeGameMenu):
                         pygame.mixer.pause()
                         self._background = self._getOldScreen()
                         self._last_disp_text = None
-                    case 4:
+                    case 5:
                         game.getGame().running = False
         self._selected = utility.clamp(self._selected, 0, 4)
 
@@ -478,3 +481,19 @@ class ModeGameMenuOptions(ModeGameMenu):
     def getTickBox(value: bool):
         inside = "*" if value else "_"
         return f"[{inside}]"
+
+
+class ModeGameMenuControls(ModeGameMenu):
+    __slots__ = (
+    )
+
+    def __init__(self, previous_mode, old_screen):
+        super().__init__(previous_mode, old_screen)
+
+    def _inputEvent(self, event):
+        pass
+
+    def _drawPreSprites(self, screen):
+        disp_text = self._SHARED_DISP_TEXT
+        self._drawText(disp_text)
+        screen.blit(self._menu_surface, (0, 0))
