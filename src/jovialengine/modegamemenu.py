@@ -142,8 +142,7 @@ class ModeGameMenuTop(ModeGameMenu):
                     case 1:
                         self.next_mode = ModeGameMenuLoad(self._previous_mode, self._background)
                     case 2:
-                        pressed_return = event.type == pygame.KEYDOWN \
-                            and event.key == pygame.K_RETURN
+                        pressed_return = event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN
                         self.next_mode = ModeGameMenuOptions(self._previous_mode, self._background, pressed_return)
                     case 3:
                         self._stopMixer()
@@ -393,10 +392,7 @@ class ModeGameMenuLoad(ModeGameMenu):
         for i in range(-1, 2):
             text += "\n"
             this_index = self._save_index + i
-            if i == 0:
-                text += ">"
-            else:
-                text += "_"
+            text += ">" if i == 0 else "_"
             if 0 <= this_index < len(self._saves):
                 text += self._saves[this_index].save_name
         return text
@@ -457,9 +453,9 @@ class ModeGameMenuOptions(ModeGameMenu):
         match self._getAction(event):
             case MenuAction.QUIT | MenuAction.REJECT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-            case MenuAction.LEFT | MenuAction.DOWN:
+            case MenuAction.DOWN | MenuAction.LEFT:
                 display.changeScale(-1)
-            case MenuAction.RIGHT | MenuAction.UP:
+            case MenuAction.UP | MenuAction.RIGHT:
                 display.changeScale(1)
             case MenuAction.CONFIRM:
                 display.toggleFullscreen()
