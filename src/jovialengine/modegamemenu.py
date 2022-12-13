@@ -143,8 +143,7 @@ class ModeGameMenuTop(ModeGameMenu):
                     case 1:
                         self.next_mode = ModeGameMenuLoad(self._previous_mode, self._background)
                     case 2:
-                        pressed_return = event.type == pygame.KEYDOWN \
-                            and event.key == pygame.K_RETURN
+                        pressed_return = event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN
                         self.next_mode = ModeGameMenuOptions(self._previous_mode, self._background, pressed_return)
                     case 3:
                         self.next_mode = ModeGameMenuControls(self._previous_mode, self._background)
@@ -158,7 +157,7 @@ class ModeGameMenuTop(ModeGameMenu):
                         self._last_disp_text = None
                     case 5:
                         game.getGame().running = False
-        self._selected = utility.clamp(self._selected, 0, 4)
+        self._selected = utility.clamp(self._selected, 0, 5)
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
@@ -457,9 +456,9 @@ class ModeGameMenuOptions(ModeGameMenu):
         match self._getAction(event):
             case MenuAction.QUIT | MenuAction.REJECT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-            case MenuAction.LEFT | MenuAction.DOWN:
+            case MenuAction.DOWN | MenuAction.LEFT:
                 display.changeScale(-1)
-            case MenuAction.RIGHT | MenuAction.UP:
+            case MenuAction.UP | MenuAction.RIGHT:
                 display.changeScale(1)
             case MenuAction.CONFIRM:
                 display.toggleFullscreen()
@@ -489,9 +488,19 @@ class ModeGameMenuControls(ModeGameMenu):
 
     def _inputEvent(self, event):
         match self._getAction(event):
-            case MenuAction.QUIT | MenuAction.REJECT:
+            case MenuAction.QUIT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-        pass
+            case MenuAction.UP | MenuAction.LEFT:
+                pass
+            case MenuAction.DOWN | MenuAction.RIGHT:
+                pass
+            case MenuAction.CONFIRM:
+                pass
+            case MenuAction.REJECT:
+                if False:
+                    pass
+                else:
+                    self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
