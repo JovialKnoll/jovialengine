@@ -396,10 +396,7 @@ class ModeGameMenuLoad(ModeGameMenu):
         for i in range(-1, 2):
             text += "\n"
             this_index = self._save_index + i
-            if i == 0:
-                text += ">"
-            else:
-                text += "_"
+            text += ">" if i == 0 else "_"
             if 0 <= this_index < len(self._saves):
                 text += self._saves[this_index].save_name
         return text
@@ -491,9 +488,19 @@ class ModeGameMenuControls(ModeGameMenu):
         super().__init__(previous_mode, old_screen)
 
     def _inputEvent(self, event):
+        match self._getAction(event):
+            case MenuAction.QUIT | MenuAction.REJECT:
+                self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
         pass
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
+        disp_text += "ARROW KEYS + ENTER)"
+        # for i in range(-1, 2):
+        #     disp_text += "\n"
+        #     this_index = self._action_index + i
+        #     disp_text += ">" if i == 0 else "_"
+        #     if 0 <= this_index < len(self._actions):
+        #         disp_text += self._actions[this_index].action_name
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
