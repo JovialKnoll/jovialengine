@@ -108,6 +108,36 @@ class ModeGameMenu(ModeBase, abc.ABC):
             self._drawTextAlways(disp_text)
 
 
+class ModeGameMenuList(ModeGameMenu):
+    __slots__ = (
+        '_index',
+    )
+
+    def __init__(self, previous_mode, old_screen):
+        super().__init__(previous_mode, old_screen)
+        self._index = 0
+
+    def _getOptionsLength(self) -> int:
+        raise NotImplementedError(
+            type(self).__name__ + "._getOptionsLength(self)"
+        )
+
+    def _getOptionName(self, index: int) -> str:
+        raise NotImplementedError(
+            type(self).__name__ + "._getOptionName(self, index)"
+        )
+
+    def _getOptionsText(self):
+        text = "ARROW KEYS + ENTER) Select a save:"
+        for i in range(-1, 2):
+            text += "\n"
+            this_index = self._index + i
+            text += ">" if i == 0 else "_"
+            if 0 <= this_index < self._getOptionsLength():
+                text += self._getOptionName(this_index)
+        return text
+
+
 class ModeGameMenuTop(ModeGameMenu):
     _OPTIONS = [
         "Save",
@@ -316,7 +346,7 @@ class ModeGameMenuSave(ModeGameMenu):
         screen.blit(self._menu_surface, (0, 0))
 
 
-class ModeGameMenuLoad(ModeGameMenu):
+class ModeGameMenuLoad(ModeGameMenuList):
     STATE_DEFAULT = 0
     STATE_LOADED_SAVE = 1
     STATE_DELETED_SAVE = 2
@@ -326,7 +356,6 @@ class ModeGameMenuLoad(ModeGameMenu):
 
     __slots__ = (
         '_saves',
-        '_save_index',
         '_state',
         '_selected_save_option',
     )
@@ -334,7 +363,6 @@ class ModeGameMenuLoad(ModeGameMenu):
     def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
         self._saves = Save.getAllFromFiles()
-        self._save_index = 0
         self._state = self.STATE_DEFAULT
         self._selected_save_option = self.OPTION_LOAD
 
@@ -351,13 +379,13 @@ class ModeGameMenuLoad(ModeGameMenu):
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
                 elif len(self._saves) > 0:
                     if action in (MenuAction.UP, MenuAction.LEFT):
-                        self._save_index -= 1
+                        self._index -= 1
                     elif action in (MenuAction.DOWN, MenuAction.RIGHT):
-                        self._save_index += 1
+                        self._index += 1
                     elif action == MenuAction.CONFIRM:
                         self._state = self.STATE_SELECTED_SAVE
                         self._selected_save_option = self.OPTION_LOAD
-                    self._save_index = utility.clamp(self._save_index, 0, len(self._saves) - 1)
+                    self._index = utility.clamp(self._index, 0, len(self._saves) - 1)
             case self.STATE_LOADED_SAVE:
                 if action in (MenuAction.CONFIRM, MenuAction.REJECT):
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
@@ -374,28 +402,24 @@ class ModeGameMenuLoad(ModeGameMenu):
                 elif action == MenuAction.CONFIRM:
                     if self._selected_save_option == self.OPTION_LOAD:
                         self._stopMixer()
-                        self._previous_mode = self._saves[self._save_index].load()
+                        self._previous_mode = self._saves[self._index].load()
                         pygame.mixer.music.pause()
                         pygame.mixer.pause()
                         self._background = self._getOldScreen()
                         self._state = self.STATE_LOADED_SAVE
                     elif self._selected_save_option == self.OPTION_DELETE:
-                        self._saves[self._save_index].delete()
-                        del self._saves[self._save_index]
-                        self._save_index = utility.clamp(self._save_index, 0, len(self._saves) - 1)
+                        self._saves[self._index].delete()
+                        del self._saves[self._index]
+                        self._index = utility.clamp(self._index, 0, len(self._saves) - 1)
                         self._state = self.STATE_DELETED_SAVE
                 elif action == MenuAction.REJECT:
                     self._state = self.STATE_DEFAULT
 
-    def _getLoadOptionsText(self):
-        text = "ARROW KEYS + ENTER) Select a save:"
-        for i in range(-1, 2):
-            text += "\n"
-            this_index = self._save_index + i
-            text += ">" if i == 0 else "_"
-            if 0 <= this_index < len(self._saves):
-                text += self._saves[this_index].save_name
-        return text
+    def _getOptionsLength(self):
+        return len(self._saves)
+
+    def _getOptionsName(self, index):
+        return self._saves[index].save_name
 
     def _getOptionStatus(self, option: int):
         return self._getSelectedChar(self._selected_save_option == option)
@@ -407,13 +431,13 @@ class ModeGameMenuLoad(ModeGameMenu):
                 if len(self._saves) == 0:
                     disp_text += "\nThere are no saves to select from."
                 else:
-                    disp_text += self._getLoadOptionsText()
+                    disp_text += self._getOptionsText()
             case self.STATE_LOADED_SAVE:
                 disp_text += "\nLoaded successfully.\nPress ENTER to continue."
             case self.STATE_DELETED_SAVE:
                 disp_text += "\nDeleted successfully.\nPress ENTER to continue."
             case self.STATE_SELECTED_SAVE:
-                disp_text += self._getLoadOptionsText()
+                disp_text += self._getOptionsText()
                 disp_text += f"\n{self._getOptionStatus(self.OPTION_LOAD)}Load" \
                     + f"\n{self._getOptionStatus(self.OPTION_DELETE)}Delete"
         self._drawText(disp_text)
