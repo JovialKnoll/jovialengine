@@ -108,14 +108,14 @@ class ModeGameMenu(ModeBase, abc.ABC):
             self._drawTextAlways(disp_text)
 
 
-class ModeGameOptionsList(ModeGameMenu):
+class ModeGameMenuList(ModeGameMenu):
     __slots__ = (
-        '_option_index',
+        '_index',
     )
 
     def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
-        self._option_index = 0
+        self._index = 0
 
     def _getOptionsLength(self) -> int:
         raise NotImplementedError(
@@ -131,7 +131,7 @@ class ModeGameOptionsList(ModeGameMenu):
         text = "ARROW KEYS + ENTER) Select a save:"
         for i in range(-1, 2):
             text += "\n"
-            this_index = self._option_index + i
+            this_index = self._index + i
             text += ">" if i == 0 else "_"
             if 0 <= this_index < self._getOptionsLength():
                 text += self._getOptionName(this_index)
@@ -349,7 +349,7 @@ class ModeGameMenuSave(ModeGameMenu):
         screen.blit(self._menu_surface, (0, 0))
 
 
-class ModeGameMenuLoad(ModeGameOptionsList):
+class ModeGameMenuLoad(ModeGameMenuList):
     STATE_DEFAULT = 0
     STATE_LOADED_SAVE = 1
     STATE_DELETED_SAVE = 2
@@ -382,13 +382,13 @@ class ModeGameMenuLoad(ModeGameOptionsList):
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
                 elif len(self._saves) > 0:
                     if action in (MenuAction.UP, MenuAction.LEFT):
-                        self._option_index -= 1
+                        self._index -= 1
                     elif action in (MenuAction.DOWN, MenuAction.RIGHT):
-                        self._option_index += 1
+                        self._index += 1
                     elif action == MenuAction.CONFIRM:
                         self._state = self.STATE_SELECTED_SAVE
                         self._selected_save_option = self.OPTION_LOAD
-                    self._option_index = utility.clamp(self._option_index, 0, len(self._saves) - 1)
+                    self._index = utility.clamp(self._index, 0, len(self._saves) - 1)
             case self.STATE_LOADED_SAVE:
                 if action in (MenuAction.CONFIRM, MenuAction.REJECT):
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
@@ -405,15 +405,15 @@ class ModeGameMenuLoad(ModeGameOptionsList):
                 elif action == MenuAction.CONFIRM:
                     if self._selected_save_option == self.OPTION_LOAD:
                         self._stopMixer()
-                        self._previous_mode = self._saves[self._option_index].load()
+                        self._previous_mode = self._saves[self._index].load()
                         pygame.mixer.music.pause()
                         pygame.mixer.pause()
                         self._background = self._getOldScreen()
                         self._state = self.STATE_LOADED_SAVE
                     elif self._selected_save_option == self.OPTION_DELETE:
-                        self._saves[self._option_index].delete()
-                        del self._saves[self._option_index]
-                        self._option_index = utility.clamp(self._option_index, 0, len(self._saves) - 1)
+                        self._saves[self._index].delete()
+                        del self._saves[self._index]
+                        self._index = utility.clamp(self._index, 0, len(self._saves) - 1)
                         self._state = self.STATE_DELETED_SAVE
                 elif action == MenuAction.REJECT:
                     self._state = self.STATE_DEFAULT
@@ -503,13 +503,13 @@ class ModeGameMenuOptions(ModeGameMenu):
         return f"[{inside}]"
 
 
-class ModeGameMenuControls(ModeGameOptionsList):
+class ModeGameMenuControls(ModeGameMenuList):
     __slots__ = (
     )
 
     def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
-        # _option_index = 0
+        # _index = 0
 
     def _getOptionsLength(self):
         raise NotImplementedError(
