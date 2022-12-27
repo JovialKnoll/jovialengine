@@ -418,7 +418,7 @@ class ModeGameMenuLoad(ModeGameMenuList):
     def _getOptionsLength(self):
         return len(self._saves)
 
-    def _getOptionsName(self, index):
+    def _getOptionName(self, index):
         return self._saves[index].save_name
 
     def _getOptionStatus(self, option: int):
