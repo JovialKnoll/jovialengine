@@ -504,12 +504,15 @@ class ModeGameMenuOptions(ModeGameMenu):
 
 
 class ModeGameMenuControls(ModeGameMenuList):
+    STATE_DEFAULT = 0
+
     __slots__ = (
+        '_state',
     )
 
     def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
-        # _index = 0
+        self._state = self.STATE_DEFAULT
 
     def _getOptionsLength(self):
         raise NotImplementedError(
@@ -522,20 +525,23 @@ class ModeGameMenuControls(ModeGameMenuList):
         )
 
     def _inputEvent(self, event):
-        match self._getAction(event):
-            case MenuAction.QUIT:
-                self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-            case MenuAction.UP | MenuAction.LEFT:
-                pass
-            case MenuAction.DOWN | MenuAction.RIGHT:
-                pass
-            case MenuAction.CONFIRM:
-                pass
-            case MenuAction.REJECT:
-                if False:
-                    pass
-                else:
+        if self._state == self.STATE_DEFAULT:
+            match self._getAction(event):
+                case MenuAction.QUIT:
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+                case MenuAction.UP | MenuAction.LEFT:
+                    self._index -= 1
+                case MenuAction.DOWN | MenuAction.RIGHT:
+                    self._index += 1
+                case MenuAction.CONFIRM:
+                    pass
+                case MenuAction.REJECT:
+                    if False:
+                        pass
+                    else:
+                        self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+            #clamp by number of options
+            #self._index = utility.clamp(self._index, 0, len())
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
