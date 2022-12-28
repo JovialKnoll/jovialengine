@@ -375,17 +375,18 @@ class ModeGameMenuLoad(ModeGameMenuList):
             return
         match self._state:
             case self.STATE_DEFAULT:
-                if action == MenuAction.REJECT:
-                    self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-                elif len(self._saves) > 0:
-                    if action in (MenuAction.UP, MenuAction.LEFT):
+                match action:
+                    case MenuAction.REJECT:
+                        self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+                    case MenuAction.UP | MenuAction.LEFT:
                         self._index -= 1
-                    elif action in (MenuAction.DOWN, MenuAction.RIGHT):
+                    case MenuAction.DOWN | MenuAction.RIGHT:
                         self._index += 1
-                    elif action == MenuAction.CONFIRM:
-                        self._state = self.STATE_SELECTED_SAVE
-                        self._selected_save_option = self.OPTION_LOAD
-                    self._index = utility.clamp(self._index, 0, len(self._saves) - 1)
+                    case MenuAction.CONFIRM:
+                        if len(self._saves) > 0:
+                            self._state = self.STATE_SELECTED_SAVE
+                            self._selected_save_option = self.OPTION_LOAD
+                self._index = utility.clamp(self._index, 0, len(self._saves) - 1)
             case self.STATE_LOADED_SAVE:
                 if action in (MenuAction.CONFIRM, MenuAction.REJECT):
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
@@ -393,27 +394,28 @@ class ModeGameMenuLoad(ModeGameMenuList):
                 if action in (MenuAction.CONFIRM, MenuAction.REJECT):
                     self._state = self.STATE_DEFAULT
             case self.STATE_SELECTED_SAVE:
-                if action in (MenuAction.UP, MenuAction.LEFT):
-                    self._selected_save_option -= 1
-                    self._selected_save_option %= 2
-                elif action in (MenuAction.DOWN, MenuAction.RIGHT):
-                    self._selected_save_option += 1
-                    self._selected_save_option %= 2
-                elif action == MenuAction.CONFIRM:
-                    if self._selected_save_option == self.OPTION_LOAD:
-                        self._stopMixer()
-                        self._previous_mode = self._saves[self._index].load()
-                        pygame.mixer.music.pause()
-                        pygame.mixer.pause()
-                        self._background = self._getOldScreen()
-                        self._state = self.STATE_LOADED_SAVE
-                    elif self._selected_save_option == self.OPTION_DELETE:
-                        self._saves[self._index].delete()
-                        del self._saves[self._index]
-                        self._index = utility.clamp(self._index, 0, len(self._saves) - 1)
-                        self._state = self.STATE_DELETED_SAVE
-                elif action == MenuAction.REJECT:
-                    self._state = self.STATE_DEFAULT
+                match action:
+                    case MenuAction.UP | MenuAction.LEFT:
+                        self._selected_save_option -= 1
+                        self._selected_save_option %= 2
+                    case MenuAction.DOWN | MenuAction.RIGHT:
+                        self._selected_save_option += 1
+                        self._selected_save_option %= 2
+                    case MenuAction.CONFIRM:
+                        if self._selected_save_option == self.OPTION_LOAD:
+                            self._stopMixer()
+                            self._previous_mode = self._saves[self._index].load()
+                            pygame.mixer.music.pause()
+                            pygame.mixer.pause()
+                            self._background = self._getOldScreen()
+                            self._state = self.STATE_LOADED_SAVE
+                        elif self._selected_save_option == self.OPTION_DELETE:
+                            self._saves[self._index].delete()
+                            del self._saves[self._index]
+                            self._index = utility.clamp(self._index, 0, len(self._saves) - 1)
+                            self._state = self.STATE_DELETED_SAVE
+                    case MenuAction.REJECT:
+                        self._state = self.STATE_DEFAULT
 
     def _getOptionsLength(self):
         return len(self._saves)
