@@ -527,6 +527,7 @@ class ModeGameMenuControls(ModeGameMenuList):
         )
 
     def _inputEvent(self, event):
+        # handle choosing which player (only for case of max_players > 1)
         if self._state == self.STATE_DEFAULT:
             match self._getAction(event):
                 case MenuAction.QUIT:
