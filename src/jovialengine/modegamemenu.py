@@ -129,7 +129,7 @@ class ModeGameMenuList(ModeGameMenu):
         )
 
     def _getOptionsText(self):
-        text = "ARROW KEYS + ENTER) Select a save:"
+        text = ""
         for i in range(-1, 2):
             text += "\n"
             this_index = self._index + i
@@ -372,9 +372,7 @@ class ModeGameMenuLoad(ModeGameMenuList):
 
     def _inputEvent(self, event):
         action = self._getAction(event)
-        if action == MenuAction.NOTHING:
-            return
-        elif action == MenuAction.QUIT:
+        if action == MenuAction.QUIT:
             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             return
         match self._state:
@@ -437,12 +435,14 @@ class ModeGameMenuLoad(ModeGameMenuList):
                 if len(self._saves) == 0:
                     disp_text += "\nThere are no saves to select from."
                 else:
+                    disp_text += "ARROW KEYS + ENTER) Select a save:"
                     disp_text += self._getOptionsText()
             case self.STATE_LOADED_SAVE:
                 disp_text += "\nLoaded successfully.\nPress ENTER to continue."
             case self.STATE_DELETED_SAVE:
                 disp_text += "\nDeleted successfully.\nPress ENTER to continue."
             case self.STATE_SELECTED_SAVE:
+                disp_text += "ARROW KEYS + ENTER) Select a save:"
                 disp_text += self._getOptionsText()
                 disp_text += f"\n{self._getOptionStatus(self.OPTION_LOAD)}Load" \
                     + f"\n{self._getOptionStatus(self.OPTION_DELETE)}Delete"
@@ -512,7 +512,6 @@ class ModeGameMenuControls(ModeGameMenuList):
     STATE_CHOOSE_INPUT = 2
 
     __slots__ = (
-        '_state_default',
         '_state',
         '_selected_player',
         '_selected_input',
@@ -520,46 +519,65 @@ class ModeGameMenuControls(ModeGameMenuList):
 
     def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
-        self._state_default = self.STATE_CHOOSE_PLAYER
-        if input.max_players == 1:
-            self._state_default = self.STATE_CHOOSE_EVENT
-        self._state = self._state_default
+        self._state = self.STATE_CHOOSE_PLAYER if self._mustSelectPlayer() else self.STATE_CHOOSE_EVENT
         self._selected_player = 0
-        self._selected_input = 0
+
+    @staticmethod
+    def _mustSelectPlayer():
+        return input.max_players == 1
 
     def _getOptionsLength(self):
-        raise NotImplementedError(
-            type(self).__name__ + "._getOptionsLength(self)"
-        )
+        return len(input.event_names)
 
     def _getOptionName(self, index):
-        raise NotImplementedError(
-            type(self).__name__ + "._getOptionName(self, index)"
-        )
+        return input.event_names[index]
 
     def _inputEvent(self, event):
-        # handle choosing which player (only for case of max_players > 1)
-        if self._state == self.STATE_DEFAULT:
-            match self._getAction(event):
-                case MenuAction.QUIT:
-                    self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-                case MenuAction.UP | MenuAction.LEFT:
-                    self._index -= 1
-                case MenuAction.DOWN | MenuAction.RIGHT:
-                    self._index += 1
-                case MenuAction.CONFIRM:
-                    pass
-                case MenuAction.REJECT:
-                    if False:
-                        pass
-                    else:
+        action = self._getAction(event)
+        if action == MenuAction.QUIT:
+            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+            return
+        match self._state:
+            case self.STATE_CHOOSE_PLAYER:
+                match action:
+                    case MenuAction.UP | MenuAction.LEFT:
+                        self._selected_player -= 1
+                    case MenuAction.DOWN | MenuAction.RIGHT:
+                        self._selected_player += 1
+                    case MenuAction.CONFIRM:
+                        self._state = self.STATE_CHOOSE_EVENT
+                        self._index = 0
+                    case MenuAction.REJECT:
                         self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-            #clamp by number of options
-            #self._index = utility.clamp(self._index, 0, len())
+                self._selected_player = utility.clamp(self._selected_player, 0, input.max_players - 1)
+            case self.STATE_CHOOSE_EVENT:
+                match action:
+                    case MenuAction.UP | MenuAction.LEFT:
+                        self._index -= 1
+                    case MenuAction.DOWN | MenuAction.RIGHT:
+                        self._index += 1
+                    case MenuAction.CONFIRM:
+                        self._state = self.STATE_CHOOSE_INPUT
+                    case MenuAction.REJECT:
+                        if self._mustSelectPlayer():
+                            self._state = self.STATE_CHOOSE_EVENT
+                        else:
+                            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+                self._index = utility.clamp(self._index, 0, len(input.event_names) - 1)
+            case self.STATE_CHOOSE_INPUT:
+                # input selection(s)
+                pass
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         disp_text += "ARROW KEYS + ENTER)"
-        disp_text += self._getOptionsText()
+        if self._mustSelectPlayer():
+            disp_text += "\nPlayer: " + str(self._selected_player + 1)
+        if self._state in (self.STATE_CHOOSE_EVENT, self.STATE_CHOOSE_INPUT):
+            disp_text += "\nAction:"
+            disp_text += self._getOptionsText()
+        if self._state == self.STATE_CHOOSE_INPUT:
+            # input selection(s)
+            pass
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
