@@ -67,7 +67,7 @@ _ENGINE_INPUT_DEFAULTS = (
 EVENT_TYPE_START_POS = len(_ENGINE_INPUT_NAMES)
 _input_file: str | None = None
 max_players: int
-_event_names: tuple[str]
+event_names: tuple[str]
 _num_inputs: int
 _input_defaults: tuple[InputDefault]
 _input_mapping: dict[tuple[InputType, int, int], tuple[int, int]]
@@ -76,18 +76,18 @@ _controller_states_prev: list[list[float | int]]
 _controller_state_changes: list[ControllerStateChange]
 
 
-def init(input_file: str, max_players_in: int, event_names: tuple[str], input_defaults: tuple[InputDefault]):
+def init(input_file: str, max_players_in: int, event_names_in: tuple[str], input_defaults: tuple[InputDefault]):
     global _input_file
     global max_players
-    global _event_names
+    global event_names
     global _num_inputs
     global _input_defaults
     if _input_file:
         raise RuntimeError("error: _input_file is already set")
     _input_file = input_file
     max_players = max_players_in
-    _event_names = _ENGINE_INPUT_NAMES + event_names
-    _num_inputs = EVENT_TYPE_START_POS + len(event_names)
+    event_names = _ENGINE_INPUT_NAMES + event_names_in
+    _num_inputs = len(event_names)
     _input_defaults = input_defaults
     if os.path.exists(_input_file):
         _load()
@@ -131,7 +131,7 @@ def _load():
             player_id = int(line_parts[0].strip())
             line_parts = line_parts[1].strip().split(_EVENT_SEP)
             event_name = line_parts[0].strip()
-            event_type = _event_names.index(event_name)
+            event_type = event_names.index(event_name)
             input_sections = line_parts[1].strip().split(_INPUT_SEP)
             for input_section in input_sections:
                 if not input_section:
@@ -179,7 +179,7 @@ def save():
             )
             line = ('{}' + _PLAYER_SEP + '{}' + _EVENT_SEP + '{}').format(
                 write_key[0],
-                _event_names[write_key[1]],
+                event_names[write_key[1]],
                 inputs
             )
             print(line, file=file)
