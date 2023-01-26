@@ -6,6 +6,7 @@ import pygame
 
 from . import game
 from . import display
+from . import input
 from . import utility
 from .fontwrap import getDefaultFontWrap
 from .modebase import ModeBase
@@ -506,15 +507,21 @@ class ModeGameMenuOptions(ModeGameMenu):
 
 
 class ModeGameMenuControls(ModeGameMenuList):
-    STATE_DEFAULT = 0
+    STATE_CHOOSE_PLAYER = 0
+    STATE_CHOOSE_EVENT = 1
+    STATE_CHOOSE_INPUT = 2
 
     __slots__ = (
+        '_state_default',
         '_state',
     )
 
     def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
-        self._state = self.STATE_DEFAULT
+        self._state_default = self.STATE_CHOOSE_PLAYER
+        if input.max_players == 1:
+            self._state_default = self.STATE_CHOOSE_EVENT
+        self._state = self._state_default
 
     def _getOptionsLength(self):
         raise NotImplementedError(
