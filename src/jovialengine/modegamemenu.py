@@ -514,6 +514,8 @@ class ModeGameMenuControls(ModeGameMenuList):
     __slots__ = (
         '_state_default',
         '_state',
+        '_selected_player',
+        '_selected_input',
     )
 
     def __init__(self, previous_mode, old_screen):
@@ -522,6 +524,8 @@ class ModeGameMenuControls(ModeGameMenuList):
         if input.max_players == 1:
             self._state_default = self.STATE_CHOOSE_EVENT
         self._state = self._state_default
+        self._selected_player = 0
+        self._selected_input = 0
 
     def _getOptionsLength(self):
         raise NotImplementedError(
