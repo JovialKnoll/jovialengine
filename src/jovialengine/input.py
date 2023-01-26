@@ -84,6 +84,8 @@ def init(input_file: str, max_players_in: int, event_names_in: tuple[str], input
     global _input_defaults
     if _input_file:
         raise RuntimeError("error: _input_file is already set")
+    if max_players_in < 1:
+        raise ValueError("error: max_players_in must be at least 1")
     _input_file = input_file
     max_players = max_players_in
     event_names = _ENGINE_INPUT_NAMES + event_names_in
