@@ -67,7 +67,7 @@ _ENGINE_INPUT_DEFAULTS = (
 EVENT_TYPE_START_POS = len(_ENGINE_INPUT_NAMES)
 _input_file: str | None = None
 max_players: int
-event_names: tuple[str]
+_event_names: tuple[str]
 num_inputs: int
 _input_defaults: tuple[InputDefault]
 _input_mapping: dict[tuple[InputType, int, int], tuple[int, int]]
@@ -79,7 +79,7 @@ _controller_state_changes: list[ControllerStateChange]
 def init(input_file: str, max_players_in: int, event_names_in: tuple[str], input_defaults: tuple[InputDefault]):
     global _input_file
     global max_players
-    global event_names
+    global _event_names
     global num_inputs
     global _input_defaults
     if _input_file:
@@ -88,8 +88,8 @@ def init(input_file: str, max_players_in: int, event_names_in: tuple[str], input
         raise ValueError("error: max_players_in must be at least 1")
     _input_file = input_file
     max_players = max_players_in
-    event_names = _ENGINE_INPUT_NAMES + event_names_in
-    num_inputs = len(event_names)
+    _event_names = _ENGINE_INPUT_NAMES + event_names_in
+    num_inputs = len(_event_names)
     _input_defaults = input_defaults
     if os.path.exists(_input_file):
         _load()
@@ -120,7 +120,7 @@ def resetDefaultMapping():
 
 def getEventWithControls(event_type: int):
     # also return the current mapped inputs here
-    return event_names[event_type]
+    return _event_names[event_type]
 
 
 _PLAYER_SEP = ';'
@@ -138,7 +138,7 @@ def _load():
             player_id = int(line_parts[0].strip())
             line_parts = line_parts[1].strip().split(_EVENT_SEP)
             event_name = line_parts[0].strip()
-            event_type = event_names.index(event_name)
+            event_type = _event_names.index(event_name)
             input_sections = line_parts[1].strip().split(_INPUT_SEP)
             for input_section in input_sections:
                 if not input_section:
@@ -186,7 +186,7 @@ def save():
             )
             line = ('{}' + _PLAYER_SEP + '{}' + _EVENT_SEP + '{}').format(
                 write_key[0],
-                event_names[write_key[1]],
+                _event_names[write_key[1]],
                 inputs
             )
             print(line, file=file)
