@@ -524,13 +524,13 @@ class ModeGameMenuControls(ModeGameMenuList):
 
     @staticmethod
     def _mustSelectPlayer():
-        return input.max_players == 1
+        return input.max_players != 1
 
     def _getOptionsLength(self):
-        return len(input.event_names)
+        return input.num_inputs
 
     def _getOptionName(self, index):
-        return input.event_names[index]
+        return input.getEventWithControls(index)
 
     def _inputEvent(self, event):
         action = self._getAction(event)

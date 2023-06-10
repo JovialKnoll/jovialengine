@@ -68,7 +68,7 @@ EVENT_TYPE_START_POS = len(_ENGINE_INPUT_NAMES)
 _input_file: str | None = None
 max_players: int
 event_names: tuple[str]
-_num_inputs: int
+num_inputs: int
 _input_defaults: tuple[InputDefault]
 _input_mapping: dict[tuple[InputType, int, int], tuple[int, int]]
 _controller_states: list[list[float | int]]
@@ -80,7 +80,7 @@ def init(input_file: str, max_players_in: int, event_names_in: tuple[str], input
     global _input_file
     global max_players
     global event_names
-    global _num_inputs
+    global num_inputs
     global _input_defaults
     if _input_file:
         raise RuntimeError("error: _input_file is already set")
@@ -89,7 +89,7 @@ def init(input_file: str, max_players_in: int, event_names_in: tuple[str], input
     _input_file = input_file
     max_players = max_players_in
     event_names = _ENGINE_INPUT_NAMES + event_names_in
-    _num_inputs = len(event_names)
+    num_inputs = len(event_names)
     _input_defaults = input_defaults
     if os.path.exists(_input_file):
         _load()
@@ -102,8 +102,8 @@ def startNewMode():
     global _controller_states
     global _controller_states_prev
     global _controller_state_changes
-    _controller_states = [[0] * _num_inputs for _ in range(max_players)]
-    _controller_states_prev = [[0] * _num_inputs for _ in range(max_players)]
+    _controller_states = [[0] * num_inputs for _ in range(max_players)]
+    _controller_states_prev = [[0] * num_inputs for _ in range(max_players)]
     _controller_state_changes = []
 
 
@@ -116,6 +116,11 @@ def resetDefaultMapping():
     )
     for input_default in _ENGINE_INPUT_DEFAULTS + controller_pause + _input_defaults:
         _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
+
+
+def getEventWithControls(event_type: int):
+    # also return the current mapped inputs here
+    return event_names[event_type]
 
 
 _PLAYER_SEP = ';'
