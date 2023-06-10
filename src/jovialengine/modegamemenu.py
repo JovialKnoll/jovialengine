@@ -530,7 +530,7 @@ class ModeGameMenuControls(ModeGameMenuList):
         return input.num_inputs
 
     def _getOptionName(self, index):
-        return input.getEventWithControls(index)
+        return input.getEventWithControls(self._selected_player, index)
 
     def _inputEvent(self, event):
         action = self._getAction(event)

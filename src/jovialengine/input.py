@@ -118,8 +118,15 @@ def resetDefaultMapping():
         _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
 
 
-def getEventWithControls(event_type: int):
+def getEventWithControls(player_id: int, event_type: int):
     # also return the current mapped inputs here
+    # make list to track inputs for this player + event
+    for key, value in _input_mapping.items():
+        if value == (player_id, event_type):
+            # add to list tracking these inputs
+            pass
+        pass
+    # use list to append to output
     return _event_names[event_type]
 
 
