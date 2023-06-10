@@ -563,7 +563,7 @@ class ModeGameMenuControls(ModeGameMenuList):
                             self._state = self.STATE_CHOOSE_EVENT
                         else:
                             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-                self._index = utility.clamp(self._index, 0, len(input.event_names) - 1)
+                self._index = utility.clamp(self._index, 0, input.num_inputs - 1)
             case self.STATE_CHOOSE_INPUT:
                 # input selection(s)
                 pass
