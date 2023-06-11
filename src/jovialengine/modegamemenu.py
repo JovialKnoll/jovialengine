@@ -560,13 +560,15 @@ class ModeGameMenuControls(ModeGameMenuList):
                         self._state = self.STATE_CHOOSE_INPUT
                     case MenuAction.REJECT:
                         if self._mustSelectPlayer():
-                            self._state = self.STATE_CHOOSE_EVENT
+                            self._state = self.STATE_CHOOSE_PLAYER
                         else:
                             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
                 self._index = utility.clamp(self._index, 0, input.num_inputs - 1)
             case self.STATE_CHOOSE_INPUT:
-                # input selection(s)
-                pass
+                if event.type in (pygame.JOYHATMOTION, pygame.JOYBUTTONDOWN, pygame.KEYDOWN):
+                    # input selection(s)
+                    print(event)
+                    self._state = self.STATE_CHOOSE_EVENT
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
