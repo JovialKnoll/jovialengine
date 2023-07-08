@@ -128,7 +128,8 @@ def getEventWithControls(player_id: int, event_type: int):
             pass
         pass
     # use list to append to output
-    return f"{_event_names[event_type]}: "
+    inputs_together = ", ".join(inputs)
+    return f"{_event_names[event_type]}: {inputs_together}"
 
 
 _PLAYER_SEP = ';'
