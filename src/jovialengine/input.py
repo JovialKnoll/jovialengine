@@ -120,14 +120,15 @@ def resetDefaultMapping():
 
 def getEventWithControls(player_id: int, event_type: int):
     # also return the current mapped inputs here
-    # make list to track inputs for this player + event
+    inputs = []
     for key, value in _input_mapping.items():
         if value == (player_id, event_type):
             # add to list tracking these inputs
+            input_type, input_id, controller_id = key
             pass
         pass
     # use list to append to output
-    return _event_names[event_type]
+    return f"{_event_names[event_type]}: "
 
 
 _PLAYER_SEP = ';'
