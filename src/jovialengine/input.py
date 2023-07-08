@@ -124,6 +124,7 @@ def getEventWithControls(player_id: int, event_type: int):
     for key, value in _input_mapping.items():
         if value == (player_id, event_type):
             input_type, input_id, controller_id = key
+            inputs.append(_getSaveInput(input_type, input_id, controller_id))
             # add to list tracking these inputs
     # use list to append to output
     inputs_together = ", ".join(inputs)
