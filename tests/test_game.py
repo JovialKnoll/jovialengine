@@ -17,11 +17,11 @@ class GameForTest(game._Game):
 
 
 class TestGame(unittest.TestCase):
-    gameForTest: game._Game = None
+    game_for_test: game._Game = None
 
     @classmethod
     def setUpClass(cls):
-        cls.gameForTest = GameForTest()
+        cls.game_for_test = GameForTest()
         display.is_fullscreen = False
         display._fullscreen_offset = None
         display.upscale = 3
@@ -33,7 +33,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.QUIT, event_dict)
         # Act
-        result = self.gameForTest._isPauseEvent(event)
+        result = self.game_for_test._isPauseEvent(event)
         # Assert
         self.assertTrue(result)
 
@@ -43,7 +43,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.WINDOWFOCUSLOST, event_dict)
         # Act
-        result = self.gameForTest._isPauseEvent(event)
+        result = self.game_for_test._isPauseEvent(event)
         # Assert
         self.assertTrue(result)
 
@@ -53,7 +53,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.WINDOWMINIMIZED, event_dict)
         # Act
-        result = self.gameForTest._isPauseEvent(event)
+        result = self.game_for_test._isPauseEvent(event)
         # Assert
         self.assertTrue(result)
 
@@ -63,7 +63,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.WINDOWMOVED, event_dict)
         # Act
-        result = self.gameForTest._isPauseEvent(event)
+        result = self.game_for_test._isPauseEvent(event)
         # Assert
         self.assertTrue(result)
 
@@ -74,7 +74,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.KEYDOWN, event_dict)
         # Act
-        result = self.gameForTest._filterEvent(event)
+        result = self.game_for_test._filterEvent(event)
         # Assert
         self.assertTrue(result)
 
@@ -86,7 +86,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, event_dict)
         # Act
-        result = self.gameForTest._filterEvent(event)
+        result = self.game_for_test._filterEvent(event)
         # Assert
         self.assertTrue(result)
 
@@ -98,7 +98,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, event_dict)
         # Act
-        result = self.gameForTest._filterEvent(event)
+        result = self.game_for_test._filterEvent(event)
         # Assert
         self.assertFalse(result)
 
