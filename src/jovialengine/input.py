@@ -119,11 +119,11 @@ def resetDefaultMapping():
 
 
 def getEventWithControls(player_id: int, event_type: int):
-    # can this just be a list comprehension
-    inputs = []
-    for key, value in _input_mapping.items():
-        if value == (player_id, event_type):
-            inputs.append(_getSaveInput(*key))
+    inputs = [
+        _getSaveInput(*key)
+        for key, value in _input_mapping.items()
+        if value == (player_id, event_type)
+    ]
     inputs_together = ", ".join(inputs)
     return f"{_event_names[event_type]}: {inputs_together}"
 
