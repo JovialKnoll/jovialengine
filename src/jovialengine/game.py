@@ -190,20 +190,20 @@ def initGame(
 ):
     """Loads up the game and prepares it for running.
     Arguments:
-    mode_module - the module holding all modes for your game
-    start_mode_cls - the class for the first mode
-    state_cls - the class for holding general game state
-    src_directory - directory of the program
-    screen_size - size of the virtual screen
-    title - title of the game (for titlebar)
-    window_icon - location of icon of the game (for titlebar)
-    max_players - maximum number of players the game supports
-    event_names - names for virtual inputs that button / axis inputs map to
-    input_defaults - default input mappings
-    font_location - location of default font for the game
-    font_size - default font size
-    font_height - default font height
-    font_antialias - default font antialias
+    mode_module: the module holding all modes for your game
+    start_mode_cls: the class for the first mode
+    state_cls: the class for holding general game state
+    src_directory: directory of the program
+    screen_size: size of the virtual screen
+    title: title of the game (for titlebar)
+    window_icon: location of icon of the game (for titlebar)
+    max_players: maximum number of players the game supports
+    event_names: names for virtual inputs that button / axis inputs map to
+    input_defaults: default input mappings
+    font_location: location of default font for the game
+    font_size: default font size
+    font_height: default font height
+    font_antialias: default font antialias
     """
     global _game
     if _game:
