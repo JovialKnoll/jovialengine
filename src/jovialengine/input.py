@@ -147,6 +147,10 @@ def getEventWithControls(player_id: int, event_type: int):
     return f"{_event_names[event_type]}: {inputs_together}"
 
 
+def getEventName(event_type: int):
+    return _event_names[event_type]
+
+
 _PLAYER_SEP = ';'
 _EVENT_SEP = ':'
 _INPUT_SEP = ','

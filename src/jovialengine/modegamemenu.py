@@ -572,14 +572,15 @@ class ModeGameMenuControls(ModeGameMenuList):
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
-        disp_text += "ARROW KEYS + ENTER)"
+        if self._state != self.STATE_CHOOSE_INPUT:
+            disp_text += "ARROW KEYS + ENTER)\n"
         if self._mustSelectPlayer():
-            disp_text += "\nPlayer: " + str(self._selected_player + 1)
-        if self._state in (self.STATE_CHOOSE_EVENT, self.STATE_CHOOSE_INPUT):
-            disp_text += "\nAction:"
+            disp_text += f"Player: {self._selected_player + 1}\n"
+        if self._state == self.STATE_CHOOSE_EVENT:
+            disp_text += "Action:"
             disp_text += self._getOptionsText()
         if self._state == self.STATE_CHOOSE_INPUT:
-            # input selection(s)
-            pass
+            disp_text += f"Action: {input.getEventName(self._index)}"
+            disp_text += "\n\n____press a button to select"
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
