@@ -125,11 +125,11 @@ def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int):
         case InputType.MOUSE:
             result = f'MOUSE-'
         case InputType.CON_BUTTON:
-            result = f'CON{controller_id}-BUTTON-'
+            result = f'CON{controller_id}-BU-'
         case InputType.CON_HAT:
             result = f'CON{controller_id}-HAT-'
         case InputType.CON_AXIS:
-            result = f'CON{controller_id}-AXIS-'
+            result = f'CON{controller_id}-AX-'
     if input_type == InputType.KEYBOARD:
         result += pygame.key.name(input_id)
     else:
