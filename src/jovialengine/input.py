@@ -76,7 +76,7 @@ _controller_states_prev: list[list[float | int]]
 _controller_state_changes: list[ControllerStateChange]
 
 
-def init(input_file: str, max_players_in: int, event_names_in: tuple[str], input_defaults: tuple[InputDefault]):
+def init(input_file: str, max_players_in: int, event_names: tuple[str], input_defaults: tuple[InputDefault]):
     global _input_file
     global max_players
     global _event_names
@@ -88,7 +88,7 @@ def init(input_file: str, max_players_in: int, event_names_in: tuple[str], input
         raise ValueError("error: max_players_in must be at least 1")
     _input_file = input_file
     max_players = max_players_in
-    _event_names = _ENGINE_INPUT_NAMES + event_names_in
+    _event_names = _ENGINE_INPUT_NAMES + event_names
     num_inputs = len(_event_names)
     _input_defaults = input_defaults
     if os.path.exists(_input_file):
