@@ -27,7 +27,7 @@ class MenuAction(enum.Enum):
 class ModeGameMenu(ModeBase, abc.ABC):
     _TEXT_COLOR = (255, 255, 255)
     _BACKGROUND_COLOR = (0, 0, 0)
-    _MENU_CHAR_WIDTH = 26
+    _MENU_CHAR_WIDTH = 32
     _SHARED_DISP_TEXT = "Options:\nESC) Go Back\n"
 
     __slots__ = (
@@ -128,7 +128,7 @@ class ModeGameMenuList(ModeGameMenu):
         )
 
     def _getOptionsText(self):
-        text = "ARROW KEYS + ENTER) Select a save:"
+        text = ""
         for i in range(-1, 2):
             text += "\n"
             this_index = self._index + i
@@ -368,9 +368,7 @@ class ModeGameMenuLoad(ModeGameMenuList):
 
     def _inputEvent(self, event):
         action = self._getAction(event)
-        if action == MenuAction.NOTHING:
-            return
-        elif action == MenuAction.QUIT:
+        if action == MenuAction.QUIT:
             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             return
         match self._state:
@@ -433,12 +431,14 @@ class ModeGameMenuLoad(ModeGameMenuList):
                 if len(self._saves) == 0:
                     disp_text += "\nThere are no saves to select from."
                 else:
+                    disp_text += "ARROW KEYS + ENTER) Select a save:"
                     disp_text += self._getOptionsText()
             case self.STATE_LOADED_SAVE:
                 disp_text += "\nLoaded successfully.\nPress ENTER to continue."
             case self.STATE_DELETED_SAVE:
                 disp_text += "\nDeleted successfully.\nPress ENTER to continue."
             case self.STATE_SELECTED_SAVE:
+                disp_text += "ARROW KEYS + ENTER) Select a save:"
                 disp_text += self._getOptionsText()
                 disp_text += f"\n{self._getOptionStatus(self.OPTION_LOAD)}Load" \
                     + f"\n{self._getOptionStatus(self.OPTION_DELETE)}Delete"
