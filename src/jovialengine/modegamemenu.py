@@ -515,12 +515,14 @@ class ModeGameMenuControls(ModeGameMenuList):
         '_state',
         '_selected_player',
         '_selected_input',
+        '_selection_timer',
     )
 
     def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
         self._state = self.STATE_CHOOSE_PLAYER if self._mustSelectPlayer() else self.STATE_CHOOSE_EVENT
         self._selected_player = 0
+        self._selection_timer = 5000
 
     @staticmethod
     def _mustSelectPlayer():
@@ -558,6 +560,7 @@ class ModeGameMenuControls(ModeGameMenuList):
                         self._index += 1
                     case MenuAction.CONFIRM:
                         self._state = self.STATE_CHOOSE_INPUT
+                        self._selection_timer = 5000
                     case MenuAction.REJECT:
                         if self._mustSelectPlayer():
                             self._state = self.STATE_CHOOSE_PLAYER
@@ -570,6 +573,12 @@ class ModeGameMenuControls(ModeGameMenuList):
                     print(event)
                     self._state = self.STATE_CHOOSE_EVENT
 
+    def _update(self, dt):
+        if self._state == self.STATE_CHOOSE_INPUT:
+            self._selection_timer -= dt
+            if self._selection_timer <= 0:
+                self._state = self.STATE_CHOOSE_EVENT
+
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         if self._state != self.STATE_CHOOSE_INPUT:
@@ -581,7 +590,8 @@ class ModeGameMenuControls(ModeGameMenuList):
             disp_text += self._getOptionsText()
         if self._state == self.STATE_CHOOSE_INPUT:
             disp_text += f"Action: {input.getEventName(self._index)}"
-            disp_text += "\n\n____press a button to select\n____(wait 5 seconds to exit)"
+            disp_text += "\n\n____press a button to select"
+            disp_text += f"\n____(wait {(self._selection_timer // 1000) + 1} seconds to exit)"
             # put in countdown to exit without selecting input
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
