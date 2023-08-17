@@ -118,6 +118,39 @@ def resetDefaultMapping():
         _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
 
 
+def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int):
+    match input_type:
+        case InputType.KEYBOARD:
+            result = f'KEY-'
+        case InputType.MOUSE:
+            result = f'MOUSE-'
+        case InputType.CON_BUTTON:
+            result = f'CON{controller_id}-BU-'
+        case InputType.CON_HAT:
+            result = f'CON{controller_id}-HAT-'
+        case InputType.CON_AXIS:
+            result = f'CON{controller_id}-AX-'
+    if input_type == InputType.KEYBOARD:
+        result += pygame.key.name(input_id)
+    else:
+        result += str(input_id)
+    return result
+
+
+def getEventWithControls(player_id: int, event_type: int):
+    inputs = [
+        _getDisplayInput(*key)
+        for key, value in _input_mapping.items()
+        if value == (player_id, event_type)
+    ]
+    inputs_together = ",".join(inputs)
+    return f"{_event_names[event_type]}: {inputs_together}"
+
+
+def getEventName(event_type: int):
+    return _event_names[event_type]
+
+
 _PLAYER_SEP = ';'
 _EVENT_SEP = ':'
 _INPUT_SEP = ','
