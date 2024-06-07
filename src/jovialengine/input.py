@@ -120,9 +120,46 @@ def resetDefaultMapping():
 
 
 def setInputMapping(event_type: int, event: pygame.event.Event):
-    # handle setting input
-    print(event)
-    pass
+    match event.type:
+        case pygame.JOYHATMOTION:
+            input_id = None
+            hat_value_left_right_up_down = (
+                1 if event.value[0] == -1 else 0,
+                1 if event.value[0] == 1 else 0,
+                1 if event.value[1] == 1 else 0,
+                1 if event.value[1] == -1 else 0,
+            )
+            for i, event_value in enumerate(hat_value_left_right_up_down):
+                if event_value == 1:
+                    input_id = event.hat * 4 + i
+            input_default = InputDefault(
+                event.instance_id,
+                event_type,
+                InputType.CON_HAT,
+                input_id,
+                event.instance_id
+            )
+        case pygame.JOYBUTTONDOWN:
+            input_default = InputDefault(
+                event.instance_id,
+                event_type,
+                InputType.CON_BUTTON,
+                event.button,
+                event.instance_id
+            )
+        case pygame.KEYDOWN:
+            input_default = InputDefault(
+                0,
+                event_type,
+                InputType.KEYBOARD,
+                event.key
+            )
+        case _:
+            return False
+    # set input to dict
+    print(input_default.getMapKey())
+    print(input_default.getMapValue())
+    return True
 
 def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int):
     match input_type:
