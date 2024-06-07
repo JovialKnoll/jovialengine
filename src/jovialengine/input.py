@@ -108,6 +108,10 @@ def startNewMode():
     _controller_state_changes = []
 
 
+def _setInputMapping(input_default: InputDefault):
+    _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
+
+
 def resetDefaultMapping():
     global _input_mapping
     _input_mapping = dict()
@@ -116,7 +120,7 @@ def resetDefaultMapping():
         for i in range(max_players)
     )
     for input_default in _ENGINE_INPUT_DEFAULTS + controller_pause + _input_defaults:
-        _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
+        _setInputMapping(input_default)
 
 
 def setInputMapping(event_type: int, event: pygame.event.Event):
@@ -156,9 +160,7 @@ def setInputMapping(event_type: int, event: pygame.event.Event):
             )
         case _:
             return False
-    # set input to dict
-    print(input_default.getMapKey())
-    print(input_default.getMapValue())
+    _setInputMapping(input_default)
     return True
 
 def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int):
