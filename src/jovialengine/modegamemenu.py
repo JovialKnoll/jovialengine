@@ -592,6 +592,5 @@ class ModeGameMenuControls(ModeGameMenuList):
             disp_text += f"Action: {input.getEventName(self._index)}"
             disp_text += "\n\n____press a button to select"
             disp_text += f"\n____(wait {(self._selection_timer // 1000) + 1} seconds to exit)"
-            # put in countdown to exit without selecting input
         self._drawText(disp_text)
         screen.blit(self._menu_surface, (0, 0))
