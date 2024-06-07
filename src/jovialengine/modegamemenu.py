@@ -569,8 +569,7 @@ class ModeGameMenuControls(ModeGameMenuList):
                 self._index = utility.clamp(self._index, 0, input.num_inputs - 1)
             case self.STATE_CHOOSE_INPUT:
                 if event.type in (pygame.JOYHATMOTION, pygame.JOYBUTTONDOWN, pygame.KEYDOWN):
-                    # input selection(s)
-                    print(event)
+                    input.setInputMapping(self._index, event)
                     self._state = self.STATE_CHOOSE_EVENT
 
     def _update(self, dt):
