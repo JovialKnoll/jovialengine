@@ -573,7 +573,7 @@ class ModeGameMenuControls(ModeGameMenuList):
                             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
                 self._index = utility.clamp(self._index, 0, input.num_inputs)
             case self.STATE_CHOOSE_INPUT:
-                if input.setInputMapping(self._index - 1, event):
+                if input.setInputMapping(self._selected_player, self._index - 1, event):
                     self._state = self.STATE_CHOOSE_EVENT
 
     def _update(self, dt):

@@ -123,8 +123,30 @@ def resetDefaultMapping():
         _setInputMapping(input_default)
 
 
-def setInputMapping(event_type: int, event: pygame.event.Event):
+def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event):
     match event.type:
+        case pygame.KEYDOWN:
+            input_default = InputDefault(
+                player_id,
+                event_type,
+                InputType.KEYBOARD,
+                event.key
+            )
+        case pygame.MOUSEBUTTONDOWN:
+            input_default = InputDefault(
+                player_id,
+                event_type,
+                InputType.MOUSE,
+                event.button
+            )
+        case pygame.JOYBUTTONDOWN:
+            input_default = InputDefault(
+                player_id,
+                event_type,
+                InputType.CON_BUTTON,
+                event.button,
+                event.instance_id
+            )
         case pygame.JOYHATMOTION:
             input_id = None
             hat_value_left_right_up_down = (
@@ -137,42 +159,27 @@ def setInputMapping(event_type: int, event: pygame.event.Event):
                 if event_value == 1:
                     input_id = event.hat * 4 + i
             input_default = InputDefault(
-                event.instance_id,
+                player_id,
                 event_type,
                 InputType.CON_HAT,
                 input_id,
                 event.instance_id
-            )
-        case pygame.JOYBUTTONDOWN:
-            input_default = InputDefault(
-                event.instance_id,
-                event_type,
-                InputType.CON_BUTTON,
-                event.button,
-                event.instance_id
-            )
-        case pygame.KEYDOWN:
-            input_default = InputDefault(
-                0,
-                event_type,
-                InputType.KEYBOARD,
-                event.key
             )
         case _:
             return False
     _setInputMapping(input_default)
     return True
 
-def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int):
+def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -> object:
     match input_type:
         case InputType.KEYBOARD:
             result = f'KEY-'
         case InputType.MOUSE:
             result = f'MOUSE-'
         case InputType.CON_BUTTON:
-            result = f'CON{controller_id}-BU-'
+            result = f'CON{controller_id}-BT-'
         case InputType.CON_HAT:
-            result = f'CON{controller_id}-HAT-'
+            result = f'CON{controller_id}-HT-'
         case InputType.CON_AXIS:
             result = f'CON{controller_id}-AX-'
     if input_type == InputType.KEYBOARD:
