@@ -198,8 +198,8 @@ def getEventName(event_type: int):
 
 _PLAYER_SEP = '|'
 _EVENT_SEP = ':'
-_INPUT_SEP = '+'
-_PART_SEP = '_'
+_INPUT_SEP = '&'
+_PART_SEP = '+'
 
 
 def _load():
