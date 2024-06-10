@@ -144,7 +144,8 @@ class ModeGameMenuTop(ModeGameMenu):
         "Save",
         "Load",
         "Options",
-        "Controls",
+        "Edit Controls",
+        "Reset Controls",
         "Restart",
         "Quit",
     ]
@@ -179,6 +180,8 @@ class ModeGameMenuTop(ModeGameMenu):
                     case 3:
                         self.next_mode = ModeGameMenuControls(self._previous_mode, self._background)
                     case 4:
+                        input.resetDefaultMapping()
+                    case 5:
                         self._stopMixer()
                         game.getGame().state = game.getGame().state_cls()
                         self._previous_mode = game.getGame().start_mode_cls()
@@ -186,7 +189,7 @@ class ModeGameMenuTop(ModeGameMenu):
                         pygame.mixer.pause()
                         self._background = self._getOldScreen()
                         self._last_disp_text = None
-                    case 5:
+                    case 6:
                         game.getGame().running = False
         self._selected = utility.clamp(self._selected, 0, 5)
 
@@ -529,12 +532,10 @@ class ModeGameMenuControls(ModeGameMenuList):
         return input.max_players != 1
 
     def _getOptionsLength(self):
-        return input.num_inputs + 1
+        return input.num_inputs
 
     def _getOptionName(self, index):
-        if index == 0:
-            return "Reset to Default Controls"
-        return input.getEventWithControls(self._selected_player, index - 1)
+        return input.getEventWithControls(self._selected_player, index)
 
     def _inputEvent(self, event):
         action = self._getAction(event)
@@ -561,19 +562,16 @@ class ModeGameMenuControls(ModeGameMenuList):
                     case MenuAction.DOWN | MenuAction.RIGHT:
                         self._index += 1
                     case MenuAction.CONFIRM:
-                        if self._index == 0:
-                            input.resetDefaultMapping()
-                        else:
-                            self._state = self.STATE_CHOOSE_INPUT
-                            self._selection_timer = 5000
+                        self._state = self.STATE_CHOOSE_INPUT
+                        self._selection_timer = 5000
                     case MenuAction.REJECT:
                         if self._mustSelectPlayer():
                             self._state = self.STATE_CHOOSE_PLAYER
                         else:
                             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-                self._index = utility.clamp(self._index, 0, input.num_inputs)
+                self._index = utility.clamp(self._index, 0, input.num_inputs - 1)
             case self.STATE_CHOOSE_INPUT:
-                if input.setInputMapping(self._selected_player, self._index - 1, event):
+                if input.setInputMapping(self._selected_player, self._index, event):
                     self._state = self.STATE_CHOOSE_EVENT
 
     def _update(self, dt):
@@ -592,7 +590,7 @@ class ModeGameMenuControls(ModeGameMenuList):
             disp_text += "Action:"
             disp_text += self._getOptionsText()
         if self._state == self.STATE_CHOOSE_INPUT:
-            disp_text += f"Action: {input.getEventName(self._index - 1)}"
+            disp_text += f"Action: {input.getEventName(self._index)}"
             disp_text += "\n\n____press a button to select"
             disp_text += f"\n____(wait {(self._selection_timer // 1000) + 1} seconds to exit)"
         self._drawText(disp_text)
