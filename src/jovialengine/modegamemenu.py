@@ -109,7 +109,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
             self._drawTextAlways(disp_text)
 
 
-class ModeGameMenuList(ModeGameMenu):
+class ModeGameMenuList(ModeGameMenu, abc.ABC):
     __slots__ = (
         '_index',
     )
@@ -118,11 +118,13 @@ class ModeGameMenuList(ModeGameMenu):
         super().__init__(previous_mode, old_screen)
         self._index = 0
 
+    @abc.abstractmethod
     def _getOptionsLength(self) -> int:
         raise NotImplementedError(
             type(self).__name__ + "._getOptionsLength(self)"
         )
 
+    @abc.abstractmethod
     def _getOptionName(self, index: int) -> str:
         raise NotImplementedError(
             type(self).__name__ + "._getOptionName(self, index)"
