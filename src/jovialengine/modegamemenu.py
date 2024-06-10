@@ -193,7 +193,7 @@ class ModeGameMenuTop(ModeGameMenu):
                         self._last_disp_text = None
                     case 6:
                         game.getGame().running = False
-        self._selected = utility.clamp(self._selected, 0, 5)
+        self._selected = utility.clamp(self._selected, 0, 6)
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
