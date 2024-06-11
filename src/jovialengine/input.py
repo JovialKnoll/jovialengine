@@ -198,8 +198,7 @@ def getEventWithControls(player_id: int, event_type: int) -> str:
         for key, value in _input_mapping.items()
         if value == (player_id, event_type)
     ]
-    inputs_together = ",".join(inputs)
-    return f"{_event_names[event_type]}: {inputs_together}"
+    return f"{_event_names[event_type]}: {','.join(inputs)}"
 
 
 def getEventName(event_type: int) -> str:
