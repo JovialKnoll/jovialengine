@@ -20,10 +20,9 @@ class TestUtility(unittest.TestCase):
 
     def test_getIntMovement(self):
         tracking = 0.6
-        tracking_int = 0
         tracking, tracking_int = utility.getIntMovement(tracking, 3.75, 10)
         self.assertEqual(tracking_int, 38)
-        self.assertTrue(tracking < 0.1000000001 and tracking > 0.0999999999)
+        self.assertTrue(0.0999999999 < tracking < 0.1000000001)
 
     def test_binary(self):
         self.assertEqual(

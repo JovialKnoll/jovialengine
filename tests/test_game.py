@@ -12,9 +12,6 @@ class GameForTest(game._Game):
         self._is_first_loop = False
         self._joysticks = []
 
-    def _handlePauseMenu(self):
-        return False
-
 
 class TestGame(unittest.TestCase):
     game_for_test: game._Game = None
