@@ -18,6 +18,7 @@ class ModeBase(abc.ABC):
         'next_mode',
     )
 
+    @abc.abstractmethod
     def __init__(self):
         """Implementation must contain a call to _init passing in the space size before all else."""
         raise NotImplementedError(

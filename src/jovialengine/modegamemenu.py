@@ -6,6 +6,7 @@ import pygame
 
 from . import game
 from . import display
+from . import input
 from . import utility
 from .fontwrap import getDefaultFontWrap
 from .modebase import ModeBase
@@ -108,7 +109,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
             self._drawTextAlways(disp_text)
 
 
-class ModeGameMenuList(ModeGameMenu):
+class ModeGameMenuList(ModeGameMenu, abc.ABC):
     __slots__ = (
         '_index',
     )
@@ -117,17 +118,19 @@ class ModeGameMenuList(ModeGameMenu):
         super().__init__(previous_mode, old_screen)
         self._index = 0
 
+    @abc.abstractmethod
     def _getOptionsLength(self) -> int:
         raise NotImplementedError(
             type(self).__name__ + "._getOptionsLength(self)"
         )
 
+    @abc.abstractmethod
     def _getOptionName(self, index: int) -> str:
         raise NotImplementedError(
             type(self).__name__ + "._getOptionName(self, index)"
         )
 
-    def _getOptionsText(self):
+    def _getOptionsText(self) -> str:
         text = ""
         for i in range(-1, 2):
             text += "\n"
@@ -143,6 +146,8 @@ class ModeGameMenuTop(ModeGameMenu):
         "Save",
         "Load",
         "Options",
+        "Edit Controls",
+        "Reset Controls",
         "Restart",
         "Quit",
     ]
@@ -175,6 +180,10 @@ class ModeGameMenuTop(ModeGameMenu):
                         pressed_return = event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN
                         self.next_mode = ModeGameMenuOptions(self._previous_mode, self._background, pressed_return)
                     case 3:
+                        self.next_mode = ModeGameMenuControls(self._previous_mode, self._background)
+                    case 4:
+                        input.resetDefaultMapping()
+                    case 5:
                         self._stopMixer()
                         game.getGame().state = game.getGame().state_cls()
                         self._previous_mode = game.getGame().start_mode_cls()
@@ -182,9 +191,9 @@ class ModeGameMenuTop(ModeGameMenu):
                         pygame.mixer.pause()
                         self._background = self._getOldScreen()
                         self._last_disp_text = None
-                    case 4:
+                    case 6:
                         game.getGame().running = False
-        self._selected = utility.clamp(self._selected, 0, 4)
+        self._selected = utility.clamp(self._selected, 0, len(self._OPTIONS) - 1)
 
     def _drawPreSprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
@@ -500,3 +509,91 @@ class ModeGameMenuOptions(ModeGameMenu):
     def getTickBox(value: bool):
         inside = "*" if value else "_"
         return f"[{inside}]"
+
+
+class ModeGameMenuControls(ModeGameMenuList):
+    STATE_CHOOSE_PLAYER = 0
+    STATE_CHOOSE_EVENT = 1
+    STATE_CHOOSE_INPUT = 2
+
+    __slots__ = (
+        '_state',
+        '_selected_player',
+        '_selected_input',
+        '_selection_timer',
+    )
+
+    def __init__(self, previous_mode, old_screen):
+        super().__init__(previous_mode, old_screen)
+        self._state = self.STATE_CHOOSE_PLAYER if self._mustSelectPlayer() else self.STATE_CHOOSE_EVENT
+        self._selected_player = 0
+        self._selection_timer = 5000
+
+    @staticmethod
+    def _mustSelectPlayer() -> bool:
+        return input.max_players != 1
+
+    def _getOptionsLength(self):
+        return input.num_inputs
+
+    def _getOptionName(self, index):
+        return input.getEventWithControls(self._selected_player, index)
+
+    def _inputEvent(self, event):
+        action = self._getAction(event)
+        if action == MenuAction.QUIT:
+            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+            return
+        match self._state:
+            case self.STATE_CHOOSE_PLAYER:
+                match action:
+                    case MenuAction.UP | MenuAction.LEFT:
+                        self._selected_player -= 1
+                    case MenuAction.DOWN | MenuAction.RIGHT:
+                        self._selected_player += 1
+                    case MenuAction.CONFIRM:
+                        self._state = self.STATE_CHOOSE_EVENT
+                        self._index = 0
+                    case MenuAction.REJECT:
+                        self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+                self._selected_player = utility.clamp(self._selected_player, 0, input.max_players - 1)
+            case self.STATE_CHOOSE_EVENT:
+                match action:
+                    case MenuAction.UP | MenuAction.LEFT:
+                        self._index -= 1
+                    case MenuAction.DOWN | MenuAction.RIGHT:
+                        self._index += 1
+                    case MenuAction.CONFIRM:
+                        self._state = self.STATE_CHOOSE_INPUT
+                        self._selection_timer = 5000
+                    case MenuAction.REJECT:
+                        if self._mustSelectPlayer():
+                            self._state = self.STATE_CHOOSE_PLAYER
+                        else:
+                            self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
+                self._index = utility.clamp(self._index, 0, input.num_inputs - 1)
+            case self.STATE_CHOOSE_INPUT:
+                if input.setInputMapping(self._selected_player, self._index, event):
+                    self._state = self.STATE_CHOOSE_EVENT
+
+    def _update(self, dt):
+        if self._state == self.STATE_CHOOSE_INPUT:
+            self._selection_timer -= dt
+            if self._selection_timer <= 0:
+                self._state = self.STATE_CHOOSE_EVENT
+
+    def _drawPreSprites(self, screen):
+        disp_text = self._SHARED_DISP_TEXT
+        if self._state != self.STATE_CHOOSE_INPUT:
+            disp_text += "ARROW KEYS + ENTER)\n"
+        if self._mustSelectPlayer():
+            disp_text += f"Player: {self._selected_player + 1}\n"
+        if self._state == self.STATE_CHOOSE_EVENT:
+            disp_text += "Action:"
+            disp_text += self._getOptionsText()
+        if self._state == self.STATE_CHOOSE_INPUT:
+            disp_text += f"Action: {input.getEventName(self._index)}"
+            disp_text += "\n\n____press a button to select"
+            disp_text += f"\n____(wait {(self._selection_timer // 1000) + 1} seconds to exit)"
+        self._drawText(disp_text)
+        screen.blit(self._menu_surface, (0, 0))

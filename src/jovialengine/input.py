@@ -64,6 +64,7 @@ _ENGINE_INPUT_DEFAULTS = (
     InputDefault(0, TYPE_PAUSE, InputType.KEYBOARD, pygame.K_ESCAPE),
     InputDefault(0, TYPE_SCREENSHOT, InputType.KEYBOARD, pygame.K_F12),
 )
+_CONTROLLER_PAUSE_BUTTON = 7
 EVENT_TYPE_START_POS = len(_ENGINE_INPUT_NAMES)
 _input_file: str | None = None
 max_players: int
@@ -107,21 +108,108 @@ def startNewMode():
     _controller_state_changes = []
 
 
+def _setInputMapping(input_default: InputDefault):
+    _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
+
+
 def resetDefaultMapping():
     global _input_mapping
     _input_mapping = dict()
     controller_pause = tuple(
-        InputDefault(i, TYPE_PAUSE, InputType.CON_BUTTON, 7, i)
+        InputDefault(i, TYPE_PAUSE, InputType.CON_BUTTON, _CONTROLLER_PAUSE_BUTTON, i)
         for i in range(max_players)
     )
     for input_default in _ENGINE_INPUT_DEFAULTS + controller_pause + _input_defaults:
-        _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
+        _setInputMapping(input_default)
 
 
-_PLAYER_SEP = ';'
+def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event) -> bool:
+    match event.type:
+        case pygame.KEYDOWN:
+            input_default = InputDefault(
+                player_id,
+                event_type,
+                InputType.KEYBOARD,
+                event.key
+            )
+        case pygame.MOUSEBUTTONDOWN:
+            input_default = InputDefault(
+                player_id,
+                event_type,
+                InputType.MOUSE,
+                event.button
+            )
+        case pygame.JOYBUTTONDOWN:
+            input_default = InputDefault(
+                player_id,
+                event_type,
+                InputType.CON_BUTTON,
+                event.button,
+                event.instance_id
+            )
+        case pygame.JOYHATMOTION:
+            input_id = None
+            hat_value_left_right_up_down = (
+                1 if event.value[0] == -1 else 0,
+                1 if event.value[0] == 1 else 0,
+                1 if event.value[1] == 1 else 0,
+                1 if event.value[1] == -1 else 0,
+            )
+            for i, event_value in enumerate(hat_value_left_right_up_down):
+                if event_value == 1:
+                    input_id = event.hat * 4 + i
+            input_default = InputDefault(
+                player_id,
+                event_type,
+                InputType.CON_HAT,
+                input_id,
+                event.instance_id
+            )
+        case _:
+            return False
+    _setInputMapping(input_default)
+    return True
+
+
+def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -> str:
+    match input_type:
+        case InputType.KEYBOARD:
+            result = f'KEY-'
+        case InputType.MOUSE:
+            result = f'MOUSE-'
+        case InputType.CON_BUTTON:
+            result = f'CON{controller_id}-BT-'
+        case InputType.CON_HAT:
+            result = f'CON{controller_id}-HT-'
+        case InputType.CON_AXIS:
+            result = f'CON{controller_id}-AX-'
+        case _:
+            raise ValueError("error: input_type must be a supported InputType")
+    if input_type == InputType.KEYBOARD:
+        result += pygame.key.name(input_id)
+    else:
+        result += str(input_id)
+    return result
+
+
+def getEventWithControls(player_id: int, event_type: int) -> str:
+    inputs = [
+        _getDisplayInput(*key)
+        for key, value in _input_mapping.items()
+        if value == (player_id, event_type)
+    ]
+    inputs_together = ",".join(inputs)
+    return f"{_event_names[event_type]}: {inputs_together}"
+
+
+def getEventName(event_type: int) -> str:
+    return _event_names[event_type]
+
+
+_PLAYER_SEP = '|'
 _EVENT_SEP = ':'
-_INPUT_SEP = ','
-_PART_SEP = '-'
+_INPUT_SEP = '&'
+_PART_SEP = '+'
 
 
 def _load():
