@@ -130,7 +130,7 @@ class ModeGameMenuList(ModeGameMenu, abc.ABC):
             type(self).__name__ + "._getOptionName(self, index)"
         )
 
-    def _getOptionsText(self):
+    def _getOptionsText(self) -> str:
         text = ""
         for i in range(-1, 2):
             text += "\n"
@@ -530,7 +530,7 @@ class ModeGameMenuControls(ModeGameMenuList):
         self._selection_timer = 5000
 
     @staticmethod
-    def _mustSelectPlayer():
+    def _mustSelectPlayer() -> bool:
         return input.max_players != 1
 
     def _getOptionsLength(self):

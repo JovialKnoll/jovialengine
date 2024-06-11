@@ -123,7 +123,7 @@ def resetDefaultMapping():
         _setInputMapping(input_default)
 
 
-def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event):
+def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event) -> bool:
     match event.type:
         case pygame.KEYDOWN:
             input_default = InputDefault(
@@ -170,7 +170,8 @@ def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event):
     _setInputMapping(input_default)
     return True
 
-def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -> object:
+
+def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -> str:
     match input_type:
         case InputType.KEYBOARD:
             result = f'KEY-'
@@ -182,6 +183,8 @@ def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -
             result = f'CON{controller_id}-HT-'
         case InputType.CON_AXIS:
             result = f'CON{controller_id}-AX-'
+        case _:
+            raise ValueError("error: input_type must be a supported InputType")
     if input_type == InputType.KEYBOARD:
         result += pygame.key.name(input_id)
     else:
@@ -189,7 +192,7 @@ def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -
     return result
 
 
-def getEventWithControls(player_id: int, event_type: int):
+def getEventWithControls(player_id: int, event_type: int) -> str:
     inputs = [
         _getDisplayInput(*key)
         for key, value in _input_mapping.items()
@@ -199,7 +202,7 @@ def getEventWithControls(player_id: int, event_type: int):
     return f"{_event_names[event_type]}: {inputs_together}"
 
 
-def getEventName(event_type: int):
+def getEventName(event_type: int) -> str:
     return _event_names[event_type]
 
 
