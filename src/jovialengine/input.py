@@ -54,11 +54,17 @@ class InputDefault(object):
 
 
 _HAT_BUTTON_NAMES = (
-    "LEFT",
-    "RIGHT",
-    "UP",
-    "DOWN",
+    "L",
+    "R",
+    "U",
+    "D",
 )
+_HAT_BUTTON_NUMBERS = {
+    "L": 0,
+    "R": 1,
+    "U": 2,
+    "D": 3,
+}
 TYPE_NONE = -1
 TYPE_PAUSE = 0
 TYPE_SCREENSHOT = 1
@@ -180,6 +186,16 @@ def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event) 
     return True
 
 
+def _getInputIdDisplay(input_type: InputType, input_id: int) -> str:
+    match input_type:
+        case InputType.KEYBOARD:
+            return pygame.key.name(input_id)
+        case InputType.CON_HAT:
+            return f'{input_id // 4}{_HAT_BUTTON_NAMES[input_id % 4]}'
+        case _:
+            return str(input_id)
+
+
 def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -> str:
     match input_type:
         case InputType.KEYBOARD:
@@ -194,14 +210,7 @@ def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -
             result = f'CON{controller_id}-AX-'
         case _:
             raise ValueError("error: input_type must be a supported InputType")
-    match input_type:
-        case InputType.KEYBOARD:
-            result += pygame.key.name(input_id)
-        case InputType.CON_HAT:
-            result += f'{input_id // 4}{_HAT_BUTTON_NAMES[input_id % 4]}'
-        case _:
-            result += str(input_id)
-    return result
+    return result + _getInputIdDisplay(input_type, input_id)
 
 
 def getEventWithControls(player_id: int, event_type: int) -> str:
@@ -242,10 +251,15 @@ def _load():
                 input_type = InputType[input_type_name]
                 input_id_or_name = input_parts[1]
                 input_id: int
-                if input_type == InputType.KEYBOARD:
-                    input_id = pygame.key.key_code(input_id_or_name)
-                else:
-                    input_id = int(input_id_or_name)
+                match input_type:
+                    case InputType.KEYBOARD:
+                        input_id = pygame.key.key_code(input_id_or_name)
+                    case InputType.CON_HAT:
+                        # parse out input_id from 0L, 1D, etc
+                        #input_id =
+                        # return f'{input_id // 4}{_HAT_BUTTON_NAMES[input_id % 4]}'
+                    case _:
+                        input_id = int(input_id_or_name)
                 controller_id = 0
                 if len(input_parts) == 3:
                     controller_id = int(input_parts[2])
@@ -254,10 +268,7 @@ def _load():
 
 def _getSaveInput(input_type: InputType, input_id: int, controller_id: int):
     result = f'{input_type.name}{_PART_SEP}'
-    if input_type == InputType.KEYBOARD:
-        result += pygame.key.name(input_id)
-    else:
-        result += str(input_id)
+    result += _getInputIdDisplay(input_type, input_id)
     if input_type in (InputType.CON_BUTTON, InputType.CON_HAT, InputType.CON_AXIS):
         result += f'{_PART_SEP}{controller_id}'
     return result
