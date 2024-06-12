@@ -123,6 +123,15 @@ def resetDefaultMapping():
         _setInputMapping(input_default)
 
 
+def _getHatValues(event: pygame.event.Event) -> tuple[int, int, int, int]:
+    return (
+        1 if event.value[0] == -1 else 0,
+        1 if event.value[0] == 1 else 0,
+        1 if event.value[1] == 1 else 0,
+        1 if event.value[1] == -1 else 0,
+    )
+
+
 def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event) -> bool:
     match event.type:
         case pygame.KEYDOWN:
@@ -149,13 +158,7 @@ def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event) 
             )
         case pygame.JOYHATMOTION:
             input_id = None
-            hat_value_left_right_up_down = (
-                1 if event.value[0] == -1 else 0,
-                1 if event.value[0] == 1 else 0,
-                1 if event.value[1] == 1 else 0,
-                1 if event.value[1] == -1 else 0,
-            )
-            for i, event_value in enumerate(hat_value_left_right_up_down):
+            for i, event_value in enumerate(_getHatValues(event)):
                 if event_value == 1:
                     input_id = event.hat * 4 + i
             input_default = InputDefault(
@@ -286,13 +289,7 @@ def _takeEvent(event: pygame.event.Event):
             player_id, event_type = _mapEvent(InputType.CON_BUTTON, event.button, event.instance_id)
             return _logEvent(player_id, event_type, 1 if event.type == pygame.JOYBUTTONDOWN else 0)
         case pygame.JOYHATMOTION:
-            hat_value_left_right_up_down = (
-                1 if event.value[0] == -1 else 0,
-                1 if event.value[0] == 1 else 0,
-                1 if event.value[1] == 1 else 0,
-                1 if event.value[1] == -1 else 0,
-            )
-            for i, event_value in enumerate(hat_value_left_right_up_down):
+            for i, event_value in enumerate(_getHatValues(event)):
                 player_id, event_type = _mapEvent(InputType.CON_HAT, event.hat * 4 + i, event.instance_id)
                 _logEvent(player_id, event_type, event_value)
         case pygame.JOYAXISMOTION:
