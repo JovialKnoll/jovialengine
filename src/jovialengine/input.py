@@ -255,9 +255,9 @@ def _load():
                     case InputType.KEYBOARD:
                         input_id = pygame.key.key_code(input_id_or_name)
                     case InputType.CON_HAT:
-                        # parse out input_id from 0L, 1D, etc
-                        #input_id =
-                        # return f'{input_id // 4}{_HAT_BUTTON_NAMES[input_id % 4]}'
+                        hat_number = int(input_id_or_name[:-1])
+                        hat_direction = input_id_or_name[-1]
+                        input_id = hat_number * 4 + _HAT_BUTTON_NUMBERS[hat_direction]
                     case _:
                         input_id = int(input_id_or_name)
                 controller_id = 0
