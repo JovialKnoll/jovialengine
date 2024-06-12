@@ -59,12 +59,6 @@ _HAT_BUTTON_NAMES = (
     "U",
     "D",
 )
-_HAT_BUTTON_NUMBERS = {
-    "L": 0,
-    "R": 1,
-    "U": 2,
-    "D": 3,
-}
 TYPE_NONE = -1
 TYPE_PAUSE = 0
 TYPE_SCREENSHOT = 1
@@ -258,7 +252,7 @@ def _load():
                     case InputType.CON_HAT:
                         hat_number = int(input_id_or_name[:-1])
                         hat_direction = input_id_or_name[-1]
-                        input_id = hat_number * 4 + _HAT_BUTTON_NUMBERS[hat_direction]
+                        input_id = hat_number * 4 + _HAT_BUTTON_NAMES.index(hat_direction)
                     case _:
                         input_id = int(input_id_or_name)
                 controller_id = 0
