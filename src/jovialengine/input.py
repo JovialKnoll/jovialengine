@@ -53,6 +53,12 @@ class InputDefault(object):
         )
 
 
+_HAT_BUTTON_NAMES = (
+    "LEFT",
+    "RIGHT",
+    "UP",
+    "DOWN",
+)
 TYPE_NONE = -1
 TYPE_PAUSE = 0
 TYPE_SCREENSHOT = 1
@@ -188,10 +194,13 @@ def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -
             result = f'CON{controller_id}-AX-'
         case _:
             raise ValueError("error: input_type must be a supported InputType")
-    if input_type == InputType.KEYBOARD:
-        result += pygame.key.name(input_id)
-    else:
-        result += str(input_id)
+    match input_type:
+        case InputType.KEYBOARD:
+            result += pygame.key.name(input_id)
+        case InputType.CON_HAT:
+            result += f'{input_id // 4}{_HAT_BUTTON_NAMES[input_id % 4]}'
+        case _:
+            result += str(input_id)
     return result
 
 
