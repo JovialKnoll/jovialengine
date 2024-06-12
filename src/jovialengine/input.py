@@ -210,7 +210,8 @@ def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -
             result = f'CON{controller_id}-AX-'
         case _:
             raise ValueError("error: input_type must be a supported InputType")
-    return result + _getInputIdDisplay(input_type, input_id)
+    result += _getInputIdDisplay(input_type, input_id)
+    return result
 
 
 def getEventWithControls(player_id: int, event_type: int) -> str:
