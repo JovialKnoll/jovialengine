@@ -160,10 +160,9 @@ def _setWindowed():
     global _full_screen
     global _disp_screen
     # center window
-    os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(
-        (_monitor_res[0] - _disp_res[0]) // 2,
-        (_monitor_res[1] - _disp_res[1]) // 2
-    )
+    x = (_monitor_res[0] - _disp_res[0]) // 2
+    y = (_monitor_res[1] - _disp_res[1]) // 2
+    os.environ['SDL_VIDEO_WINDOW_POS'] = f'{x},{y}'
     _fullscreen_offset = None
     _full_screen = None
     _disp_screen = pygame.display.set_mode(
@@ -181,7 +180,7 @@ def _setFullscreen():
         (_monitor_res[1] - _disp_res[1]) // 2,
     )
     if _full_screen is None:
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(0, 0)
+        os.environ['SDL_VIDEO_WINDOW_POS'] = '0,0'
         _full_screen = pygame.display.set_mode(
             _monitor_res,
             _fullscreen_flags
@@ -265,6 +264,6 @@ def takeScreenshot():
         os.mkdir(_screenshot_directory)
     except FileExistsError:
         pass
-    file_name = f"{utility.getDateTimeFileName()}.png"
+    file_name = f'{utility.getDateTimeFileName()}.png'
     file_path = os.path.join(_screenshot_directory, file_name)
     pygame.image.save(screen, file_path)

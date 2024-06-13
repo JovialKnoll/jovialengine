@@ -53,6 +53,12 @@ class InputDefault(object):
         )
 
 
+_HAT_BUTTON_NAMES = (
+    "L",
+    "R",
+    "U",
+    "D",
+)
 TYPE_NONE = -1
 TYPE_PAUSE = 0
 TYPE_SCREENSHOT = 1
@@ -123,6 +129,15 @@ def resetDefaultMapping():
         _setInputMapping(input_default)
 
 
+def _getHatValues(event: pygame.event.Event) -> tuple[int, int, int, int]:
+    return (
+        1 if event.value[0] == -1 else 0,
+        1 if event.value[0] == 1 else 0,
+        1 if event.value[1] == 1 else 0,
+        1 if event.value[1] == -1 else 0,
+    )
+
+
 def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event) -> bool:
     match event.type:
         case pygame.KEYDOWN:
@@ -149,13 +164,7 @@ def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event) 
             )
         case pygame.JOYHATMOTION:
             input_id = None
-            hat_value_left_right_up_down = (
-                1 if event.value[0] == -1 else 0,
-                1 if event.value[0] == 1 else 0,
-                1 if event.value[1] == 1 else 0,
-                1 if event.value[1] == -1 else 0,
-            )
-            for i, event_value in enumerate(hat_value_left_right_up_down):
+            for i, event_value in enumerate(_getHatValues(event)):
                 if event_value == 1:
                     input_id = event.hat * 4 + i
             input_default = InputDefault(
@@ -169,6 +178,16 @@ def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event) 
             return False
     _setInputMapping(input_default)
     return True
+
+
+def _getInputIdDisplay(input_type: InputType, input_id: int) -> str:
+    match input_type:
+        case InputType.KEYBOARD:
+            return pygame.key.name(input_id)
+        case InputType.CON_HAT:
+            return f'{input_id // 4}{_HAT_BUTTON_NAMES[input_id % 4]}'
+        case _:
+            return str(input_id)
 
 
 def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -> str:
@@ -185,10 +204,7 @@ def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -
             result = f'CON{controller_id}-AX-'
         case _:
             raise ValueError("error: input_type must be a supported InputType")
-    if input_type == InputType.KEYBOARD:
-        result += pygame.key.name(input_id)
-    else:
-        result += str(input_id)
+    result += _getInputIdDisplay(input_type, input_id)
     return result
 
 
@@ -230,10 +246,15 @@ def _load():
                 input_type = InputType[input_type_name]
                 input_id_or_name = input_parts[1]
                 input_id: int
-                if input_type == InputType.KEYBOARD:
-                    input_id = pygame.key.key_code(input_id_or_name)
-                else:
-                    input_id = int(input_id_or_name)
+                match input_type:
+                    case InputType.KEYBOARD:
+                        input_id = pygame.key.key_code(input_id_or_name)
+                    case InputType.CON_HAT:
+                        hat_number = int(input_id_or_name[:-1])
+                        hat_direction = input_id_or_name[-1]
+                        input_id = hat_number * 4 + _HAT_BUTTON_NAMES.index(hat_direction)
+                    case _:
+                        input_id = int(input_id_or_name)
                 controller_id = 0
                 if len(input_parts) == 3:
                     controller_id = int(input_parts[2])
@@ -242,10 +263,7 @@ def _load():
 
 def _getSaveInput(input_type: InputType, input_id: int, controller_id: int):
     result = f'{input_type.name}{_PART_SEP}'
-    if input_type == InputType.KEYBOARD:
-        result += pygame.key.name(input_id)
-    else:
-        result += str(input_id)
+    result += _getInputIdDisplay(input_type, input_id)
     if input_type in (InputType.CON_BUTTON, InputType.CON_HAT, InputType.CON_AXIS):
         result += f'{_PART_SEP}{controller_id}'
     return result
@@ -286,13 +304,7 @@ def _takeEvent(event: pygame.event.Event):
             player_id, event_type = _mapEvent(InputType.CON_BUTTON, event.button, event.instance_id)
             return _logEvent(player_id, event_type, 1 if event.type == pygame.JOYBUTTONDOWN else 0)
         case pygame.JOYHATMOTION:
-            hat_value_left_right_up_down = (
-                1 if event.value[0] == -1 else 0,
-                1 if event.value[0] == 1 else 0,
-                1 if event.value[1] == 1 else 0,
-                1 if event.value[1] == -1 else 0,
-            )
-            for i, event_value in enumerate(hat_value_left_right_up_down):
+            for i, event_value in enumerate(_getHatValues(event)):
                 player_id, event_type = _mapEvent(InputType.CON_HAT, event.hat * 4 + i, event.instance_id)
                 _logEvent(player_id, event_type, event_value)
         case pygame.JOYAXISMOTION:
