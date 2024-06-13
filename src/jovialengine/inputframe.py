@@ -1,3 +1,6 @@
+from collections.abc import Collection
+
+
 class ControllerStateChange(object):
     __slots__ = (
         'player_id',
@@ -33,15 +36,30 @@ class InputFrame(object):
 
     def wasPlayerInputPressed(self, player_id: int, event_type: int):
         for state_change in self._controller_state_changes:
-            if state_change.player_id == player_id \
+            if state_change.new_value == 1 \
                     and state_change.event_type == event_type \
-                    and state_change.new_value == 1:
+                    and state_change.player_id == player_id:
                 return True
         return False
 
     def wasInputPressed(self, event_type: int):
         for state_change in self._controller_state_changes:
-            if state_change.event_type == event_type \
-                    and state_change.new_value == 1:
+            if state_change.new_value == 1 \
+                    and state_change.event_type == event_type:
+                return True
+        return False
+
+    def wasAnyPlayerInputPressed(self, player_id: int, event_types: Collection[int]):
+        for state_change in self._controller_state_changes:
+            if state_change.new_value == 1 \
+                    and state_change.event_type in event_types \
+                    and state_change.player_id == player_id:
+                return True
+        return False
+
+    def wasAnyInputPressed(self, event_types: Collection[int]):
+        for state_change in self._controller_state_changes:
+            if state_change.new_value == 1 \
+                    and state_change.event_type in event_types:
                 return True
         return False
