@@ -15,6 +15,7 @@ class ModeBase(abc.ABC):
         '_background',
         '_all_sprites',
         '_camera',
+        '_input_frame',
         'next_mode',
     )
 
@@ -31,6 +32,7 @@ class ModeBase(abc.ABC):
         self._background.fill((255, 255, 255))
         self._all_sprites = pygame.sprite.LayeredDirty()
         self._camera = pygame.rect.Rect((0, 0), space_size)
+        self._input_frame: InputFrame | None = None
         """All game modes must set the next mode when they are done.
         Don't create another mode unless you are immediately assigning it to self.next_mode
         """
@@ -53,6 +55,7 @@ class ModeBase(abc.ABC):
         for event in events:
             self._inputEvent(event)
         self._inputFrame(input_frame)
+        self._input_frame = input_frame
 
     def _update(self, dt: int):
         pass
