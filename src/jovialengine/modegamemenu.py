@@ -28,7 +28,7 @@ class MenuAction(enum.Enum):
 class ModeGameMenu(ModeBase, abc.ABC):
     _TEXT_COLOR = (255, 255, 255)
     _BACKGROUND_COLOR = (0, 0, 0)
-    _MENU_CHAR_WIDTH = 32
+    _MENU_CHAR_WIDTH = 40
     _SHARED_DISP_TEXT = "Options:\nESC) Go Back\n"
 
     __slots__ = (
