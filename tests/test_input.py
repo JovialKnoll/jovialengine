@@ -25,10 +25,15 @@ class TestInput(unittest.TestCase):
             )
         )
 
-    def test_init(self):
+    def test__controller_states_init(self):
         # Assert
         self.assertEqual(len(input._controller_states), 1)
         self.assertEqual(len(input._controller_states[0]), 8)
+
+    def test__controller_states_prev_init(self):
+        # Assert
+        self.assertEqual(len(input._controller_states_prev), 1)
+        self.assertEqual(len(input._controller_states_prev[0]), 8)
 
 
 if __name__ == '__main__':
