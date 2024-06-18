@@ -60,6 +60,10 @@ class TestInput(unittest.TestCase):
         # Assert
         self.assertEqual(input._getInputIdDisplay(input.InputType.CON_HAT, 2), "0U")
 
+    def test_getEventWithControls(self):
+        # Assert
+        self.assertEqual(input.getEventWithControls(0, input.EVENT_TYPE_START_POS + 2), "Down: KEY-w")
+
 
 if __name__ == '__main__':
     unittest.main()
