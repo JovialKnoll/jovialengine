@@ -52,6 +52,14 @@ class TestInput(unittest.TestCase):
         # Assert
         self.assertEqual(input._input_mapping, expected_input_mapping)
 
+    def test__getInputIdDisplay_keyboard(self):
+        # Assert
+        self.assertEqual(input._getInputIdDisplay(input.InputType.KEYBOARD, pygame.K_a), "a")
+
+    def test__getInputIdDisplay_hat(self):
+        # Assert
+        self.assertEqual(input._getInputIdDisplay(input.InputType.CON_HAT, 2), "0U")
+
 
 if __name__ == '__main__':
     unittest.main()
