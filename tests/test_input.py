@@ -66,7 +66,7 @@ class TestInput(unittest.TestCase):
 
     def test_getEventName(self):
         # Assert
-        self.assertEqual(input.getEventName(0, input.EVENT_TYPE_START_POS + 3), "Down")
+        self.assertEqual(input.getEventName(input.EVENT_TYPE_START_POS + 3), "Down")
 
 
 if __name__ == '__main__':
