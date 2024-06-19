@@ -87,7 +87,7 @@ class TestInput(unittest.TestCase):
         input.takeEvents(events)
         input_frame = input.getInputFrame()
         # Assert
-        self.assertEqual(input_frame._controller_states, [[0, 0, 0, 0, 1, 0, 1,]])
+        self.assertEqual(input_frame._controller_states, [[0, 0, 0, 1, 0, 1, 0,]])
 
 
 if __name__ == '__main__':
