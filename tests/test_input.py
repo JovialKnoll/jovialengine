@@ -68,6 +68,15 @@ class TestInput(unittest.TestCase):
         # Assert
         self.assertEqual(input.getEventName(input.EVENT_TYPE_START_POS + 3), "Down")
 
+    def test_save_and_load(self):
+        # Arrange
+        expected = input._input_mapping
+        # Act
+        input.save()
+        input._load()
+        # Assert
+        self.assertEqual(input._input_mapping, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
