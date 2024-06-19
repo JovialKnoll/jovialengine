@@ -77,6 +77,18 @@ class TestInput(unittest.TestCase):
         # Assert
         self.assertEqual(input._input_mapping, expected)
 
+    def test_takeEvents(self):
+        # Arrange
+        events = [
+            pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_d}),
+            pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_u}),
+        ]
+        # Act
+        input.takeEvents(events)
+        input_frame = input.getInputFrame()
+        # Assert
+        self.assertEqual(input_frame._controller_states, [[0, 0, 0, 0, 1, 0, 1,]])
+
 
 if __name__ == '__main__':
     unittest.main()
