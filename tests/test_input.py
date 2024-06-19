@@ -81,7 +81,7 @@ class TestInput(unittest.TestCase):
         # Arrange
         events = [
             pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_d}),
-            pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_u}),
+            pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_s}),
         ]
         # Act
         input.takeEvents(events)
