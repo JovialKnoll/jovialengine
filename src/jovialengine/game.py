@@ -6,7 +6,7 @@ import pygame
 pygame.init()
 
 from . import display
-from . import input
+from . import gameinput
 from . import fontwrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu

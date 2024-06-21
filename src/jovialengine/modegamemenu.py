@@ -6,7 +6,7 @@ import pygame
 
 from . import game
 from . import display
-from . import input
+from . import gameinput
 from . import utility
 from .fontwrap import getDefaultFontWrap
 from .modebase import ModeBase
