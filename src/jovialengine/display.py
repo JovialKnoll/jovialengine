@@ -250,8 +250,8 @@ def getBlurredScreen(mode: ModeBase):
 
 def getPositionalChannelMix(x: int | float):
     pos = utility.clamp(x / screen_size[0], 0, 1)
-    channel_l = _boundChannelVolume(utility.cosCurve(pos))
-    channel_r = _boundChannelVolume(utility.sinCurve(pos))
+    channel_l = _boundChannelVolume(utility.cos_curve(pos))
+    channel_r = _boundChannelVolume(utility.sin_curve(pos))
     return channel_l, channel_r
 
 
@@ -264,6 +264,6 @@ def takeScreenshot():
         os.mkdir(_screenshot_directory)
     except FileExistsError:
         pass
-    file_name = f'{utility.getDateTimeFileName()}.png'
+    file_name = f'{utility.get_datetime_file_name()}.png'
     file_path = os.path.join(_screenshot_directory, file_name)
     pygame.image.save(screen, file_path)

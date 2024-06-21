@@ -49,10 +49,10 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
     funcDict = {
         Binary: utility.binary,
         Lerp: utility.lerp,
-        IncSpeed: utility.incSpeedLerp,
-        DecSpeed: utility.decSpeedLerp,
-        IncDecSpeed: utility.incDecSpeedLerp,
-        DecIncSpeed: utility.decIncSpeedLerp,
+        IncSpeed: utility.inc_speed_lerp,
+        DecSpeed: utility.dec_speed_lerp,
+        IncDecSpeed: utility.inc_dec_speed_lerp,
+        DecIncSpeed: utility.dec_inc_speed_lerp,
     }
 
     @classmethod

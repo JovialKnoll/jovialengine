@@ -7,14 +7,14 @@ def clamp(number, minimum, maximum):
     return max(minimum, min(maximum, number))
 
 
-def getIntMovement(tracking, vel, dt):
+def get_int_movement(tracking, vel, dt):
     tracking += vel * dt
     tracking_int = int(tracking)
     tracking -= tracking_int
     return tracking, tracking_int
 
 
-def reduceNumber(number, divisor):
+def reduce_number(number, divisor):
     result = number // divisor
     mod = number % divisor
     if random.random() < (mod / divisor):
@@ -22,11 +22,11 @@ def reduceNumber(number, divisor):
     return result
 
 
-def sinCurve(number: float | int):
+def sin_curve(number: float | int):
     return math.sin(number * math.pi / 2)
 
 
-def cosCurve(number: float | int):
+def cos_curve(number: float | int):
     if number == 1:
         return 0
     return math.cos(number * math.pi / 2)
@@ -42,29 +42,29 @@ def lerp(start, end, mix):
     return start + (end - start)*mix
 
 
-def incSpeedLerp(start, end, mix):
+def inc_speed_lerp(start, end, mix):
     return lerp(start, end, mix**2)
 
 
-def decSpeedLerp(start, end, mix):
+def dec_speed_lerp(start, end, mix):
     return lerp(start, end, 1 - (1 - mix)**2)
 
 
-def incDecSpeedLerp(start, end, mix):
+def inc_dec_speed_lerp(start, end, mix):
     midpoint = lerp(start, end, 0.5)
     if mix < 0.5:
-        return incSpeedLerp(start, midpoint, mix*2)
+        return inc_speed_lerp(start, midpoint, mix * 2)
     else:
-        return decSpeedLerp(midpoint, end, (mix - 0.5)*2)
+        return dec_speed_lerp(midpoint, end, (mix - 0.5) * 2)
 
 
-def decIncSpeedLerp(start, end, mix):
+def dec_inc_speed_lerp(start, end, mix):
     midpoint = lerp(start, end, 0.5)
     if mix < 0.5:
-        return decSpeedLerp(start, midpoint, mix*2)
+        return dec_speed_lerp(start, midpoint, mix * 2)
     else:
-        return incSpeedLerp(midpoint, end, (mix - 0.5)*2)
+        return inc_speed_lerp(midpoint, end, (mix - 0.5) * 2)
 
 
-def getDateTimeFileName():
+def get_datetime_file_name():
     return datetime.utcnow().isoformat().replace(':', '')

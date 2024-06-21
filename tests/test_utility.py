@@ -20,7 +20,7 @@ class TestUtility(unittest.TestCase):
 
     def test_getIntMovement(self):
         tracking = 0.6
-        tracking, tracking_int = utility.getIntMovement(tracking, 3.75, 10)
+        tracking, tracking_int = utility.get_int_movement(tracking, 3.75, 10)
         self.assertEqual(tracking_int, 38)
         self.assertTrue(0.0999999999 < tracking < 0.1000000001)
 
@@ -62,73 +62,73 @@ class TestUtility(unittest.TestCase):
 
     def test_incSpeedLerp(self):
         self.assertEqual(
-            utility.incSpeedLerp(1.0, 2.0, 0.0),
+            utility.inc_speed_lerp(1.0, 2.0, 0.0),
             1
         )
         self.assertEqual(
-            utility.incSpeedLerp(1.0, 2.0, 0.25),
+            utility.inc_speed_lerp(1.0, 2.0, 0.25),
             1.0625
         )
         self.assertEqual(
-            utility.incSpeedLerp(1.0, 2.0, 0.75),
+            utility.inc_speed_lerp(1.0, 2.0, 0.75),
             1.5625
         )
         self.assertEqual(
-            utility.incSpeedLerp(1.0, 2.0, 1.0),
+            utility.inc_speed_lerp(1.0, 2.0, 1.0),
             2
         )
 
     def test_decSpeedLerp(self):
         self.assertEqual(
-            utility.decSpeedLerp(1.0, 2.0, 0.0),
+            utility.dec_speed_lerp(1.0, 2.0, 0.0),
             1
         )
         self.assertEqual(
-            utility.decSpeedLerp(1.0, 2.0, 0.25),
+            utility.dec_speed_lerp(1.0, 2.0, 0.25),
             1.4375
         )
         self.assertEqual(
-            utility.decSpeedLerp(1.0, 2.0, 0.75),
+            utility.dec_speed_lerp(1.0, 2.0, 0.75),
             1.9375
         )
         self.assertEqual(
-            utility.decSpeedLerp(1.0, 2.0, 1.0),
+            utility.dec_speed_lerp(1.0, 2.0, 1.0),
             2
         )
 
     def test_incDecSpeedLerp(self):
         self.assertEqual(
-            utility.incDecSpeedLerp(1.0, 2.0, 0.0),
+            utility.inc_dec_speed_lerp(1.0, 2.0, 0.0),
             1
         )
         self.assertEqual(
-            utility.incDecSpeedLerp(1.0, 2.0, 0.25),
+            utility.inc_dec_speed_lerp(1.0, 2.0, 0.25),
             1.125
         )
         self.assertEqual(
-            utility.incDecSpeedLerp(1.0, 2.0, 0.75),
+            utility.inc_dec_speed_lerp(1.0, 2.0, 0.75),
             1.875
         )
         self.assertEqual(
-            utility.incDecSpeedLerp(1.0, 2.0, 1.0),
+            utility.inc_dec_speed_lerp(1.0, 2.0, 1.0),
             2
         )
 
     def test_decIncSpeedLerp(self):
         self.assertEqual(
-            utility.decIncSpeedLerp(1.0, 2.0, 0.0),
+            utility.dec_inc_speed_lerp(1.0, 2.0, 0.0),
             1
         )
         self.assertEqual(
-            utility.decIncSpeedLerp(1.0, 2.0, 0.25),
+            utility.dec_inc_speed_lerp(1.0, 2.0, 0.25),
             1.375
         )
         self.assertEqual(
-            utility.decIncSpeedLerp(1.0, 2.0, 0.75),
+            utility.dec_inc_speed_lerp(1.0, 2.0, 0.75),
             1.625
         )
         self.assertEqual(
-            utility.decIncSpeedLerp(1.0, 2.0, 1.0),
+            utility.dec_inc_speed_lerp(1.0, 2.0, 1.0),
             2
         )
 

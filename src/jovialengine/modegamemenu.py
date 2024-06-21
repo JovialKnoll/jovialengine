@@ -268,7 +268,7 @@ class ModeGameMenuSave(ModeGameMenu):
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
                 elif isinstance(self._previous_mode, Saveable):
                     if not self._save_name:
-                        self._save_name = utility.getDateTimeFileName()
+                        self._save_name = utility.get_datetime_file_name()
                     if Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
                         self._confirm_overwrite = True
                     else:
