@@ -71,14 +71,14 @@ class _SaveableJSONEncoder(json.JSONEncoder):
         return super().default(o)
 
 
-def _getClass(dct: dict):
+def _get_class(dct: dict):
     attr = sys.modules[dct[_KEY_MODULE]]
     for name in dct[_KEY_CLASS].split('.'):
         attr = getattr(attr, name)
     return attr
 
 
-def _decodeSaveable(dct: dict):
+def _decode_saveable(dct: dict):
     if _KEY_COLLECTION in dct:
         if dct[_KEY_COLLECTION] == _COLLECTION_DEQUE:
             return deque(dct[_KEY_ELEMENTS], dct[_KEY_MAXLEN])
@@ -89,9 +89,9 @@ def _decodeSaveable(dct: dict):
         elif dct[_KEY_COLLECTION] == _COLLECTION_VECTOR3:
             return pygame.math.Vector3(dct[_KEY_ELEMENTS])
     elif {_KEY_MODULE, _KEY_CLASS} == dct.keys():
-        return _getClass(dct)
+        return _get_class(dct)
     elif {_KEY_MODULE, _KEY_CLASS, _KEY_SAVEABLE} == dct.keys():
-        saveable_class = _getClass(dct)
+        saveable_class = _get_class(dct)
         return saveable_class.load(dct[_KEY_SAVEABLE])
     return dct
 
@@ -111,13 +111,13 @@ class Save(object):
         self._shared_data = shared_data
 
     @staticmethod
-    def willOverwrite(save_name: str):
+    def will_overwrite(save_name: str):
         return os.path.exists(
-            Save._getFilePathFromFileName(save_name + _SAVE_EXT)
+            Save._get_file_path_from_file_name(save_name + _SAVE_EXT)
         )
 
     @staticmethod
-    def _getSaveFiles():
+    def _get_save_files():
         if not os.path.isdir(_save_directory):
             return ()
         return (
@@ -125,28 +125,28 @@ class Save(object):
             for file_name
             in os.listdir(_save_directory)
             if os.path.isfile(
-                Save._getFilePathFromFileName(file_name)
+                Save._get_file_path_from_file_name(file_name)
             )
             and file_name.endswith(_SAVE_EXT)
         )
 
     @staticmethod
-    def _getFilePathFromFileName(file_name):
+    def _get_file_path_from_file_name(file_name):
         return os.path.join(_save_directory, file_name)
 
-    def _getFilePath(self):
-        return self._getFilePathFromFileName(self.save_name + _SAVE_EXT)
+    def _get_file_path(self):
+        return self._get_file_path_from_file_name(self.save_name + _SAVE_EXT)
 
     @classmethod
-    def getAllFromFiles(cls):
+    def get_all_from_files(cls):
         return sorted(
             (
                 save
                 for save
                 in (
-                    cls._getFromFile(file)
+                    cls._get_from_file(file)
                     for file
-                    in cls._getSaveFiles()
+                    in cls._get_save_files()
                 )
                 if save
             ),
@@ -154,11 +154,11 @@ class Save(object):
         )
 
     @classmethod
-    def _getFromFile(cls, file_name: str):
-        file_path = cls._getFilePathFromFileName(file_name)
+    def _get_from_file(cls, file_name: str):
+        file_path = cls._get_file_path_from_file_name(file_name)
         try:
             with open(file_path, 'r') as file:
-                save_object = json.load(file, object_hook=_decodeSaveable)
+                save_object = json.load(file, object_hook=_decode_saveable)
                 return cls(
                     file_name[:-len(_SAVE_EXT)],
                     save_object['mode_name'],
@@ -169,7 +169,7 @@ class Save(object):
             return False
 
     @classmethod
-    def getFromMode(cls, save_name: str, from_mode: Saveable):
+    def get_from_mode(cls, save_name: str, from_mode: Saveable):
         return cls(
             save_name,
             type(from_mode).__name__,
@@ -187,7 +187,7 @@ class Save(object):
             'mode_data': self._mode_data,
             'shared_data': self._shared_data,
         }
-        file_path = self._getFilePath()
+        file_path = self._get_file_path()
         try:
             with open(file_path, 'w') as file:
                 json.dump(save_object, file, cls=_SaveableJSONEncoder)
@@ -202,5 +202,5 @@ class Save(object):
         return new_mode
 
     def delete(self):
-        file_path = self._getFilePath()
+        file_path = self._get_file_path()
         os.remove(file_path)

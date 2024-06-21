@@ -269,10 +269,10 @@ class ModeGameMenuSave(ModeGameMenu):
                 elif isinstance(self._previous_mode, Saveable):
                     if not self._save_name:
                         self._save_name = utility.get_datetime_file_name()
-                    if Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
+                    if Save.will_overwrite(self._save_name) and not self._confirm_overwrite:
                         self._confirm_overwrite = True
                     else:
-                        new_save = Save.getFromMode(self._save_name, self._previous_mode)
+                        new_save = Save.get_from_mode(self._save_name, self._previous_mode)
                         self._save_success = new_save.save()
             case MenuAction.LEFT:
                 self._cursor_position -= 1
@@ -371,7 +371,7 @@ class ModeGameMenuLoad(ModeGameMenuList):
 
     def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
-        self._saves = Save.getAllFromFiles()
+        self._saves = Save.get_all_from_files()
         self._state = self.STATE_DEFAULT
         self._selected_save_option = self.OPTION_LOAD
 
