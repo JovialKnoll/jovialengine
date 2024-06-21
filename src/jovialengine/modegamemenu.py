@@ -160,7 +160,7 @@ class ModeGameMenuTop(ModeGameMenu):
         super().__init__(previous_mode, old_screen)
         self._selected = 0
 
-    def _inputEvent(self, event):
+    def _take_event(self, event):
         match self._getAction(event):
             case MenuAction.QUIT:
                 game.getGame().running = False
@@ -184,7 +184,7 @@ class ModeGameMenuTop(ModeGameMenu):
                     case 4:
                         input.resetDefaultMapping()
                     case 5:
-                        self._stopMixer()
+                        self._stop_mixer()
                         game.getGame().state = game.getGame().state_cls()
                         self._previous_mode = game.getGame().start_mode_cls()
                         pygame.mixer.music.pause()
@@ -195,7 +195,7 @@ class ModeGameMenuTop(ModeGameMenu):
                         game.getGame().running = False
         self._selected = utility.clamp(self._selected, 0, len(self._OPTIONS) - 1)
 
-    def _drawPreSprites(self, screen):
+    def _draw_pre_sprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         disp_text += "ARROW KEYS + ENTER)"
         for index, option in enumerate(self._OPTIONS):
@@ -251,7 +251,7 @@ class ModeGameMenuSave(ModeGameMenu):
         self._cursor_position -= 1
         self._resetCursorBlink()
 
-    def _inputEvent(self, event):
+    def _take_event(self, event):
         match self._getAction(event):
             case MenuAction.QUIT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
@@ -323,7 +323,7 @@ class ModeGameMenuSave(ModeGameMenu):
             self._cursor_switch = not self._cursor_switch
             self._cursor_timer -= self._CURSOR_TIME
 
-    def _drawPreSprites(self, screen):
+    def _draw_pre_sprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         draw_cursor = False
         if not isinstance(self._previous_mode, Saveable):
@@ -375,7 +375,7 @@ class ModeGameMenuLoad(ModeGameMenuList):
         self._state = self.STATE_DEFAULT
         self._selected_save_option = self.OPTION_LOAD
 
-    def _inputEvent(self, event):
+    def _take_event(self, event):
         action = self._getAction(event)
         if action == MenuAction.QUIT:
             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
@@ -410,7 +410,7 @@ class ModeGameMenuLoad(ModeGameMenuList):
                         self._selected_save_option %= 2
                     case MenuAction.CONFIRM:
                         if self._selected_save_option == self.OPTION_LOAD:
-                            self._stopMixer()
+                            self._stop_mixer()
                             self._previous_mode = self._saves[self._index].load()
                             pygame.mixer.music.pause()
                             pygame.mixer.pause()
@@ -433,7 +433,7 @@ class ModeGameMenuLoad(ModeGameMenuList):
     def _getOptionStatus(self, option: int):
         return self._getSelectedChar(self._selected_save_option == option)
 
-    def _drawPreSprites(self, screen):
+    def _draw_pre_sprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         match self._state:
             case self.STATE_DEFAULT:
@@ -484,7 +484,7 @@ class ModeGameMenuOptions(ModeGameMenu):
                         return MenuAction.CONFIRM
         return super()._getAction(event)
 
-    def _inputEvent(self, event):
+    def _take_event(self, event):
         match self._getAction(event):
             case MenuAction.QUIT | MenuAction.REJECT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
@@ -498,7 +498,7 @@ class ModeGameMenuOptions(ModeGameMenu):
             target_scale = int(event.unicode)
             display.setScale(target_scale)
 
-    def _drawPreSprites(self, screen):
+    def _draw_pre_sprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         disp_text += f"ARROW KEYS) Upscaling: {display.upscale}" \
             + f"\nENTER) Fullscreen: {self.getTickBox(display.is_fullscreen)}"
@@ -539,7 +539,7 @@ class ModeGameMenuControls(ModeGameMenuList):
     def _getOptionName(self, index):
         return input.getEventWithControls(self._selected_player, index)
 
-    def _inputEvent(self, event):
+    def _take_event(self, event):
         action = self._getAction(event)
         if action == MenuAction.QUIT:
             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
@@ -582,7 +582,7 @@ class ModeGameMenuControls(ModeGameMenuList):
             if self._selection_timer <= 0:
                 self._state = self.STATE_CHOOSE_EVENT
 
-    def _drawPreSprites(self, screen):
+    def _draw_pre_sprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         if self._state != self.STATE_CHOOSE_INPUT:
             disp_text += "ARROW KEYS + ENTER)\n"
