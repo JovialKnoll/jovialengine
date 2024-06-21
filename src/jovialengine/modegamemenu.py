@@ -8,7 +8,7 @@ from . import game
 from . import display
 from . import gameinput
 from . import utility
-from .fontwrap import getDefaultFontWrap
+from .fontwrap import get_default_font_wrap
 from .modebase import ModeBase
 from .save import Save
 from .saveable import Saveable
@@ -41,7 +41,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
 
     def __init__(self, previous_mode: ModeBase, old_screen: pygame.Surface | None = None):
         self._init(display.screen_size)
-        self._MENU_WIDTH = getDefaultFontWrap().font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
+        self._MENU_WIDTH = get_default_font_wrap().font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
         self._previous_mode = previous_mode
         if old_screen is None:
             old_screen = self._get_old_screen()
@@ -96,7 +96,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
 
     def _draw_text_always(self, disp_text: str):
         self._last_disp_text = disp_text
-        self._menu_surface = getDefaultFontWrap().renderInside(
+        self._menu_surface = get_default_font_wrap().render_inside(
             self._MENU_WIDTH,
             disp_text,
             self._TEXT_COLOR,
@@ -343,13 +343,13 @@ class ModeGameMenuSave(ModeGameMenu):
                 draw_cursor = True
         self._draw_text_always(disp_text)
         if self._cursor_switch and draw_cursor:
-            cursor_x = getDefaultFontWrap().font.size(">" + self._save_name[:self._cursor_position])[0]
-            cursor_y = self._menu_surface.get_height() - getDefaultFontWrap().line_height
+            cursor_x = get_default_font_wrap().font.size(">" + self._save_name[:self._cursor_position])[0]
+            cursor_y = self._menu_surface.get_height() - get_default_font_wrap().line_height
             self._menu_surface.fill(
                 self._TEXT_COLOR,
                 (
                     (cursor_x, cursor_y),
-                    (1, getDefaultFontWrap().line_height)
+                    (1, get_default_font_wrap().line_height)
                 )
             )
         screen.blit(self._menu_surface, (0, 0))
