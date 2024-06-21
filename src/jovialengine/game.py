@@ -40,7 +40,7 @@ class _Game(object):
         window_icon: str | None,
         max_players: int,
         event_names: tuple[str],
-        input_defaults: tuple[input.InputDefault],
+        input_defaults: tuple[gameinput.InputDefault],
         font_location: str | None,
         font_size: int,
         font_height: int,
@@ -61,7 +61,7 @@ class _Game(object):
             title,
             window_icon
         )
-        input.init(
+        gameinput.init(
             os.path.join(src_directory, 'input.cfg'),
             max_players,
             event_names,
@@ -95,16 +95,16 @@ class _Game(object):
         if not self._current_mode:
             raise RuntimeError("error: self._current_mode is not set")
         events = self._filterInput(pygame.event.get())
-        events = input.takeEvents(events)
-        input_frame = input.getInputFrame()
-        if input_frame.was_player_input_pressed(0, input.TYPE_SCREENSHOT):
+        events = gameinput.takeEvents(events)
+        input_frame = gameinput.getInputFrame()
+        if input_frame.was_player_input_pressed(0, gameinput.TYPE_SCREENSHOT):
             display.takeScreenshot()
-        if any(map(self._isPauseEvent, events)) or input_frame.was_input_pressed(input.TYPE_PAUSE):
+        if any(map(self._isPauseEvent, events)) or input_frame.was_input_pressed(gameinput.TYPE_PAUSE):
             # if already in pause menu no need to do this stuff
             if not isinstance(self._current_mode, ModeGameMenu):
                 self._current_mode = ModeGameMenuTop(self._current_mode)
-                input.startNewMode()
-                input_frame = input.getInputFrame()
+                gameinput.startNewMode()
+                input_frame = gameinput.getInputFrame()
                 pygame.mixer.music.pause()
                 pygame.mixer.pause()
                 events = []
@@ -120,11 +120,11 @@ class _Game(object):
                 pygame.mixer.unpause()
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
-            input.startNewMode()
+            gameinput.startNewMode()
         self._is_first_loop = False
         if not self.running:
             config.save()
-            input.save()
+            gameinput.save()
             self._current_mode = None
             self.state = None
             pygame.quit()
@@ -182,7 +182,7 @@ def initGame(
     window_icon: str | None,
     max_players: int,
     event_names: tuple[str],
-    input_defaults: tuple[input.InputDefault],
+    input_defaults: tuple[gameinput.InputDefault],
     font_location: str | None,
     font_size: int,
     font_height: int,
