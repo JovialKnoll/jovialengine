@@ -54,19 +54,19 @@ class TestInput(unittest.TestCase):
 
     def test__getInputIdDisplay_keyboard(self):
         # Assert
-        self.assertEqual(input._getInputIdDisplay(input.InputType.KEYBOARD, pygame.K_a), "a")
+        self.assertEqual(input._get_input_id_display(input.InputType.KEYBOARD, pygame.K_a), "a")
 
     def test__getInputIdDisplay_hat(self):
         # Assert
-        self.assertEqual(input._getInputIdDisplay(input.InputType.CON_HAT, 2), "0U")
+        self.assertEqual(input._get_input_id_display(input.InputType.CON_HAT, 2), "0U")
 
     def test_getEventWithControls(self):
         # Assert
-        self.assertEqual(input.getEventWithControls(0, input.EVENT_TYPE_START_POS + 2), "Up: KEY-w")
+        self.assertEqual(input.get_event_with_controls(0, input.EVENT_TYPE_START_POS + 2), "Up: KEY-w")
 
     def test_getEventName(self):
         # Assert
-        self.assertEqual(input.getEventName(input.EVENT_TYPE_START_POS + 3), "Down")
+        self.assertEqual(input.get_event_name(input.EVENT_TYPE_START_POS + 3), "Down")
 
     def test_save_and_load(self):
         # Arrange
@@ -84,8 +84,8 @@ class TestInput(unittest.TestCase):
             pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_s}),
         ]
         # Act
-        input.takeEvents(events)
-        input_frame = input.getInputFrame()
+        input.take_events(events)
+        input_frame = input.get_input_frame()
         # Assert
         self.assertEqual(input_frame._controller_states, [[0, 0, 0, 1, 0, 1, 0, 0,]])
         self.assertTrue(input_frame.was_player_input_pressed(0, input.EVENT_TYPE_START_POS + 1))

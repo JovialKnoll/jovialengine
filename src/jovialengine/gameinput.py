@@ -39,14 +39,14 @@ class InputDefault(object):
         self.input_id = input_id
         self.controller_id = controller_id
 
-    def getMapKey(self):
-        return _getMapKey(
+    def get_map_key(self):
+        return _get_map_key(
             self.input_type,
             self.input_id,
             self.controller_id
         )
 
-    def getMapValue(self):
+    def get_map_value(self):
         return (
             self.player_id,
             self.event_type,
@@ -101,11 +101,11 @@ def init(input_file: str, max_players_in: int, event_names: tuple[str], input_de
     if os.path.exists(_input_file):
         _load()
     else:
-        resetDefaultMapping()
-    startNewMode()
+        reset_default_mapping()
+    start_new_mode()
 
 
-def startNewMode():
+def start_new_mode():
     global _controller_states
     global _controller_states_prev
     global _controller_state_changes
@@ -114,11 +114,11 @@ def startNewMode():
     _controller_state_changes = []
 
 
-def _setInputMapping(input_default: InputDefault):
-    _input_mapping[input_default.getMapKey()] = input_default.getMapValue()
+def _set_input_mapping(input_default: InputDefault):
+    _input_mapping[input_default.get_map_key()] = input_default.get_map_value()
 
 
-def resetDefaultMapping():
+def reset_default_mapping():
     global _input_mapping
     _input_mapping = dict()
     controller_pause = tuple(
@@ -126,10 +126,10 @@ def resetDefaultMapping():
         for i in range(max_players)
     )
     for input_default in _ENGINE_INPUT_DEFAULTS + controller_pause + _input_defaults:
-        _setInputMapping(input_default)
+        _set_input_mapping(input_default)
 
 
-def _getHatValues(event: pygame.event.Event) -> tuple[int, int, int, int]:
+def _get_hat_values(event: pygame.event.Event) -> tuple[int, int, int, int]:
     return (
         1 if event.value[0] == -1 else 0,
         1 if event.value[0] == 1 else 0,
@@ -138,7 +138,7 @@ def _getHatValues(event: pygame.event.Event) -> tuple[int, int, int, int]:
     )
 
 
-def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event) -> bool:
+def set_input_mapping(player_id: int, event_type: int, event: pygame.event.Event) -> bool:
     match event.type:
         case pygame.KEYDOWN:
             input_default = InputDefault(
@@ -164,7 +164,7 @@ def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event) 
             )
         case pygame.JOYHATMOTION:
             input_id = None
-            for i, event_value in enumerate(_getHatValues(event)):
+            for i, event_value in enumerate(_get_hat_values(event)):
                 if event_value == 1:
                     input_id = event.hat * 4 + i
             input_default = InputDefault(
@@ -176,11 +176,11 @@ def setInputMapping(player_id: int, event_type: int, event: pygame.event.Event) 
             )
         case _:
             return False
-    _setInputMapping(input_default)
+    _set_input_mapping(input_default)
     return True
 
 
-def _getInputIdDisplay(input_type: InputType, input_id: int) -> str:
+def _get_input_id_display(input_type: InputType, input_id: int) -> str:
     match input_type:
         case InputType.KEYBOARD:
             return pygame.key.name(input_id)
@@ -190,7 +190,7 @@ def _getInputIdDisplay(input_type: InputType, input_id: int) -> str:
             return str(input_id)
 
 
-def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -> str:
+def _get_display_input(input_type: InputType, input_id: int, controller_id: int) -> str:
     match input_type:
         case InputType.KEYBOARD:
             result = f'KEY-'
@@ -204,20 +204,20 @@ def _getDisplayInput(input_type: InputType, input_id: int, controller_id: int) -
             result = f'CON{controller_id}-AX-'
         case _:
             raise ValueError("error: input_type must be a supported InputType")
-    result += _getInputIdDisplay(input_type, input_id)
+    result += _get_input_id_display(input_type, input_id)
     return result
 
 
-def getEventWithControls(player_id: int, event_type: int) -> str:
+def get_event_with_controls(player_id: int, event_type: int) -> str:
     inputs = [
-        _getDisplayInput(*key)
+        _get_display_input(*key)
         for key, value in _input_mapping.items()
         if value == (player_id, event_type)
     ]
     return f"{_event_names[event_type]}: {','.join(inputs)}"
 
 
-def getEventName(event_type: int) -> str:
+def get_event_name(event_type: int) -> str:
     return _event_names[event_type]
 
 
@@ -258,12 +258,12 @@ def _load():
                 controller_id = 0
                 if len(input_parts) == 3:
                     controller_id = int(input_parts[2])
-                _input_mapping[_getMapKey(input_type, input_id, controller_id)] = (player_id, event_type)
+                _input_mapping[_get_map_key(input_type, input_id, controller_id)] = (player_id, event_type)
 
 
-def _getSaveInput(input_type: InputType, input_id: int, controller_id: int):
+def _get_save_input(input_type: InputType, input_id: int, controller_id: int):
     result = f'{input_type.name}{_PART_SEP}'
-    result += _getInputIdDisplay(input_type, input_id)
+    result += _get_input_id_display(input_type, input_id)
     if input_type in (InputType.CON_BUTTON, InputType.CON_HAT, InputType.CON_AXIS):
         result += f'{_PART_SEP}{controller_id}'
     return result
@@ -279,7 +279,7 @@ def save():
         for write_key, write_value in mapping_to_write.items():
             inputs = _INPUT_SEP.join(
                 [
-                    _getSaveInput(item[0], item[1], item[2])
+                    _get_save_input(item[0], item[1], item[2])
                     for item
                     in write_value
                 ]
@@ -292,42 +292,42 @@ def save():
             print(line, file=file)
 
 
-def _takeEvent(event: pygame.event.Event):
+def _take_event(event: pygame.event.Event):
     match event.type:
         case pygame.KEYUP | pygame.KEYDOWN:
-            player_id, event_type = _mapEvent(InputType.KEYBOARD, event.key)
-            return _logEvent(player_id, event_type, 1 if event.type == pygame.KEYDOWN else 0)
+            player_id, event_type = _map_event(InputType.KEYBOARD, event.key)
+            return _log_event(player_id, event_type, 1 if event.type == pygame.KEYDOWN else 0)
         case pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
-            player_id, event_type = _mapEvent(InputType.MOUSE, event.button)
-            return _logEvent(player_id, event_type, 1 if event.type == pygame.MOUSEBUTTONDOWN else 0)
+            player_id, event_type = _map_event(InputType.MOUSE, event.button)
+            return _log_event(player_id, event_type, 1 if event.type == pygame.MOUSEBUTTONDOWN else 0)
         case pygame.JOYBUTTONUP | pygame.JOYBUTTONDOWN:
-            player_id, event_type = _mapEvent(InputType.CON_BUTTON, event.button, event.instance_id)
-            return _logEvent(player_id, event_type, 1 if event.type == pygame.JOYBUTTONDOWN else 0)
+            player_id, event_type = _map_event(InputType.CON_BUTTON, event.button, event.instance_id)
+            return _log_event(player_id, event_type, 1 if event.type == pygame.JOYBUTTONDOWN else 0)
         case pygame.JOYHATMOTION:
-            for i, event_value in enumerate(_getHatValues(event)):
-                player_id, event_type = _mapEvent(InputType.CON_HAT, event.hat * 4 + i, event.instance_id)
-                _logEvent(player_id, event_type, event_value)
+            for i, event_value in enumerate(_get_hat_values(event)):
+                player_id, event_type = _map_event(InputType.CON_HAT, event.hat * 4 + i, event.instance_id)
+                _log_event(player_id, event_type, event_value)
         case pygame.JOYAXISMOTION:
             axis_value_back_forth = (
                 event.value * -1 if event.value < 0 else 0,
                 event.value if event.value > 0 else 0,
             )
             for i, event_value in enumerate(axis_value_back_forth):
-                player_id, event_type = _mapEvent(InputType.CON_AXIS, event.axis * 2 + i, event.instance_id)
-                _logEvent(player_id, event_type, event_value)
+                player_id, event_type = _map_event(InputType.CON_AXIS, event.axis * 2 + i, event.instance_id)
+                _log_event(player_id, event_type, event_value)
     return True
 
 
-def takeEvents(events: Iterable[pygame.event.Event]):
+def take_events(events: Iterable[pygame.event.Event]):
     global _controller_states_prev
     global _controller_state_changes
     _controller_states_prev = copy.deepcopy(_controller_states)
     _controller_state_changes = []
-    events = filter(_takeEvent, events)
+    events = filter(_take_event, events)
     return list(events)
 
 
-def _getMapKey(input_type: InputType, input_id: int, controller_id: int):
+def _get_map_key(input_type: InputType, input_id: int, controller_id: int):
     return (
         input_type,
         input_id,
@@ -335,14 +335,14 @@ def _getMapKey(input_type: InputType, input_id: int, controller_id: int):
     )
 
 
-def _mapEvent(input_type: InputType, input_id: int, controller_id: int = 0):
+def _map_event(input_type: InputType, input_id: int, controller_id: int = 0):
     return _input_mapping.get(
-        _getMapKey(input_type, input_id, controller_id),
+        _get_map_key(input_type, input_id, controller_id),
         (0, TYPE_NONE,)
     )
 
 
-def _logEvent(player_id: int, event_type: int, event_value: float | int):
+def _log_event(player_id: int, event_type: int, event_value: float | int):
     if event_type != TYPE_NONE and _controller_states[player_id][event_type] != event_value:
         _controller_state_changes.append(
             ControllerStateChange(player_id, event_type, event_value)
@@ -351,5 +351,5 @@ def _logEvent(player_id: int, event_type: int, event_value: float | int):
     return event_type != TYPE_SCREENSHOT
 
 
-def getInputFrame():
+def get_input_frame():
     return InputFrame(_controller_states, _controller_states_prev, _controller_state_changes)

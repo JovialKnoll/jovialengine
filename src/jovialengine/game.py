@@ -95,16 +95,16 @@ class _Game(object):
         if not self._current_mode:
             raise RuntimeError("error: self._current_mode is not set")
         events = self._filterInput(pygame.event.get())
-        events = gameinput.takeEvents(events)
-        input_frame = gameinput.getInputFrame()
+        events = gameinput.take_events(events)
+        input_frame = gameinput.get_input_frame()
         if input_frame.was_player_input_pressed(0, gameinput.TYPE_SCREENSHOT):
             display.takeScreenshot()
         if any(map(self._isPauseEvent, events)) or input_frame.was_input_pressed(gameinput.TYPE_PAUSE):
             # if already in pause menu no need to do this stuff
             if not isinstance(self._current_mode, ModeGameMenu):
                 self._current_mode = ModeGameMenuTop(self._current_mode)
-                gameinput.startNewMode()
-                input_frame = gameinput.getInputFrame()
+                gameinput.start_new_mode()
+                input_frame = gameinput.get_input_frame()
                 pygame.mixer.music.pause()
                 pygame.mixer.pause()
                 events = []
@@ -120,7 +120,7 @@ class _Game(object):
                 pygame.mixer.unpause()
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
-            gameinput.startNewMode()
+            gameinput.start_new_mode()
         self._is_first_loop = False
         if not self.running:
             config.save()
