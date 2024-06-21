@@ -31,10 +31,10 @@ class InputFrame(object):
         self._controller_states_prev = controller_states_prev
         self._controller_state_changes = controller_state_changes
 
-    def getInputState(self, player_id: int, event_type: int):
+    def get_input_state(self, player_id: int, event_type: int):
         return self._controller_states[player_id][event_type]
 
-    def wasPlayerInputPressed(self, player_id: int, event_type: int):
+    def was_player_input_pressed(self, player_id: int, event_type: int):
         for state_change in self._controller_state_changes:
             if state_change.new_value == 1 \
                     and state_change.event_type == event_type \
@@ -42,14 +42,14 @@ class InputFrame(object):
                 return True
         return False
 
-    def wasInputPressed(self, event_type: int):
+    def was_input_pressed(self, event_type: int):
         for state_change in self._controller_state_changes:
             if state_change.new_value == 1 \
                     and state_change.event_type == event_type:
                 return True
         return False
 
-    def wasAnyPlayerInputPressed(self, player_id: int, event_types: Collection[int]):
+    def was_any_player_input_pressed(self, player_id: int, event_types: Collection[int]):
         for state_change in self._controller_state_changes:
             if state_change.new_value == 1 \
                     and state_change.event_type in event_types \
@@ -57,7 +57,7 @@ class InputFrame(object):
                 return True
         return False
 
-    def wasAnyInputPressed(self, event_types: Collection[int]):
+    def was_any_input_pressed(self, event_types: Collection[int]):
         for state_change in self._controller_state_changes:
             if state_change.new_value == 1 \
                     and state_change.event_type in event_types:

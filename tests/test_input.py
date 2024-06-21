@@ -88,8 +88,8 @@ class TestInput(unittest.TestCase):
         input_frame = input.getInputFrame()
         # Assert
         self.assertEqual(input_frame._controller_states, [[0, 0, 0, 1, 0, 1, 0, 0,]])
-        self.assertTrue(input_frame.wasPlayerInputPressed(0, input.EVENT_TYPE_START_POS + 1))
-        self.assertTrue(input_frame.wasInputPressed(input.EVENT_TYPE_START_POS + 3))
+        self.assertTrue(input_frame.was_player_input_pressed(0, input.EVENT_TYPE_START_POS + 1))
+        self.assertTrue(input_frame.was_input_pressed(input.EVENT_TYPE_START_POS + 3))
 
 
 if __name__ == '__main__':
