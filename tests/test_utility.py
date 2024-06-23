@@ -18,7 +18,7 @@ class TestUtility(unittest.TestCase):
             12
         )
 
-    def test_getIntMovement(self):
+    def test_get_int_movement(self):
         tracking = 0.6
         tracking, tracking_int = utility.get_int_movement(tracking, 3.75, 10)
         self.assertEqual(tracking_int, 38)
@@ -60,7 +60,7 @@ class TestUtility(unittest.TestCase):
             2
         )
 
-    def test_incSpeedLerp(self):
+    def test_inc_speed_lerp(self):
         self.assertEqual(
             utility.inc_speed_lerp(1.0, 2.0, 0.0),
             1
@@ -78,7 +78,7 @@ class TestUtility(unittest.TestCase):
             2
         )
 
-    def test_decSpeedLerp(self):
+    def test_dec_speed_lerp(self):
         self.assertEqual(
             utility.dec_speed_lerp(1.0, 2.0, 0.0),
             1
@@ -96,7 +96,7 @@ class TestUtility(unittest.TestCase):
             2
         )
 
-    def test_incDecSpeedLerp(self):
+    def test_inc_dec_speed_lerp(self):
         self.assertEqual(
             utility.inc_dec_speed_lerp(1.0, 2.0, 0.0),
             1
@@ -114,7 +114,7 @@ class TestUtility(unittest.TestCase):
             2
         )
 
-    def test_decIncSpeedLerp(self):
+    def test_dec_inc_speed_lerp(self):
         self.assertEqual(
             utility.dec_inc_speed_lerp(1.0, 2.0, 0.0),
             1
