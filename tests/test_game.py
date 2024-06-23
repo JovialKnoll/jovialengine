@@ -24,7 +24,7 @@ class TestGame(unittest.TestCase):
         display.upscale = 3
         display.screen_size = (320, 240)
 
-    def test__isPauseEvent_QUIT(self):
+    def test__is_pause_event_QUIT(self):
         # Arrange
         event_dict = {
         }
@@ -34,7 +34,7 @@ class TestGame(unittest.TestCase):
         # Assert
         self.assertTrue(result)
 
-    def test__isPauseEvent_WINDOWFOCUSLOST(self):
+    def test__is_pause_event_WINDOWFOCUSLOST(self):
         # Arrange
         event_dict = {
         }
@@ -44,7 +44,7 @@ class TestGame(unittest.TestCase):
         # Assert
         self.assertTrue(result)
 
-    def test__isPauseEvent_WINDOWMINIMIZED(self):
+    def test__is_pause_event_WINDOWMINIMIZED(self):
         # Arrange
         event_dict = {
         }
@@ -54,7 +54,7 @@ class TestGame(unittest.TestCase):
         # Assert
         self.assertTrue(result)
 
-    def test__isPauseEvent_WINDOWMOVED(self):
+    def test__is_pause_event_WINDOWMOVED(self):
         # Arrange
         event_dict = {
         }
@@ -64,7 +64,7 @@ class TestGame(unittest.TestCase):
         # Assert
         self.assertTrue(result)
 
-    def test__filterEvent_KEYDOWN_a(self):
+    def test__filter_event_KEYDOWN_a(self):
         # Arrange
         event_dict = {
             'key': pygame.K_a,
@@ -75,7 +75,7 @@ class TestGame(unittest.TestCase):
         # Assert
         self.assertTrue(result)
 
-    def test__filterEvent_MOUSEBUTTONDOWN_IN(self):
+    def test__filter_event_MOUSEBUTTONDOWN_in(self):
         # Arrange
         event_dict = {
             'pos': (1, 1),
@@ -87,7 +87,7 @@ class TestGame(unittest.TestCase):
         # Assert
         self.assertTrue(result)
 
-    def test__filterEvent_MOUSEBUTTONDOWN_OUT(self):
+    def test__filter_event_MOUSEBUTTONDOWN_out(self):
         # Arrange
         event_dict = {
             'pos': (-1, -1),
