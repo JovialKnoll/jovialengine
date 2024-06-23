@@ -14,7 +14,7 @@ class TestSave(unittest.TestCase):
             mode
         )
 
-    def test0_getAllFromFiles(self):
+    def test0_get_all_from_files(self):
         # Act
         saves = save.Save.get_all_from_files()
         # Assert
@@ -24,7 +24,7 @@ class TestSave(unittest.TestCase):
         self.assertEqual(saves[0]._mode_data, 1)
         self.assertEqual(saves[0]._shared_data, "test")
 
-    def test1_willOverwrite(self):
+    def test1_will_overwrite(self):
         # Arrange
         collide_name = "a"
         noncollide_name = "c"
