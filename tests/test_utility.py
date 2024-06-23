@@ -26,19 +26,19 @@ class TestUtility(unittest.TestCase):
 
     def test_binary(self):
         self.assertEqual(
-            utility.BINARY(1.0, 2.0, 0.0),
+            utility.binary(1.0, 2.0, 0.0),
             1
         )
         self.assertEqual(
-            utility.BINARY(1.0, 2.0, 0.99999),
+            utility.binary(1.0, 2.0, 0.99999),
             1
         )
         self.assertEqual(
-            utility.BINARY(1.0, 2.0, 1.0),
+            utility.binary(1.0, 2.0, 1.0),
             2
         )
         self.assertEqual(
-            utility.BINARY(1.0, 2.0, 1),
+            utility.binary(1.0, 2.0, 1),
             2
         )
 
