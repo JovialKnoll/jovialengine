@@ -6,7 +6,7 @@ import pygame
 pygame.init()
 
 from . import display
-from . import input
+from . import gameinput
 from . import fontwrap
 from .modebase import ModeBase
 from .modegamemenu import ModeGameMenu
@@ -40,7 +40,7 @@ class _Game(object):
         window_icon: str | None,
         max_players: int,
         event_names: tuple[str],
-        input_defaults: tuple[input.InputDefault],
+        input_defaults: tuple[gameinput.InputDefault],
         font_location: str | None,
         font_size: int,
         font_height: int,
@@ -61,7 +61,7 @@ class _Game(object):
             title,
             window_icon
         )
-        input.init(
+        gameinput.init(
             os.path.join(src_directory, 'input.cfg'),
             max_players,
             event_names,
@@ -94,25 +94,25 @@ class _Game(object):
         """Run the game, and check if the game needs to end."""
         if not self._current_mode:
             raise RuntimeError("error: self._current_mode is not set")
-        events = self._filterInput(pygame.event.get())
-        events = input.takeEvents(events)
-        input_frame = input.getInputFrame()
-        if input_frame.wasPlayerInputPressed(0, input.TYPE_SCREENSHOT):
-            display.takeScreenshot()
-        if any(map(self._isPauseEvent, events)) or input_frame.wasInputPressed(input.TYPE_PAUSE):
+        events = self._filter_input(pygame.event.get())
+        events = gameinput.take_events(events)
+        input_frame = gameinput.get_input_frame()
+        if input_frame.was_player_input_pressed(0, gameinput.TYPE_SCREENSHOT):
+            display.take_screenshot()
+        if any(map(self._is_pause_event, events)) or input_frame.was_input_pressed(gameinput.TYPE_PAUSE):
             # if already in pause menu no need to do this stuff
             if not isinstance(self._current_mode, ModeGameMenu):
                 self._current_mode = ModeGameMenuTop(self._current_mode)
-                input.startNewMode()
-                input_frame = input.getInputFrame()
+                gameinput.start_new_mode()
+                input_frame = gameinput.get_input_frame()
                 pygame.mixer.music.pause()
                 pygame.mixer.pause()
                 events = []
         self._current_mode.input(events, input_frame)
-        for i in range(self._getTime()):
+        for i in range(self._get_time()):
             self._current_mode.update(1)
         self._current_mode.draw(display.screen)
-        display.scaleDraw()
+        display.scale_draw()
         if self._current_mode.next_mode is not None:
             if isinstance(self._current_mode, ModeGameMenu) \
                     and not isinstance(self._current_mode.next_mode, ModeGameMenu):
@@ -120,30 +120,30 @@ class _Game(object):
                 pygame.mixer.unpause()
             self._current_mode.cleanup()
             self._current_mode = self._current_mode.next_mode
-            input.startNewMode()
+            gameinput.start_new_mode()
         self._is_first_loop = False
         if not self.running:
             config.save()
-            input.save()
+            gameinput.save()
             self._current_mode = None
             self.state = None
             pygame.quit()
         return self.running
 
-    def _filterInput(self, events: Iterable[pygame.event.Event]):
+    def _filter_input(self, events: Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
-        events = map(display.scaleMouseInput, events)
-        events = filter(self._filterEvent, events)
+        events = map(display.scale_mouse_input, events)
+        events = filter(self._filter_event, events)
         return list(events)
 
-    def _filterEvent(self, event: pygame.event.Event):
+    def _filter_event(self, event: pygame.event.Event):
         """If event should be handled before all others, handle it and return False, otherwise return True.
         As an example, game-ending or display-changing events should be handled before all others.
         Also filter out bad mouse events here.
         """
         match event.type:
             case pygame.MOUSEMOTION | pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
-                return display.isInScreen(event.pos)
+                return display.is_in_screen(event.pos)
             case pygame.JOYDEVICEREMOVED:
                 self._joysticks = [
                     joystick
@@ -161,18 +161,18 @@ class _Game(object):
                 return False
         return True
 
-    def _isPauseEvent(self, event: pygame.event.Event):
+    def _is_pause_event(self, event: pygame.event.Event):
         return event.type in (pygame.QUIT, pygame.WINDOWFOCUSLOST, pygame.WINDOWMINIMIZED) \
             or (event.type == pygame.WINDOWMOVED and not self._is_first_loop)
 
-    def _getTime(self):
+    def _get_time(self):
         return self._clock.tick(self._max_framerate)
 
 
 _game: _Game | None = None
 
 
-def initGame(
+def init_game(
     mode_module: ModuleType,
     start_mode_cls: type[ModeBase],
     state_cls: type[Saveable],
@@ -182,7 +182,7 @@ def initGame(
     window_icon: str | None,
     max_players: int,
     event_names: tuple[str],
-    input_defaults: tuple[input.InputDefault],
+    input_defaults: tuple[gameinput.InputDefault],
     font_location: str | None,
     font_size: int,
     font_height: int,
@@ -228,5 +228,5 @@ def initGame(
     return _game
 
 
-def getGame():
+def get_game():
     return _game

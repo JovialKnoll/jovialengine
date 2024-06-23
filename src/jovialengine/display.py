@@ -49,25 +49,25 @@ def init(
     _window_icon = None
     if window_icon:
         _window_icon = pygame.image.load(window_icon)
-    _setupDisplay()
+    _setup_display()
     is_fullscreen = config.get(config.FULLSCREEN)
     upscale = config.get(config.SCREEN_SCALE)
     if upscale == 0:
         upscale = math.ceil(_upscale_max / 2)
     upscale = utility.clamp(upscale, 0, _upscale_max)
-    _scaleDisp()
+    _scale_display()
     screen = pygame.Surface(screen_size)
     _fullscreen_offset = None
     _full_screen = None
     if is_fullscreen:
-        _setFullscreen()
+        _set_fullscreen()
     else:
-        _setWindowed()
+        _set_windowed()
     screen = screen.convert()
     config.update(config.SCREEN_SCALE, upscale)
 
 
-def _setupDisplay():
+def _setup_display():
     global _monitor_res
     global _upscale_max
     global _windowed_flags
@@ -102,37 +102,37 @@ def _setupDisplay():
         _fullscreen_flags = pygame.FULLSCREEN
 
 
-def changeScale(scale_change: int):
+def change_scale(scale_change: int):
     new_scale = upscale + scale_change
     if new_scale < 1 or new_scale > _upscale_max:
         return
-    _alterScale(new_scale)
+    _alter_scale(new_scale)
 
 
-def setScale(target_scale: int):
+def set_scale(target_scale: int):
     new_scale = min(target_scale, _upscale_max)
     if new_scale == upscale:
         return
-    _alterScale(new_scale)
+    _alter_scale(new_scale)
 
 
-def _alterScale(new_scale: int):
+def _alter_scale(new_scale: int):
     global upscale
     global screen
     upscale = new_scale
-    _scaleDisp()
+    _scale_display()
     if is_fullscreen:
-        _setFullscreen()
+        _set_fullscreen()
     else:
         pygame.display.quit()
         pygame.display.init()
-        _setupDisplay()
-        _setWindowed()
+        _setup_display()
+        _set_windowed()
     screen = screen.convert()
     config.update(config.SCREEN_SCALE, upscale)
 
 
-def _scaleDisp():
+def _scale_display():
     global _disp_res
     _disp_res = (
         screen_size[0] * upscale,
@@ -140,22 +140,22 @@ def _scaleDisp():
     )
 
 
-def toggleFullscreen():
+def toggle_fullscreen():
     global is_fullscreen
     global screen
     is_fullscreen = not is_fullscreen
     pygame.display.quit()
     pygame.display.init()
-    _setupDisplay()
+    _setup_display()
     if is_fullscreen:
-        _setFullscreen()
+        _set_fullscreen()
     else:
-        _setWindowed()
+        _set_windowed()
     screen = screen.convert()
     config.update(config.FULLSCREEN, is_fullscreen)
 
 
-def _setWindowed():
+def _set_windowed():
     global _fullscreen_offset
     global _full_screen
     global _disp_screen
@@ -171,7 +171,7 @@ def _setWindowed():
     )
 
 
-def _setFullscreen():
+def _set_fullscreen():
     global _fullscreen_offset
     global _full_screen
     global _disp_screen
@@ -190,7 +190,7 @@ def _setFullscreen():
     _disp_screen = pygame.Surface(_disp_res).convert()
 
 
-def scaleDraw():
+def scale_draw():
     """Scale screen onto display surface, then flip the display."""
     pygame.transform.scale(screen, _disp_res, _disp_screen)
     if is_fullscreen:
@@ -198,7 +198,7 @@ def scaleDraw():
     pygame.display.flip()
 
 
-def scaleMouseInput(event: pygame.event.Event):
+def scale_mouse_input(event: pygame.event.Event):
     """Scale mouse position for events in terms of the screen (as opposed to the display surface)."""
     if event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
         if is_fullscreen:
@@ -227,14 +227,14 @@ def scaleMouseInput(event: pygame.event.Event):
     return event
 
 
-def isInScreen(pos: tuple[int, int]):
+def is_in_screen(pos: tuple[int, int]):
     return (
         0 <= pos[0] < screen_size[0]
         and 0 <= pos[1] < screen_size[1]
     )
 
 
-def getBlurredScreen(mode: ModeBase):
+def get_blurred_screen(mode: ModeBase):
     result = pygame.Surface(screen_size).convert()
     mode.draw(result)
     result = pygame.transform.smoothscale(
@@ -248,22 +248,22 @@ def getBlurredScreen(mode: ModeBase):
     return result
 
 
-def getPositionalChannelMix(x: int | float):
+def get_positional_channel_mix(x: int | float):
     pos = utility.clamp(x / screen_size[0], 0, 1)
-    channel_l = _boundChannelVolume(utility.cosCurve(pos))
-    channel_r = _boundChannelVolume(utility.sinCurve(pos))
+    channel_l = _bound_channel_volume(utility.cos_curve(pos))
+    channel_r = _bound_channel_volume(utility.sin_curve(pos))
     return channel_l, channel_r
 
 
-def _boundChannelVolume(volume: float):
+def _bound_channel_volume(volume: float):
     return .2 + (volume * .8)
 
 
-def takeScreenshot():
+def take_screenshot():
     try:
         os.mkdir(_screenshot_directory)
     except FileExistsError:
         pass
-    file_name = f'{utility.getDateTimeFileName()}.png'
+    file_name = f'{utility.get_datetime_file_name()}.png'
     file_path = os.path.join(_screenshot_directory, file_name)
     pygame.image.save(screen, file_path)

@@ -6,9 +6,9 @@ import pygame
 
 from . import game
 from . import display
-from . import input
+from . import gameinput
 from . import utility
-from .fontwrap import getDefaultFontWrap
+from .fontwrap import get_default_font_wrap
 from .modebase import ModeBase
 from .save import Save
 from .saveable import Saveable
@@ -41,19 +41,19 @@ class ModeGameMenu(ModeBase, abc.ABC):
 
     def __init__(self, previous_mode: ModeBase, old_screen: pygame.Surface | None = None):
         self._init(display.screen_size)
-        self._MENU_WIDTH = getDefaultFontWrap().font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
+        self._MENU_WIDTH = get_default_font_wrap().font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
         self._previous_mode = previous_mode
         if old_screen is None:
-            old_screen = self._getOldScreen()
+            old_screen = self._get_old_screen()
         self._background = old_screen
         self._last_disp_text: str | None = None
         self._menu_surface: pygame.Surface
         self._previous_hat = (0, 0)
 
-    def _getOldScreen(self):
-        return display.getBlurredScreen(self._previous_mode)
+    def _get_old_screen(self):
+        return display.get_blurred_screen(self._previous_mode)
 
-    def _getAction(self, event: pygame.event.Event):
+    def _get_action(self, event: pygame.event.Event):
         match event.type:
             case pygame.QUIT:
                 return MenuAction.QUIT
@@ -91,12 +91,12 @@ class ModeGameMenu(ModeBase, abc.ABC):
         return MenuAction.NOTHING
 
     @staticmethod
-    def _getSelectedChar(is_selected: bool):
+    def _get_selected_char(is_selected: bool):
         return ">" if is_selected else "_"
 
-    def _drawTextAlways(self, disp_text: str):
+    def _draw_text_always(self, disp_text: str):
         self._last_disp_text = disp_text
-        self._menu_surface = getDefaultFontWrap().renderInside(
+        self._menu_surface = get_default_font_wrap().render_inside(
             self._MENU_WIDTH,
             disp_text,
             self._TEXT_COLOR,
@@ -104,9 +104,9 @@ class ModeGameMenu(ModeBase, abc.ABC):
         )
         self._menu_surface.set_alpha(235)
 
-    def _drawText(self, disp_text: str):
+    def _draw_text(self, disp_text: str):
         if self._last_disp_text != disp_text:
-            self._drawTextAlways(disp_text)
+            self._draw_text_always(disp_text)
 
 
 class ModeGameMenuList(ModeGameMenu, abc.ABC):
@@ -119,25 +119,25 @@ class ModeGameMenuList(ModeGameMenu, abc.ABC):
         self._index = 0
 
     @abc.abstractmethod
-    def _getOptionsLength(self) -> int:
+    def _get_options_length(self) -> int:
         raise NotImplementedError(
             type(self).__name__ + "._getOptionsLength(self)"
         )
 
     @abc.abstractmethod
-    def _getOptionName(self, index: int) -> str:
+    def _get_option_name(self, index: int) -> str:
         raise NotImplementedError(
             type(self).__name__ + "._getOptionName(self, index)"
         )
 
-    def _getOptionsText(self) -> str:
+    def _get_options_text(self) -> str:
         text = ""
         for i in range(-1, 2):
             text += "\n"
             this_index = self._index + i
             text += ">" if i == 0 else "_"
-            if 0 <= this_index < self._getOptionsLength():
-                text += self._getOptionName(this_index)
+            if 0 <= this_index < self._get_options_length():
+                text += self._get_option_name(this_index)
         return text
 
 
@@ -160,10 +160,10 @@ class ModeGameMenuTop(ModeGameMenu):
         super().__init__(previous_mode, old_screen)
         self._selected = 0
 
-    def _inputEvent(self, event):
-        match self._getAction(event):
+    def _take_event(self, event):
+        match self._get_action(event):
             case MenuAction.QUIT:
-                game.getGame().running = False
+                game.get_game().running = False
             case MenuAction.REJECT:
                 self.next_mode = self._previous_mode
             case MenuAction.UP | MenuAction.LEFT:
@@ -184,25 +184,25 @@ class ModeGameMenuTop(ModeGameMenu):
                     case 4:
                         input.resetDefaultMapping()
                     case 5:
-                        self._stopMixer()
-                        game.getGame().state = game.getGame().state_cls()
-                        self._previous_mode = game.getGame().start_mode_cls()
+                        self._stop_mixer()
+                        game.get_game().state = game.get_game().state_cls()
+                        self._previous_mode = game.get_game().start_mode_cls()
                         pygame.mixer.music.pause()
                         pygame.mixer.pause()
-                        self._background = self._getOldScreen()
+                        self._background = self._get_old_screen()
                         self._last_disp_text = None
                     case 6:
-                        game.getGame().running = False
+                        game.get_game().running = False
         self._selected = utility.clamp(self._selected, 0, len(self._OPTIONS) - 1)
 
-    def _drawPreSprites(self, screen):
+    def _draw_pre_sprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         disp_text += "ARROW KEYS + ENTER)"
         for index, option in enumerate(self._OPTIONS):
             disp_text += "\n"
-            disp_text += self._getSelectedChar(self._selected == index)
+            disp_text += self._get_selected_char(self._selected == index)
             disp_text += option
-        self._drawText(disp_text)
+        self._draw_text(disp_text)
         screen.blit(self._menu_surface, (0, 0))
 
 
@@ -222,21 +222,21 @@ class ModeGameMenuSave(ModeGameMenu):
     def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
         self._save_name = ''
-        self._resetCursorBlink()
+        self._reset_cursor_blink()
         self._cursor_position = 0
         self._confirm_overwrite = False
         self._save_success = None
 
-    def _resetCursorBlink(self):
+    def _reset_cursor_blink(self):
         self._cursor_switch = True
         self._cursor_timer = 0
 
-    def _controllerType(self, direction: int):
+    def _controller_type(self, direction: int):
         if self._cursor_position == len(self._save_name):
             if self._cursor_position < (self._MENU_CHAR_WIDTH - 1):
                 char_pos = max(direction - 1, -1)
                 self._save_name += self._CONTROLLER_CHARS[char_pos]
-                self._resetCursorBlink()
+                self._reset_cursor_blink()
         else:
             char_pos = self._CONTROLLER_CHARS.find(
                 self._save_name[self._cursor_position].lower()
@@ -249,10 +249,10 @@ class ModeGameMenuSave(ModeGameMenu):
     def _backspace(self):
         self._save_name = self._save_name[:self._cursor_position - 1] + self._save_name[self._cursor_position:]
         self._cursor_position -= 1
-        self._resetCursorBlink()
+        self._reset_cursor_blink()
 
-    def _inputEvent(self, event):
-        match self._getAction(event):
+    def _take_event(self, event):
+        match self._get_action(event):
             case MenuAction.QUIT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             case MenuAction.REJECT:
@@ -268,36 +268,36 @@ class ModeGameMenuSave(ModeGameMenu):
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
                 elif isinstance(self._previous_mode, Saveable):
                     if not self._save_name:
-                        self._save_name = utility.getDateTimeFileName()
-                    if Save.willOverwrite(self._save_name) and not self._confirm_overwrite:
+                        self._save_name = utility.get_datetime_file_name()
+                    if Save.will_overwrite(self._save_name) and not self._confirm_overwrite:
                         self._confirm_overwrite = True
                     else:
-                        new_save = Save.getFromMode(self._save_name, self._previous_mode)
+                        new_save = Save.get_from_mode(self._save_name, self._previous_mode)
                         self._save_success = new_save.save()
             case MenuAction.LEFT:
                 self._cursor_position -= 1
-                self._resetCursorBlink()
+                self._reset_cursor_blink()
             case MenuAction.RIGHT:
                 self._cursor_position += 1
-                self._resetCursorBlink()
+                self._reset_cursor_blink()
             case MenuAction.UP:
                 if event.type == pygame.JOYHATMOTION:
-                    self._controllerType(-1)
+                    self._controller_type(-1)
             case MenuAction.DOWN:
                 if event.type == pygame.JOYHATMOTION:
-                    self._controllerType(1)
+                    self._controller_type(1)
         if event.type == pygame.KEYDOWN:
             match event.key:
                 case pygame.K_UP | pygame.K_HOME | pygame.K_PAGEUP:
                     self._cursor_position = 0
-                    self._resetCursorBlink()
+                    self._reset_cursor_blink()
                 case pygame.K_DOWN | pygame.K_END | pygame.K_PAGEDOWN:
                     self._cursor_position = len(self._save_name)
-                    self._resetCursorBlink()
+                    self._reset_cursor_blink()
                 case pygame.K_DELETE:
                     self._save_name = self._save_name[:self._cursor_position] \
                         + self._save_name[self._cursor_position + 1:]
-                    self._resetCursorBlink()
+                    self._reset_cursor_blink()
                 case pygame.K_BACKSPACE:
                     self._backspace()
                 case _:
@@ -314,7 +314,7 @@ class ModeGameMenuSave(ModeGameMenu):
                             + event.unicode \
                             + self._save_name[self._cursor_position:]
                         self._cursor_position += 1
-                        self._resetCursorBlink()
+                        self._reset_cursor_blink()
         self._cursor_position = utility.clamp(self._cursor_position, 0, len(self._save_name))
 
     def _update(self, dt):
@@ -323,7 +323,7 @@ class ModeGameMenuSave(ModeGameMenu):
             self._cursor_switch = not self._cursor_switch
             self._cursor_timer -= self._CURSOR_TIME
 
-    def _drawPreSprites(self, screen):
+    def _draw_pre_sprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         draw_cursor = False
         if not isinstance(self._previous_mode, Saveable):
@@ -341,15 +341,15 @@ class ModeGameMenuSave(ModeGameMenu):
                 disp_text += "\nSave failed.\nPress ENTER to try again, or ESC to go back."
             else:
                 draw_cursor = True
-        self._drawTextAlways(disp_text)
+        self._draw_text_always(disp_text)
         if self._cursor_switch and draw_cursor:
-            cursor_x = getDefaultFontWrap().font.size(">" + self._save_name[:self._cursor_position])[0]
-            cursor_y = self._menu_surface.get_height() - getDefaultFontWrap().line_height
+            cursor_x = get_default_font_wrap().font.size(">" + self._save_name[:self._cursor_position])[0]
+            cursor_y = self._menu_surface.get_height() - get_default_font_wrap().line_height
             self._menu_surface.fill(
                 self._TEXT_COLOR,
                 (
                     (cursor_x, cursor_y),
-                    (1, getDefaultFontWrap().line_height)
+                    (1, get_default_font_wrap().line_height)
                 )
             )
         screen.blit(self._menu_surface, (0, 0))
@@ -371,12 +371,12 @@ class ModeGameMenuLoad(ModeGameMenuList):
 
     def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
-        self._saves = Save.getAllFromFiles()
+        self._saves = Save.get_all_from_files()
         self._state = self.STATE_DEFAULT
         self._selected_save_option = self.OPTION_LOAD
 
-    def _inputEvent(self, event):
-        action = self._getAction(event)
+    def _take_event(self, event):
+        action = self._get_action(event)
         if action == MenuAction.QUIT:
             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             return
@@ -410,11 +410,11 @@ class ModeGameMenuLoad(ModeGameMenuList):
                         self._selected_save_option %= 2
                     case MenuAction.CONFIRM:
                         if self._selected_save_option == self.OPTION_LOAD:
-                            self._stopMixer()
+                            self._stop_mixer()
                             self._previous_mode = self._saves[self._index].load()
                             pygame.mixer.music.pause()
                             pygame.mixer.pause()
-                            self._background = self._getOldScreen()
+                            self._background = self._get_old_screen()
                             self._state = self.STATE_LOADED_SAVE
                         elif self._selected_save_option == self.OPTION_DELETE:
                             self._saves[self._index].delete()
@@ -424,16 +424,16 @@ class ModeGameMenuLoad(ModeGameMenuList):
                     case MenuAction.REJECT:
                         self._state = self.STATE_DEFAULT
 
-    def _getOptionsLength(self):
+    def _get_options_length(self):
         return len(self._saves)
 
-    def _getOptionName(self, index):
+    def _get_option_name(self, index):
         return self._saves[index].save_name
 
-    def _getOptionStatus(self, option: int):
-        return self._getSelectedChar(self._selected_save_option == option)
+    def _get_option_status(self, option: int):
+        return self._get_selected_char(self._selected_save_option == option)
 
-    def _drawPreSprites(self, screen):
+    def _draw_pre_sprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         match self._state:
             case self.STATE_DEFAULT:
@@ -441,17 +441,17 @@ class ModeGameMenuLoad(ModeGameMenuList):
                     disp_text += "\nThere are no saves to select from."
                 else:
                     disp_text += "ARROW KEYS + ENTER) Select a save:"
-                    disp_text += self._getOptionsText()
+                    disp_text += self._get_options_text()
             case self.STATE_LOADED_SAVE:
                 disp_text += "\nLoaded successfully.\nPress ENTER to continue."
             case self.STATE_DELETED_SAVE:
                 disp_text += "\nDeleted successfully.\nPress ENTER to continue."
             case self.STATE_SELECTED_SAVE:
                 disp_text += "ARROW KEYS + ENTER) Select a save:"
-                disp_text += self._getOptionsText()
-                disp_text += f"\n{self._getOptionStatus(self.OPTION_LOAD)}Load" \
-                    + f"\n{self._getOptionStatus(self.OPTION_DELETE)}Delete"
-        self._drawText(disp_text)
+                disp_text += self._get_options_text()
+                disp_text += f"\n{self._get_option_status(self.OPTION_LOAD)}Load" \
+                    + f"\n{self._get_option_status(self.OPTION_DELETE)}Delete"
+        self._draw_text(disp_text)
         screen.blit(self._menu_surface, (0, 0))
 
 
@@ -464,7 +464,7 @@ class ModeGameMenuOptions(ModeGameMenu):
         super().__init__(previous_mode, old_screen)
         self._pressed_return = pressed_return
 
-    def _getAction(self, event: pygame.event.Event):
+    def _get_action(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN and event.key != pygame.K_ESCAPE:
             return MenuAction.NOTHING
         elif event.type == pygame.KEYUP:
@@ -482,31 +482,31 @@ class ModeGameMenuOptions(ModeGameMenu):
                         self._pressed_return = False
                     else:
                         return MenuAction.CONFIRM
-        return super()._getAction(event)
+        return super()._get_action(event)
 
-    def _inputEvent(self, event):
-        match self._getAction(event):
+    def _take_event(self, event):
+        match self._get_action(event):
             case MenuAction.QUIT | MenuAction.REJECT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             case MenuAction.DOWN | MenuAction.LEFT:
-                display.changeScale(-1)
+                display.change_scale(-1)
             case MenuAction.UP | MenuAction.RIGHT:
-                display.changeScale(1)
+                display.change_scale(1)
             case MenuAction.CONFIRM:
-                display.toggleFullscreen()
+                display.toggle_fullscreen()
         if event.type == pygame.KEYDOWN and '1' <= event.unicode <= '9':
             target_scale = int(event.unicode)
-            display.setScale(target_scale)
+            display.set_scale(target_scale)
 
-    def _drawPreSprites(self, screen):
+    def _draw_pre_sprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         disp_text += f"ARROW KEYS) Upscaling: {display.upscale}" \
-            + f"\nENTER) Fullscreen: {self.getTickBox(display.is_fullscreen)}"
-        self._drawText(disp_text)
+            + f"\nENTER) Fullscreen: {self.get_tick_box(display.is_fullscreen)}"
+        self._draw_text(disp_text)
         screen.blit(self._menu_surface, (0, 0))
 
     @staticmethod
-    def getTickBox(value: bool):
+    def get_tick_box(value: bool):
         inside = "*" if value else "_"
         return f"[{inside}]"
 
@@ -525,22 +525,22 @@ class ModeGameMenuControls(ModeGameMenuList):
 
     def __init__(self, previous_mode, old_screen):
         super().__init__(previous_mode, old_screen)
-        self._state = self.STATE_CHOOSE_PLAYER if self._mustSelectPlayer() else self.STATE_CHOOSE_EVENT
+        self._state = self.STATE_CHOOSE_PLAYER if self._must_select_player() else self.STATE_CHOOSE_EVENT
         self._selected_player = 0
         self._selection_timer = 5000
 
     @staticmethod
-    def _mustSelectPlayer() -> bool:
+    def _must_select_player() -> bool:
         return input.max_players != 1
 
-    def _getOptionsLength(self):
+    def _get_options_length(self):
         return input.num_inputs
 
-    def _getOptionName(self, index):
+    def _get_option_name(self, index):
         return input.getEventWithControls(self._selected_player, index)
 
-    def _inputEvent(self, event):
-        action = self._getAction(event)
+    def _take_event(self, event):
+        action = self._get_action(event)
         if action == MenuAction.QUIT:
             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             return
@@ -567,7 +567,7 @@ class ModeGameMenuControls(ModeGameMenuList):
                         self._state = self.STATE_CHOOSE_INPUT
                         self._selection_timer = 5000
                     case MenuAction.REJECT:
-                        if self._mustSelectPlayer():
+                        if self._must_select_player():
                             self._state = self.STATE_CHOOSE_PLAYER
                         else:
                             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
@@ -582,18 +582,18 @@ class ModeGameMenuControls(ModeGameMenuList):
             if self._selection_timer <= 0:
                 self._state = self.STATE_CHOOSE_EVENT
 
-    def _drawPreSprites(self, screen):
+    def _draw_pre_sprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         if self._state != self.STATE_CHOOSE_INPUT:
             disp_text += "ARROW KEYS + ENTER)\n"
-        if self._mustSelectPlayer():
+        if self._must_select_player():
             disp_text += f"Player: {self._selected_player + 1}\n"
         if self._state == self.STATE_CHOOSE_EVENT:
             disp_text += "Action:"
-            disp_text += self._getOptionsText()
+            disp_text += self._get_options_text()
         if self._state == self.STATE_CHOOSE_INPUT:
             disp_text += f"Action: {input.getEventName(self._index)}"
             disp_text += "\n\n____press a button to select"
             disp_text += f"\n____(wait {(self._selection_timer // 1000) + 1} seconds to exit)"
-        self._drawText(disp_text)
+        self._draw_text(disp_text)
         screen.blit(self._menu_surface, (0, 0))

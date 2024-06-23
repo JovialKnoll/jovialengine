@@ -3,7 +3,7 @@ import os
 
 import pygame
 
-import jovialengine.input as input
+import jovialengine.gameinput as input
 
 
 class TestInput(unittest.TestCase):
@@ -52,21 +52,21 @@ class TestInput(unittest.TestCase):
         # Assert
         self.assertEqual(input._input_mapping, expected_input_mapping)
 
-    def test__getInputIdDisplay_keyboard(self):
+    def test__get_input_id_display_keyboard(self):
         # Assert
-        self.assertEqual(input._getInputIdDisplay(input.InputType.KEYBOARD, pygame.K_a), "a")
+        self.assertEqual(input._get_input_id_display(input.InputType.KEYBOARD, pygame.K_a), "a")
 
-    def test__getInputIdDisplay_hat(self):
+    def test__get_input_id_display_hat(self):
         # Assert
-        self.assertEqual(input._getInputIdDisplay(input.InputType.CON_HAT, 2), "0U")
+        self.assertEqual(input._get_input_id_display(input.InputType.CON_HAT, 2), "0U")
 
-    def test_getEventWithControls(self):
+    def test_get_event_with_controls(self):
         # Assert
-        self.assertEqual(input.getEventWithControls(0, input.EVENT_TYPE_START_POS + 2), "Up: KEY-w")
+        self.assertEqual(input.get_event_with_controls(0, input.EVENT_TYPE_START_POS + 2), "Up: KEY-w")
 
-    def test_getEventName(self):
+    def test_get_event_name(self):
         # Assert
-        self.assertEqual(input.getEventName(input.EVENT_TYPE_START_POS + 3), "Down")
+        self.assertEqual(input.get_event_name(input.EVENT_TYPE_START_POS + 3), "Down")
 
     def test_save_and_load(self):
         # Arrange
@@ -77,19 +77,19 @@ class TestInput(unittest.TestCase):
         # Assert
         self.assertEqual(input._input_mapping, expected)
 
-    def test_takeEvents(self):
+    def test_take_events(self):
         # Arrange
         events = [
             pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_d}),
             pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_s}),
         ]
         # Act
-        input.takeEvents(events)
-        input_frame = input.getInputFrame()
+        input.take_events(events)
+        input_frame = input.get_input_frame()
         # Assert
         self.assertEqual(input_frame._controller_states, [[0, 0, 0, 1, 0, 1, 0, 0,]])
-        self.assertTrue(input_frame.wasPlayerInputPressed(0, input.EVENT_TYPE_START_POS + 1))
-        self.assertTrue(input_frame.wasInputPressed(input.EVENT_TYPE_START_POS + 3))
+        self.assertTrue(input_frame.was_player_input_pressed(0, input.EVENT_TYPE_START_POS + 1))
+        self.assertTrue(input_frame.was_input_pressed(input.EVENT_TYPE_START_POS + 3))
 
 
 if __name__ == '__main__':

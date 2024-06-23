@@ -41,11 +41,11 @@ class ModeBase(abc.ABC):
     def cleanup(self):
         self._all_sprites.empty()
 
-    def _inputEvent(self, event: pygame.event.Event):
+    def _take_event(self, event: pygame.event.Event):
         """Handle any input that requires looking at pygame events directly, like typing."""
         pass
 
-    def _inputFrame(self, input_frame: InputFrame):
+    def _take_frame(self, input_frame: InputFrame):
         """Handle all other input."""
         pass
 
@@ -53,8 +53,8 @@ class ModeBase(abc.ABC):
     def input(self, events: Iterable[pygame.event.Event], input_frame: InputFrame):
         """All game modes can take in input."""
         for event in events:
-            self._inputEvent(event)
-        self._inputFrame(input_frame)
+            self._take_event(event)
+        self._take_frame(input_frame)
         self._input_frame = input_frame
 
     def _update(self, dt: int):
@@ -66,31 +66,31 @@ class ModeBase(abc.ABC):
         self._update(dt)
         self._all_sprites.update(dt)
 
-    def _updatePreDraw(self, screen: pygame.surface.Surface):
+    def _update_pre_draw(self, screen: pygame.surface.Surface):
         pass
 
-    def _drawPreSprites(self, screen: pygame.surface.Surface):
+    def _draw_pre_sprites(self, screen: pygame.surface.Surface):
         pass
 
-    def _drawPostSprites(self, screen: pygame.surface.Surface):
+    def _draw_post_sprites(self, screen: pygame.surface.Surface):
         pass
 
-    def _drawPostCamera(self, screen: pygame.surface.Surface):
+    def _draw_post_camera(self, screen: pygame.surface.Surface):
         pass
 
     @final
     def draw(self, screen: pygame.surface.Surface):
         """All game modes can draw to the screen"""
-        self._updatePreDraw(screen)
+        self._update_pre_draw(screen)
         self._space.blit(self._background, (0, 0))
-        self._drawPreSprites(self._space)
+        self._draw_pre_sprites(self._space)
         self._all_sprites.draw(self._space)
-        self._drawPostSprites(self._space)
+        self._draw_post_sprites(self._space)
         screen.blit(self._space, (0, 0), self._camera)
-        self._drawPostCamera(screen)
+        self._draw_post_camera(screen)
 
     @staticmethod
-    def _stopMixer():
+    def _stop_mixer():
         pygame.mixer.music.stop()
         pygame.mixer.music.unload()
         pygame.mixer.stop()
