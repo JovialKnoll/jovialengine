@@ -40,24 +40,24 @@ class Anim(Saveable):
 
 
 class AnimSprite(pygame.sprite.DirtySprite, Saveable):
-    Binary = 'Binary'
-    Lerp = 'LERP'
-    IncSpeed = 'INC'
-    DecSpeed = 'DEC'
-    IncDecSpeed = 'INC_DEC'
-    DecIncSpeed = 'DEC_INC'
-    funcDict = {
-        Binary: utility.binary,
-        Lerp: utility.lerp,
-        IncSpeed: utility.inc_speed_lerp,
-        DecSpeed: utility.dec_speed_lerp,
-        IncDecSpeed: utility.inc_dec_speed_lerp,
-        DecIncSpeed: utility.dec_inc_speed_lerp,
+    BINARY = 'Binary'
+    LERP = 'LERP'
+    INC_SPEED = 'INC'
+    DEC_SPEED = 'DEC'
+    INC_DEC_SPEED = 'INC_DEC'
+    DEC_INC_SPEED = 'DEC_INC'
+    FUNCTIONS = {
+        BINARY: utility.binary,
+        LERP: utility.lerp,
+        INC_SPEED: utility.inc_speed_lerp,
+        DEC_SPEED: utility.dec_speed_lerp,
+        INC_DEC_SPEED: utility.inc_dec_speed_lerp,
+        DEC_INC_SPEED: utility.dec_inc_speed_lerp,
     }
 
     @classmethod
-    def toFunc(cls, func):
-        return cls.funcDict.get(func, utility.lerp)
+    def to_func(cls, func):
+        return cls.FUNCTIONS.get(func, utility.lerp)
 
     __slots__ = (
         'anims',
@@ -94,7 +94,7 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
         new_obj.time = save_data['time']
         return new_obj
 
-    def stillAnimating(self):
+    def still_animating(self):
         if self.anims:
             return True
         return False
@@ -118,7 +118,7 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
                 done_anim.callback()
         if self.anims:
             current_anim = self.anims[0]
-            func = self.toFunc(current_anim.func)
+            func = self.to_func(current_anim.func)
             self.rect.center = func(
                 self.last_pos,
                 current_anim.pos,
@@ -135,24 +135,24 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
                 self.positional_sound = False
                 self.sound_channel = None
 
-    def addPosAbs(self, func: str, time: int, x_or_pair, y=None,
-                  sound: pygame.mixer.Sound = None, positional_sound: bool = False,
-                  callback: Callable[[], None] = None):
+    def add_pos_abs(self, func: str, time: int, x_or_pair, y=None,
+                    sound: pygame.mixer.Sound = None, positional_sound: bool = False,
+                    callback: Callable[[], None] = None):
         self.anims.append(
             Anim(func, time, x_or_pair, y, sound, positional_sound, callback)
         )
 
-    def addPosRel(self, func: str, time: int, x_or_pair, y=None,
-                  sound: pygame.mixer.Sound = None, positional_sound: bool = False,
-                  callback: Callable[[], None] = None):
+    def add_pos_rel(self, func: str, time: int, x_or_pair, y=None,
+                    sound: pygame.mixer.Sound = None, positional_sound: bool = False,
+                    callback: Callable[[], None] = None):
         new_pos = pygame.math.Vector2(x_or_pair, y)
         if self.anims:
             new_pos += self.anims[-1].pos
         else:
             new_pos += self.rect.center
-        self.addPosAbs(func, time, new_pos, sound=sound, positional_sound=positional_sound, callback=callback)
+        self.add_pos_abs(func, time, new_pos, sound=sound, positional_sound=positional_sound, callback=callback)
 
-    def addWait(self, time: int,
-                sound: pygame.mixer.Sound = None, positional_sound: bool = False,
-                callback: Callable[[], None] = None):
-        self.addPosRel(AnimSprite.Binary, time, 0, 0, sound, positional_sound, callback)
+    def add_wait(self, time: int,
+                 sound: pygame.mixer.Sound = None, positional_sound: bool = False,
+                 callback: Callable[[], None] = None):
+        self.add_pos_rel(AnimSprite.BINARY, time, 0, 0, sound, positional_sound, callback)
