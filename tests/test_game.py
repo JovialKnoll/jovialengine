@@ -30,7 +30,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.QUIT, event_dict)
         # Act
-        result = self.game_for_test._isPauseEvent(event)
+        result = self.game_for_test._is_pause_event(event)
         # Assert
         self.assertTrue(result)
 
@@ -40,7 +40,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.WINDOWFOCUSLOST, event_dict)
         # Act
-        result = self.game_for_test._isPauseEvent(event)
+        result = self.game_for_test._is_pause_event(event)
         # Assert
         self.assertTrue(result)
 
@@ -50,7 +50,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.WINDOWMINIMIZED, event_dict)
         # Act
-        result = self.game_for_test._isPauseEvent(event)
+        result = self.game_for_test._is_pause_event(event)
         # Assert
         self.assertTrue(result)
 
@@ -60,7 +60,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.WINDOWMOVED, event_dict)
         # Act
-        result = self.game_for_test._isPauseEvent(event)
+        result = self.game_for_test._is_pause_event(event)
         # Assert
         self.assertTrue(result)
 
@@ -71,7 +71,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.KEYDOWN, event_dict)
         # Act
-        result = self.game_for_test._filterEvent(event)
+        result = self.game_for_test._filter_event(event)
         # Assert
         self.assertTrue(result)
 
@@ -83,7 +83,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, event_dict)
         # Act
-        result = self.game_for_test._filterEvent(event)
+        result = self.game_for_test._filter_event(event)
         # Assert
         self.assertTrue(result)
 
@@ -95,7 +95,7 @@ class TestGame(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, event_dict)
         # Act
-        result = self.game_for_test._filterEvent(event)
+        result = self.game_for_test._filter_event(event)
         # Assert
         self.assertFalse(result)
 
