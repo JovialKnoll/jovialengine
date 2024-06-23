@@ -94,12 +94,12 @@ class _Game(object):
         """Run the game, and check if the game needs to end."""
         if not self._current_mode:
             raise RuntimeError("error: self._current_mode is not set")
-        events = self._filterInput(pygame.event.get())
+        events = self._filter_input(pygame.event.get())
         events = gameinput.take_events(events)
         input_frame = gameinput.get_input_frame()
         if input_frame.was_player_input_pressed(0, gameinput.TYPE_SCREENSHOT):
             display.take_screenshot()
-        if any(map(self._isPauseEvent, events)) or input_frame.was_input_pressed(gameinput.TYPE_PAUSE):
+        if any(map(self._is_pause_event, events)) or input_frame.was_input_pressed(gameinput.TYPE_PAUSE):
             # if already in pause menu no need to do this stuff
             if not isinstance(self._current_mode, ModeGameMenu):
                 self._current_mode = ModeGameMenuTop(self._current_mode)
@@ -109,7 +109,7 @@ class _Game(object):
                 pygame.mixer.pause()
                 events = []
         self._current_mode.input(events, input_frame)
-        for i in range(self._getTime()):
+        for i in range(self._get_time()):
             self._current_mode.update(1)
         self._current_mode.draw(display.screen)
         display.scale_draw()
@@ -130,13 +130,13 @@ class _Game(object):
             pygame.quit()
         return self.running
 
-    def _filterInput(self, events: Iterable[pygame.event.Event]):
+    def _filter_input(self, events: Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
         events = map(display.scale_mouse_input, events)
-        events = filter(self._filterEvent, events)
+        events = filter(self._filter_event, events)
         return list(events)
 
-    def _filterEvent(self, event: pygame.event.Event):
+    def _filter_event(self, event: pygame.event.Event):
         """If event should be handled before all others, handle it and return False, otherwise return True.
         As an example, game-ending or display-changing events should be handled before all others.
         Also filter out bad mouse events here.
@@ -161,18 +161,18 @@ class _Game(object):
                 return False
         return True
 
-    def _isPauseEvent(self, event: pygame.event.Event):
+    def _is_pause_event(self, event: pygame.event.Event):
         return event.type in (pygame.QUIT, pygame.WINDOWFOCUSLOST, pygame.WINDOWMINIMIZED) \
             or (event.type == pygame.WINDOWMOVED and not self._is_first_loop)
 
-    def _getTime(self):
+    def _get_time(self):
         return self._clock.tick(self._max_framerate)
 
 
 _game: _Game | None = None
 
 
-def initGame(
+def init_game(
     mode_module: ModuleType,
     start_mode_cls: type[ModeBase],
     state_cls: type[Saveable],
@@ -228,5 +228,5 @@ def initGame(
     return _game
 
 
-def getGame():
+def get_game():
     return _game

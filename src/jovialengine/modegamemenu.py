@@ -163,7 +163,7 @@ class ModeGameMenuTop(ModeGameMenu):
     def _take_event(self, event):
         match self._get_action(event):
             case MenuAction.QUIT:
-                game.getGame().running = False
+                game.get_game().running = False
             case MenuAction.REJECT:
                 self.next_mode = self._previous_mode
             case MenuAction.UP | MenuAction.LEFT:
@@ -185,14 +185,14 @@ class ModeGameMenuTop(ModeGameMenu):
                         input.resetDefaultMapping()
                     case 5:
                         self._stop_mixer()
-                        game.getGame().state = game.getGame().state_cls()
-                        self._previous_mode = game.getGame().start_mode_cls()
+                        game.get_game().state = game.get_game().state_cls()
+                        self._previous_mode = game.get_game().start_mode_cls()
                         pygame.mixer.music.pause()
                         pygame.mixer.pause()
                         self._background = self._get_old_screen()
                         self._last_disp_text = None
                     case 6:
-                        game.getGame().running = False
+                        game.get_game().running = False
         self._selected = utility.clamp(self._selected, 0, len(self._OPTIONS) - 1)
 
     def _draw_pre_sprites(self, screen):

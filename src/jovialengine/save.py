@@ -174,7 +174,7 @@ class Save(object):
             save_name,
             type(from_mode).__name__,
             from_mode.save(),
-            game.getGame().state.save()
+            game.get_game().state.save()
         )
 
     def save(self):
@@ -196,7 +196,7 @@ class Save(object):
             return False
 
     def load(self):
-        game.getGame().state = game.getGame().state_cls.load(self._shared_data)
+        game.get_game().state = game.get_game().state_cls.load(self._shared_data)
         mode_cls = getattr(_mode_module, self._mode_name)
         new_mode = mode_cls.load(self._mode_data)
         return new_mode
