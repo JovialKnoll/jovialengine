@@ -30,7 +30,7 @@ class TestDisplay(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, event_dict)
         # Act
-        result_event = display.scaleMouseInput(event)
+        result_event = display.scale_mouse_input(event)
         # Assert
         self.assertEqual(result_event.pos, (116, 233))
         self.assertEqual(result_event.button, 1)
@@ -45,7 +45,7 @@ class TestDisplay(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.MOUSEMOTION, event_dict)
         # Act
-        result_event = display.scaleMouseInput(event)
+        result_event = display.scale_mouse_input(event)
         # Assert
         self.assertEqual(result_event.pos, (116, 233))
         self.assertEqual(result_event.rel, (33, 66))
@@ -60,7 +60,7 @@ class TestDisplay(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.MOUSEBUTTONDOWN, event_dict)
         # Act
-        result_event = display.scaleMouseInput(event)
+        result_event = display.scale_mouse_input(event)
         # Assert
         self.assertEqual(result_event.pos, (133, 266))
         self.assertEqual(result_event.button, 1)
@@ -75,7 +75,7 @@ class TestDisplay(unittest.TestCase):
         }
         event = pygame.event.Event(pygame.MOUSEMOTION, event_dict)
         # Act
-        result_event = display.scaleMouseInput(event)
+        result_event = display.scale_mouse_input(event)
         # Assert
         self.assertEqual(result_event.pos, (133, 266))
         self.assertEqual(result_event.rel, (33, 66))
@@ -85,7 +85,7 @@ class TestDisplay(unittest.TestCase):
         # Arrange
         self.setUpWindowed()
         # Act
-        result = display.isInScreen((2, 3))
+        result = display.is_in_screen((2, 3))
         # Assert
         self.assertTrue(result)
 
@@ -93,7 +93,7 @@ class TestDisplay(unittest.TestCase):
         # Arrange
         self.setUpWindowed()
         # Act
-        result = display.isInScreen((-2, 3))
+        result = display.is_in_screen((-2, 3))
         # Assert
         self.assertFalse(result)
 
@@ -101,7 +101,7 @@ class TestDisplay(unittest.TestCase):
         # Arrange
         self.setUpWindowed()
         # Act
-        result = display.getPositionalChannelMix(90)
+        result = display.get_positional_channel_mix(90)
         # Assert
         self.assertEqual(result, (0.9231914344987546, 0.5420440747442257))
 

@@ -51,7 +51,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
         self._previous_hat = (0, 0)
 
     def _get_old_screen(self):
-        return display.getBlurredScreen(self._previous_mode)
+        return display.get_blurred_screen(self._previous_mode)
 
     def _get_action(self, event: pygame.event.Event):
         match event.type:
@@ -489,14 +489,14 @@ class ModeGameMenuOptions(ModeGameMenu):
             case MenuAction.QUIT | MenuAction.REJECT:
                 self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             case MenuAction.DOWN | MenuAction.LEFT:
-                display.changeScale(-1)
+                display.change_scale(-1)
             case MenuAction.UP | MenuAction.RIGHT:
-                display.changeScale(1)
+                display.change_scale(1)
             case MenuAction.CONFIRM:
-                display.toggleFullscreen()
+                display.toggle_fullscreen()
         if event.type == pygame.KEYDOWN and '1' <= event.unicode <= '9':
             target_scale = int(event.unicode)
-            display.setScale(target_scale)
+            display.set_scale(target_scale)
 
     def _draw_pre_sprites(self, screen):
         disp_text = self._SHARED_DISP_TEXT

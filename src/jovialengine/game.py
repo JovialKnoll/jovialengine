@@ -98,7 +98,7 @@ class _Game(object):
         events = gameinput.take_events(events)
         input_frame = gameinput.get_input_frame()
         if input_frame.was_player_input_pressed(0, gameinput.TYPE_SCREENSHOT):
-            display.takeScreenshot()
+            display.take_screenshot()
         if any(map(self._isPauseEvent, events)) or input_frame.was_input_pressed(gameinput.TYPE_PAUSE):
             # if already in pause menu no need to do this stuff
             if not isinstance(self._current_mode, ModeGameMenu):
@@ -112,7 +112,7 @@ class _Game(object):
         for i in range(self._getTime()):
             self._current_mode.update(1)
         self._current_mode.draw(display.screen)
-        display.scaleDraw()
+        display.scale_draw()
         if self._current_mode.next_mode is not None:
             if isinstance(self._current_mode, ModeGameMenu) \
                     and not isinstance(self._current_mode.next_mode, ModeGameMenu):
@@ -132,7 +132,7 @@ class _Game(object):
 
     def _filterInput(self, events: Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
-        events = map(display.scaleMouseInput, events)
+        events = map(display.scale_mouse_input, events)
         events = filter(self._filterEvent, events)
         return list(events)
 
@@ -143,7 +143,7 @@ class _Game(object):
         """
         match event.type:
             case pygame.MOUSEMOTION | pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
-                return display.isInScreen(event.pos)
+                return display.is_in_screen(event.pos)
             case pygame.JOYDEVICEREMOVED:
                 self._joysticks = [
                     joystick

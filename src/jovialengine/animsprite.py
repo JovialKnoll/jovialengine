@@ -129,7 +129,7 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
             self.time = 0
         if self.positional_sound:
             if self.sound_channel.get_busy():
-                channel_l, channel_r = display.getPositionalChannelMix(self.rect.centerx)
+                channel_l, channel_r = display.get_positional_channel_mix(self.rect.centerx)
                 self.sound_channel.set_volume(channel_l, channel_r)
             else:
                 self.positional_sound = False
