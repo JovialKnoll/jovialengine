@@ -44,19 +44,19 @@ class TestUtility(unittest.TestCase):
 
     def test_lerp(self):
         self.assertEqual(
-            utility.LERP(1.0, 2.0, 0.0),
+            utility.lerp(1.0, 2.0, 0.0),
             1
         )
         self.assertEqual(
-            utility.LERP(1.0, 2.0, 0.25),
+            utility.lerp(1.0, 2.0, 0.25),
             1.25
         )
         self.assertEqual(
-            utility.LERP(1.0, 2.0, 0.75),
+            utility.lerp(1.0, 2.0, 0.75),
             1.75
         )
         self.assertEqual(
-            utility.LERP(1.0, 2.0, 1.0),
+            utility.lerp(1.0, 2.0, 1.0),
             2
         )
 
