@@ -182,7 +182,7 @@ class ModeGameMenuTop(ModeGameMenu):
                     case 3:
                         self.next_mode = ModeGameMenuControls(self._previous_mode, self._background)
                     case 4:
-                        input.resetDefaultMapping()
+                        gameinput.reset_default_mapping()
                     case 5:
                         self._stop_mixer()
                         game.get_game().state = game.get_game().state_cls()
@@ -531,13 +531,13 @@ class ModeGameMenuControls(ModeGameMenuList):
 
     @staticmethod
     def _must_select_player() -> bool:
-        return input.max_players != 1
+        return gameinput.max_players != 1
 
     def _get_options_length(self):
-        return input.num_inputs
+        return gameinput.num_inputs
 
     def _get_option_name(self, index):
-        return input.getEventWithControls(self._selected_player, index)
+        return gameinput.get_event_with_controls(self._selected_player, index)
 
     def _take_event(self, event):
         action = self._get_action(event)
@@ -556,7 +556,7 @@ class ModeGameMenuControls(ModeGameMenuList):
                         self._index = 0
                     case MenuAction.REJECT:
                         self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-                self._selected_player = utility.clamp(self._selected_player, 0, input.max_players - 1)
+                self._selected_player = utility.clamp(self._selected_player, 0, gameinput.max_players - 1)
             case self.STATE_CHOOSE_EVENT:
                 match action:
                     case MenuAction.UP | MenuAction.LEFT:
@@ -571,9 +571,9 @@ class ModeGameMenuControls(ModeGameMenuList):
                             self._state = self.STATE_CHOOSE_PLAYER
                         else:
                             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-                self._index = utility.clamp(self._index, 0, input.num_inputs - 1)
+                self._index = utility.clamp(self._index, 0, gameinput.num_inputs - 1)
             case self.STATE_CHOOSE_INPUT:
-                if input.setInputMapping(self._selected_player, self._index, event):
+                if gameinput.set_input_mapping(self._selected_player, self._index, event):
                     self._state = self.STATE_CHOOSE_EVENT
 
     def _update(self, dt):
@@ -592,7 +592,7 @@ class ModeGameMenuControls(ModeGameMenuList):
             disp_text += "Action:"
             disp_text += self._get_options_text()
         if self._state == self.STATE_CHOOSE_INPUT:
-            disp_text += f"Action: {input.getEventName(self._index)}"
+            disp_text += f"Action: {gameinput.get_event_name(self._index)}"
             disp_text += "\n\n____press a button to select"
             disp_text += f"\n____(wait {(self._selection_timer // 1000) + 1} seconds to exit)"
         self._draw_text(disp_text)
