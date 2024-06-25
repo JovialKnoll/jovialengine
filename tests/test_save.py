@@ -26,14 +26,14 @@ class TestSave(unittest.TestCase):
 
     def test1_will_overwrite(self):
         # Arrange
-        collide_name = "a"
-        noncollide_name = "c"
+        colliding_name = "a"
+        unique_name = "c"
         # Act
-        collide_result = save.Save.will_overwrite(collide_name)
-        noncollide_result = save.Save.will_overwrite(noncollide_name)
+        colliding_result = save.Save.will_overwrite(colliding_name)
+        unique_result = save.Save.will_overwrite(unique_name)
         # Assert
-        self.assertEqual(collide_result, True)
-        self.assertEqual(noncollide_result, False)
+        self.assertEqual(colliding_result, True)
+        self.assertEqual(unique_result, False)
 
     def test2_save_existing(self):
         # Arrange
