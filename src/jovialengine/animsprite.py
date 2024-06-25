@@ -46,7 +46,7 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
     DEC_SPEED = 'DEC'
     INC_DEC_SPEED = 'INC_DEC'
     DEC_INC_SPEED = 'DEC_INC'
-    FUNCTIONS = {
+    _FUNCTIONS = {
         BINARY: utility.binary,
         LERP: utility.lerp,
         INC_SPEED: utility.inc_speed_lerp,
@@ -57,7 +57,7 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
 
     @classmethod
     def to_func(cls, func):
-        return cls.FUNCTIONS.get(func, utility.lerp)
+        return cls._FUNCTIONS.get(func, utility.lerp)
 
     __slots__ = (
         'anims',
