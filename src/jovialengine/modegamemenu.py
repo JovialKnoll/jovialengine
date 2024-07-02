@@ -121,13 +121,13 @@ class ModeGameMenuList(ModeGameMenu, abc.ABC):
     @abc.abstractmethod
     def _get_options_length(self) -> int:
         raise NotImplementedError(
-            type(self).__name__ + "._getOptionsLength(self)"
+            type(self).__name__ + "._get_options_length(self)"
         )
 
     @abc.abstractmethod
     def _get_option_name(self, index: int) -> str:
         raise NotImplementedError(
-            type(self).__name__ + "._getOptionName(self, index)"
+            type(self).__name__ + "._get_option_name(self, index)"
         )
 
     def _get_options_text(self) -> str:
