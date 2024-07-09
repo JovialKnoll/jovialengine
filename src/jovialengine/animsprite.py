@@ -69,8 +69,7 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
 
     def __init__(self):
         super().__init__()
-        # dirty = 2 : always draw
-        self.dirty = 2
+        self.dirty = 2  # always draw
         self.anims = deque()
         self.last_pos = None
         self.time = 0
