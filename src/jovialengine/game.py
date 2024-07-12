@@ -24,7 +24,7 @@ class _Game(object):
         '_max_framerate',
         '_joysticks',
         '_is_first_loop',
-        '_current_mode',
+        'current_mode',
         'state',
         'running',
     )
@@ -80,19 +80,19 @@ class _Game(object):
             in range(pygame.joystick.get_count())
         ]
         self._is_first_loop = True
-        self._current_mode: ModeBase | None = None
+        self.current_mode: ModeBase | None = None
         self.state: Saveable | None = None
         self.running = False
 
     def start(self):
         """Start the game, must be called before run()."""
-        self._current_mode = self.start_mode_cls()
+        self.current_mode = self.start_mode_cls()
         self.state = self.state_cls()
         self.running = True
 
     def run(self):
         """Run the game, and check if the game needs to end."""
-        if not self._current_mode:
+        if not self.current_mode:
             raise RuntimeError("error: self._current_mode is not set")
         events = self._filter_input(pygame.event.get())
         events = gameinput.take_events(events)
@@ -101,31 +101,31 @@ class _Game(object):
             display.take_screenshot()
         if any(map(self._is_pause_event, events)) or input_frame.was_input_pressed(gameinput.TYPE_PAUSE):
             # if already in pause menu no need to do this stuff
-            if not isinstance(self._current_mode, ModeGameMenu):
-                self._current_mode = ModeGameMenuTop(self._current_mode)
+            if not isinstance(self.current_mode, ModeGameMenu):
+                self.current_mode = ModeGameMenuTop(self.current_mode)
                 gameinput.start_new_mode()
                 input_frame = gameinput.get_input_frame()
                 pygame.mixer.music.pause()
                 pygame.mixer.pause()
                 events = []
-        self._current_mode.input(events, input_frame)
+        self.current_mode.input(events, input_frame)
         for i in range(self._get_time()):
-            self._current_mode.update(1)
-        self._current_mode.draw(display.screen)
+            self.current_mode.update(1)
+        self.current_mode.draw(display.screen)
         display.scale_draw()
-        if self._current_mode.next_mode is not None:
-            if isinstance(self._current_mode, ModeGameMenu) \
-                    and not isinstance(self._current_mode.next_mode, ModeGameMenu):
+        if self.current_mode.next_mode is not None:
+            if isinstance(self.current_mode, ModeGameMenu) \
+                    and not isinstance(self.current_mode.next_mode, ModeGameMenu):
                 pygame.mixer.music.unpause()
                 pygame.mixer.unpause()
-            self._current_mode.cleanup()
-            self._current_mode = self._current_mode.next_mode
+            self.current_mode.cleanup()
+            self.current_mode = self.current_mode.next_mode
             gameinput.start_new_mode()
         self._is_first_loop = False
         if not self.running:
             config.save()
             gameinput.save()
-            self._current_mode = None
+            self.current_mode = None
             self.state = None
             pygame.quit()
         return self.running
