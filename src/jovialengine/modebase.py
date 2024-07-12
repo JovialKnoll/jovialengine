@@ -40,7 +40,7 @@ class ModeBase(abc.ABC):
         self.next_mode: ModeBase | None = None
 
     def start_sprite(self, sprite: GameSprite):
-        pass
+        self._all_sprites.add(sprite)
 
     def cleanup(self):
         self._all_sprites.empty()
