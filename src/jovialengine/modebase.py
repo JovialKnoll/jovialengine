@@ -39,11 +39,14 @@ class ModeBase(abc.ABC):
         self.next_mode: ModeBase | None = None
 
     def get_sprite_groups(self):
+        """Return all our sprite groups so a sprite can add itself to appropriate groups."""
         return {
             "all": self._all_sprites,
         }
 
     def cleanup(self):
+        """All sprite groups we have in this mode should be emptied here.
+        We can't just kill the sprites since we might be reusing them between modes."""
         self._all_sprites.empty()
 
     def _take_event(self, event: pygame.event.Event):
