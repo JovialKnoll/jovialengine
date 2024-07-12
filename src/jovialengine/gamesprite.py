@@ -8,7 +8,7 @@ from .modebase import ModeBase
 
 class GameSprite(pygame.sprite.DirtySprite, Saveable):
     """Base class for many game objects.
-    Subclasses should set up image, rect, and optionally source_rect
+    Subclasses should set up image, rect, and optionally source_rect.
     (will maybe make a standard way of handling source_rect animation stuff, later)
     """
     __slots__ = (
@@ -36,6 +36,11 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable):
         return new_obj
 
     def start(self, mode: ModeBase | None = None):
+        """Function to start processing the GameSprite as part of running the game.
+        Should usually be called after creating the GameSprite.
+        Adds the sprite to appropriate groups in the current game mode or the mode indicated.
+        Sprites created within a mode's __init__ should probably have that mode passed into this method.
+        """
         pass
 
     @final
