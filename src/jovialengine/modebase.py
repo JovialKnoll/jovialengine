@@ -5,7 +5,6 @@ from collections.abc import Iterable
 import pygame
 
 from .inputframe import InputFrame
-from .gamesprite import GameSprite
 
 
 class ModeBase(abc.ABC):
@@ -39,8 +38,10 @@ class ModeBase(abc.ABC):
         """
         self.next_mode: ModeBase | None = None
 
-    def start_sprite(self, sprite: GameSprite):
-        self._all_sprites.add(sprite)
+    def get_sprite_groups(self):
+        return {
+            "all": self._all_sprites,
+        }
 
     def cleanup(self):
         self._all_sprites.empty()
