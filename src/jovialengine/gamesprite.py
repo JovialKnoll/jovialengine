@@ -3,6 +3,7 @@ from typing import final
 import pygame
 
 from .saveable import Saveable
+from .modebase import ModeBase
 
 
 class GameSprite(pygame.sprite.DirtySprite, Saveable):
@@ -33,6 +34,9 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable):
         new_obj.source_rect = save_data['source_rect']
         new_obj.pos = pygame.math.Vector2(save_data['pos'])
         return new_obj
+
+    def start(self, mode: ModeBase):
+        pass
 
     @final
     def update(self, *args):
