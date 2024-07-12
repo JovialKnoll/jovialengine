@@ -2,6 +2,7 @@ from typing import final
 
 import pygame
 
+from . import game
 from .saveable import Saveable
 from .modebase import ModeBase
 
@@ -41,6 +42,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable):
         Adds the sprite to appropriate groups in the current game mode or the mode indicated.
         Sprites created within a mode's __init__ should probably have that mode passed into this method.
         """
+        if mode is None:
+            mode = game.get_game().current_mode
         pass
 
     @final
