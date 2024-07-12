@@ -35,7 +35,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable):
         new_obj.pos = pygame.math.Vector2(save_data['pos'])
         return new_obj
 
-    def start(self, mode: ModeBase):
+    def start(self, mode: ModeBase | None = None):
         pass
 
     @final
