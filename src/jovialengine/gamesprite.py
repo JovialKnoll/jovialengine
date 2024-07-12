@@ -44,7 +44,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable):
         """
         if mode is None:
             mode = game.get_game().current_mode
-        pass
+        mode.start_sprite(self)
+        return self
 
     @final
     def update(self, *args):
