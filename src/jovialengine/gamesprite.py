@@ -50,17 +50,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             self._seq: int | None = None
         self.rect.center = self.pos
 
-    @property
-    def seq(self):
-        """Get the sprite sequence."""
-        return self._seq
-
-    @seq.setter
-    def seq(self, value: int):
-        self._seq = value % (self._image_count_x * self._image_count_y)
-        self.source_rect.x = (self._seq % self._image_count_x) * self._IMAGE_SECTION_SIZE[0]
-        self.source_rect.y = (self._seq // self._image_count_x) * self._IMAGE_SECTION_SIZE[1]
-
     def save(self):
         return {
             'rect_center': self.rect.center,
@@ -77,6 +66,17 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         new_obj.pos = pygame.math.Vector2(save_data['pos'])
         new_obj._seq = save_data['_seq']
         return new_obj
+
+    @property
+    def seq(self):
+        """Get the sprite sequence."""
+        return self._seq
+
+    @seq.setter
+    def seq(self, value: int):
+        self._seq = value % (self._image_count_x * self._image_count_y)
+        self.source_rect.x = (self._seq % self._image_count_x) * self._IMAGE_SECTION_SIZE[0]
+        self.source_rect.y = (self._seq // self._image_count_x) * self._IMAGE_SECTION_SIZE[1]
 
     def start(self, mode: ModeBase | None = None):
         """Function to start processing the GameSprite as part of running the game.
