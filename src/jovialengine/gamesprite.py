@@ -68,7 +68,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
 
     @property
     def seq(self):
-        """Get the sprite sequence."""
+        """Get the sprite sequence.
+        Set this value to change to a different part of the sprite sheet."""
         return self._seq
 
     @seq.setter
