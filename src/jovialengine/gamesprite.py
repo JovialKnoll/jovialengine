@@ -11,14 +11,21 @@ from .modebase import ModeBase
 
 class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     """Base class for many game objects.
-    Subclasses should set up image, rect, and optionally source_rect.
+    Subclasses should set:
+    required: _IMAGE_LOCATION, location of image file
+    optional: _ALPHA_OR_COLORKEY, used for loading image
+    optional: _IMAGE_SECTION_SIZE, used if only displaying subset of image for sprite animation
     (will maybe make a standard way of handling source_rect animation stuff, later)
     """
     _IMAGE_LOCATION: str = None
     _ALPHA_OR_COLORKEY = False
+    _IMAGE_SECTION_SIZE: tuple[int, int] = None
 
     __slots__ = (
         'pos',
+        '_seq',
+        '_image_count_x',
+        '_image_count_y',
     )
 
     def __init__(self, pos: Sequence[float] = (0, 0)):
@@ -30,13 +37,36 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         self.dirty = 2  # always draw
         self.pos = pygame.math.Vector2(pos)
         self.image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
-        self.rect = self.image.get_rect()
+        self.image_size = self.image.get_size()
+        if self._IMAGE_SECTION_SIZE:
+            self.source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
+            self.rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
+            self._seq: int | None = 0
+            image_size = self.image.get_size()
+            self._image_count_x = image_size[0] // self._IMAGE_SECTION_SIZE[0]
+            self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
+        else:
+            self.rect = self.image.get_rect()
+            self._seq: int | None = None
+        self.rect.center = self.pos
+
+    @property
+    def seq(self):
+        """Get the sprite sequence."""
+        return self._seq
+
+    @seq.setter
+    def seq(self, value: int):
+        self._seq = value % (self._image_count_x * self._image_count_y)
+        self.source_rect.x = (self._seq % self._image_count_x) * self._IMAGE_SECTION_SIZE[0]
+        self.source_rect.y = (self._seq // self._image_count_x) * self._IMAGE_SECTION_SIZE[1]
 
     def save(self):
         return {
-            'rect_topleft': self.rect.topleft,
+            'rect_center': self.rect.center,
             'source_rect': self.source_rect,
             'pos': (self.pos.x, self.pos.y),
+            '_seq': self._seq,
         }
 
     @classmethod
@@ -45,6 +75,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         new_obj.rect.topleft = save_data['rect_topleft']
         new_obj.source_rect = save_data['source_rect']
         new_obj.pos = pygame.math.Vector2(save_data['pos'])
+        new_obj._seq = save_data['_seq']
         return new_obj
 
     def start(self, mode: ModeBase | None = None):
