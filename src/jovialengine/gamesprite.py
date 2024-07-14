@@ -15,7 +15,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     required: _IMAGE_LOCATION, location of image file
     optional: _ALPHA_OR_COLORKEY, used for loading image
     optional: _IMAGE_SECTION_SIZE, used if only displaying subset of image for sprite animation
-    (will maybe make a standard way of handling source_rect animation stuff, later)
     """
     _IMAGE_LOCATION: str = None
     _ALPHA_OR_COLORKEY = False
