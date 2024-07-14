@@ -1,25 +1,36 @@
-from typing import final
+import abc
+from typing import final, Sequence
 
 import pygame
 
+from . import load
 from . import game
 from .saveable import Saveable
 from .modebase import ModeBase
 
 
-class GameSprite(pygame.sprite.DirtySprite, Saveable):
+class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     """Base class for many game objects.
     Subclasses should set up image, rect, and optionally source_rect.
     (will maybe make a standard way of handling source_rect animation stuff, later)
     """
+    _IMAGE_LOCATION: str = None
+    _ALPHA_OR_COLORKEY = False
+
     __slots__ = (
         'pos',
     )
 
-    def __init__(self):
+    def __init__(self, pos: Sequence[float] = (0, 0)):
+        if not self._IMAGE_LOCATION:
+            raise NotImplementedError(
+                "_IMAGE_LOCATION must be overridden in children of GameSprite"
+            )
         super().__init__()
         self.dirty = 2  # always draw
-        self.pos = pygame.math.Vector2()
+        self.pos = pygame.math.Vector2(pos)
+        self.image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
+        self.rect = self.image.get_rect()
 
     def save(self):
         return {
