@@ -66,18 +66,21 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         new_obj._seq = save_data['_seq']
         return new_obj
 
+    @final
     @property
     def seq(self):
         """Get the sprite sequence.
         Set this value to change to a different part of the sprite sheet."""
         return self._seq
 
+    @final
     @seq.setter
     def seq(self, value: int):
         self._seq = value % (self._image_count_x * self._image_count_y)
         self.source_rect.x = (self._seq % self._image_count_x) * self._IMAGE_SECTION_SIZE[0]
         self.source_rect.y = (self._seq // self._image_count_x) * self._IMAGE_SECTION_SIZE[1]
 
+    @final
     def start(self, mode: ModeBase | None = None):
         """Function to start processing the GameSprite as part of running the game.
         Should usually be called after creating the GameSprite.
@@ -88,6 +91,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             mode = game.get_game().current_mode
         sprite_groups = mode.get_sprite_groups()
         sprite_groups["all"].add(self)
+        self._create()
         return self
 
     @final
@@ -95,5 +99,10 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         self._update(args[0])
         self.rect.center = self.pos
 
+    def _create(self):
+        """Called when a GameSprite is started."""
+        pass
+
     def _update(self, dt: int):
+        """Called to apply time updates to a GameSprite"""
         pass
