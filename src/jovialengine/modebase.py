@@ -69,7 +69,7 @@ class ModeBase(abc.ABC):
     def update(self, dt: int):
         """All game modes can update."""
         self._update(dt)
-        self._all_sprites.update(dt)
+        self.sprite_groups["all"].update(dt)
 
     def _update_pre_draw(self, screen: pygame.surface.Surface):
         pass
@@ -89,7 +89,7 @@ class ModeBase(abc.ABC):
         self._update_pre_draw(screen)
         self._space.blit(self._background, (0, 0))
         self._draw_pre_sprites(self._space)
-        self._all_sprites.draw(self._space)
+        self.sprite_groups["all"].draw(self._space)
         self._draw_post_sprites(self._space)
         screen.blit(self._space, (0, 0), self._camera)
         self._draw_post_camera(screen)
