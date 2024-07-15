@@ -13,7 +13,7 @@ class ModeBase(abc.ABC):
     __slots__ = (
         '_space',
         '_background',
-        '_all_sprites',
+        'sprite_groups',
         '_camera',
         '_input_frame',
         'next_mode',
@@ -30,7 +30,9 @@ class ModeBase(abc.ABC):
         self._space = pygame.Surface(space_size).convert()
         self._background = pygame.Surface(space_size).convert()
         self._background.fill((255, 255, 255))
-        self._all_sprites = pygame.sprite.LayeredDirty()
+        self.sprite_groups = {
+            "all": pygame.sprite.LayeredDirty(),
+        }
         self._camera = pygame.rect.Rect((0, 0), space_size)
         self._input_frame: InputFrame | None = None
         """All game modes must set the next mode when they are done.
@@ -38,16 +40,11 @@ class ModeBase(abc.ABC):
         """
         self.next_mode: ModeBase | None = None
 
-    def get_sprite_groups(self):
-        """Return all our sprite groups so a sprite can add itself to appropriate groups."""
-        return {
-            "all": self._all_sprites,
-        }
-
     def cleanup(self):
         """All sprite groups we have in this mode should be emptied here.
         We can't just kill the sprites since we might be reusing them between modes."""
-        self._all_sprites.empty()
+        for sprite_group in self.sprite_groups.values():
+            sprite_group.empty()
 
     def _take_event(self, event: pygame.event.Event):
         """Handle any input that requires looking at pygame events directly, like typing."""

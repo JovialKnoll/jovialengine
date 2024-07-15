@@ -89,8 +89,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         """
         if mode is None:
             mode = game.get_game().current_mode
-        sprite_groups = mode.get_sprite_groups()
-        sprite_groups["all"].add(self)
+        mode.sprite_groups["all"].add(self)
         self._create()
         return self
 
