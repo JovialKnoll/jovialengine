@@ -19,7 +19,7 @@ from . import save
 class _Game(object):
     __slots__ = (
         'start_mode_cls',
-        'state_cls',
+        '_state_cls',
         '_clock',
         '_max_framerate',
         '_joysticks',
@@ -47,7 +47,7 @@ class _Game(object):
         font_antialias: bool
     ):
         self.start_mode_cls = start_mode_cls
-        self.state_cls = state_cls
+        self._state_cls = state_cls
         config.init(
             os.path.join(src_directory, 'config.ini')
         )
@@ -92,9 +92,9 @@ class _Game(object):
 
     def set_state(self, save_data=None):
         if save_data:
-            self.state = self.state_cls.load(save_data)
+            self.state = self._state_cls.load(save_data)
         else:
-            self.state = self.state_cls()
+            self.state = self._state_cls()
 
     def stop(self):
         self._running = False
