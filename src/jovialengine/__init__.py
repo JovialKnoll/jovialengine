@@ -5,4 +5,4 @@ from .modebase import ModeBase
 from .fontwrap import FontWrap, get_default_font_wrap
 from . import load
 from . import utility
-from .game import init_game, get_game
+from .game import init, stop, get_state, set_state
