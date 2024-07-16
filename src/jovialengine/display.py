@@ -41,6 +41,10 @@ def init(
     global screen
     global _fullscreen_offset
     global _full_screen
+    global _monitor_res
+    global _upscale_max
+    global _windowed_flags
+    global _fullscreen_flags
     if screen:
         raise RuntimeError("error: screen is already set")
     _screenshot_directory = screenshot_directory
@@ -49,29 +53,6 @@ def init(
     _window_icon = None
     if window_icon:
         _window_icon = pygame.image.load(window_icon)
-    _setup_display()
-    is_fullscreen = config.get(config.FULLSCREEN)
-    upscale = config.get(config.SCREEN_SCALE)
-    if upscale == 0:
-        upscale = math.ceil(_upscale_max / 2)
-    upscale = utility.clamp(upscale, 0, _upscale_max)
-    _scale_display()
-    screen = pygame.Surface(screen_size)
-    _fullscreen_offset = None
-    _full_screen = None
-    if is_fullscreen:
-        _set_fullscreen()
-    else:
-        _set_windowed()
-    screen = screen.convert()
-    config.update(config.SCREEN_SCALE, upscale)
-
-
-def _setup_display():
-    global _monitor_res
-    global _upscale_max
-    global _windowed_flags
-    global _fullscreen_flags
     pygame.display.set_caption(_title)
     if _window_icon:
         pygame.display.set_icon(_window_icon)
@@ -98,6 +79,21 @@ def _setup_display():
         _fullscreen_flags = pygame.FULLSCREEN | pygame.DOUBLEBUF
     elif pygame.display.mode_ok(_monitor_res, pygame.FULLSCREEN):
         _fullscreen_flags = pygame.FULLSCREEN
+    is_fullscreen = config.get(config.FULLSCREEN)
+    upscale = config.get(config.SCREEN_SCALE)
+    if upscale == 0:
+        upscale = math.ceil(_upscale_max / 2)
+    upscale = utility.clamp(upscale, 0, _upscale_max)
+    _scale_display()
+    screen = pygame.Surface(screen_size)
+    _fullscreen_offset = None
+    _full_screen = None
+    if is_fullscreen:
+        _set_fullscreen()
+    else:
+        _set_windowed()
+    screen = screen.convert()
+    config.update(config.SCREEN_SCALE, upscale)
 
 
 def change_scale(scale_change: int):
@@ -124,7 +120,6 @@ def _alter_scale(new_scale: int):
     else:
         pygame.display.quit()
         pygame.display.init()
-        _setup_display()
         _set_windowed()
     screen = screen.convert()
     config.update(config.SCREEN_SCALE, upscale)
@@ -144,7 +139,6 @@ def toggle_fullscreen():
     is_fullscreen = not is_fullscreen
     pygame.display.quit()
     pygame.display.init()
-    _setup_display()
     if is_fullscreen:
         _set_fullscreen()
     else:
