@@ -76,6 +76,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     @final
     @seq.setter
     def seq(self, value: int):
+        if self._seq is None:
+            raise RuntimeError("error: setting seq for GameSprite not using a sprite sheet")
         self._seq = value % (self._image_count_x * self._image_count_y)
         self.source_rect.x = (self._seq % self._image_count_x) * self._IMAGE_SECTION_SIZE[0]
         self.source_rect.y = (self._seq // self._image_count_x) * self._IMAGE_SECTION_SIZE[1]
