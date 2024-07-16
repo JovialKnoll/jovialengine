@@ -26,7 +26,7 @@ class _Game(object):
         '_is_first_loop',
         'current_mode',
         'state',
-        'running',
+        '_running',
     )
 
     def __init__(
@@ -82,13 +82,22 @@ class _Game(object):
         self._is_first_loop = True
         self.current_mode: ModeBase | None = None
         self.state: Saveable | None = None
-        self.running = False
+        self._running = False
 
     def start(self):
         """Start the game, must be called before run()."""
+        self.set_state()
         self.current_mode = self.start_mode_cls()
-        self.state = self.state_cls()
-        self.running = True
+        self._running = True
+
+    def set_state(self, save_data=None):
+        if save_data:
+            self.state = self.state_cls.load(save_data)
+        else:
+            self.state = self.state_cls()
+
+    def stop(self):
+        self._running = False
 
     def run(self):
         """Run the game, and check if the game needs to end."""
@@ -122,13 +131,13 @@ class _Game(object):
             self.current_mode = self.current_mode.next_mode
             gameinput.start_new_mode()
         self._is_first_loop = False
-        if not self.running:
+        if not self._running:
             config.save()
             gameinput.save()
             self.current_mode = None
             self.state = None
             pygame.quit()
-        return self.running
+        return self._running
 
     def _filter_input(self, events: Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
@@ -172,7 +181,7 @@ class _Game(object):
 _game: _Game | None = None
 
 
-def init_game(
+def init(
     mode_module: ModuleType,
     start_mode_cls: type[ModeBase],
     state_cls: type[Saveable],
@@ -228,5 +237,17 @@ def init_game(
     return _game
 
 
-def get_game():
-    return _game
+def stop():
+    _game.stop()
+
+
+def get_state():
+    return _game.state
+
+
+def set_state(save_data=None):
+    _game.set_state(save_data)
+
+
+def get_start_mode_cls():
+    return _game.start_mode_cls
