@@ -94,8 +94,6 @@ def _setup_display():
     _fullscreen_flags = 0
     if sys.platform != "win32":
         _fullscreen_flags = pygame.NOFRAME
-    elif pygame.display.mode_ok(_monitor_res, pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.HWSURFACE):
-        _fullscreen_flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.HWSURFACE
     elif pygame.display.mode_ok(_monitor_res, pygame.FULLSCREEN | pygame.DOUBLEBUF):
         _fullscreen_flags = pygame.FULLSCREEN | pygame.DOUBLEBUF
     elif pygame.display.mode_ok(_monitor_res, pygame.FULLSCREEN):
