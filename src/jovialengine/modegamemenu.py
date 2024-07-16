@@ -186,7 +186,7 @@ class ModeGameMenuTop(ModeGameMenu):
                     case 5:
                         self._stop_mixer()
                         game.set_state()
-                        self._previous_mode = game.get_start_mode_cls()
+                        self._previous_mode = game.get_start_mode_cls()()
                         pygame.mixer.music.pause()
                         pygame.mixer.pause()
                         self._background = self._get_old_screen()
