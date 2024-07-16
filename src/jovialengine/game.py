@@ -251,3 +251,7 @@ def set_state(save_data=None):
 
 def get_start_mode_cls():
     return _game.start_mode_cls
+
+
+def get_current_mode():
+    return _game.current_mode

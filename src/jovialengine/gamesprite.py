@@ -94,7 +94,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         Sprites created within a mode's __init__ should probably have that mode passed into this method.
         """
         if mode is None:
-            mode = game.get_game().current_mode
+            mode = game.get_current_mode()
         mode.sprite_groups["all"].add(self)
         self._create()
         return self
