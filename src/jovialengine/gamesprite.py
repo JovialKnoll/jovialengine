@@ -13,11 +13,11 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     """Base class for many game objects.
     Subclasses should set:
     required: _IMAGE_LOCATION, location of image file
-    optional: _ALPHA_OR_COLORKEY, used for loading image
+    required: _ALPHA_OR_COLORKEY, used for loading image
     optional: _IMAGE_SECTION_SIZE, used if only displaying subset of image for sprite animation
     """
     _IMAGE_LOCATION: str = None
-    _ALPHA_OR_COLORKEY = False
+    _ALPHA_OR_COLORKEY: bool | tuple[int, int, int] = None
     _IMAGE_SECTION_SIZE: tuple[int, int] = None
 
     __slots__ = (
@@ -31,6 +31,10 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         if not self._IMAGE_LOCATION:
             raise NotImplementedError(
                 "_IMAGE_LOCATION must be overridden in children of GameSprite"
+            )
+        if not self._ALPHA_OR_COLORKEY:
+            raise NotImplementedError(
+                "_ALPHA_OR_COLORKEY must be overridden in children of GameSprite"
             )
         super().__init__()
         self.dirty = 2  # always draw
