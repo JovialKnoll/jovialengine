@@ -102,7 +102,7 @@ def change_scale(scale_change: int):
 
 
 def set_scale(target_scale: int):
-    new_scale = min(target_scale, _upscale_max)
+    new_scale = utility.clamp(target_scale, 1, _upscale_max)
     _alter_scale(new_scale)
 
 
