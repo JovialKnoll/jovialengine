@@ -40,7 +40,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         self.dirty = 2  # always draw
         self.pos = pygame.math.Vector2(pos)
         self.image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
-        self.image_size = self.image.get_size()
         if self._IMAGE_SECTION_SIZE:
             self.source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
             self.rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
