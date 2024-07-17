@@ -97,18 +97,17 @@ def init(
 
 
 def change_scale(scale_change: int):
-    new_scale = utility.clamp(upscale + scale_change, 1, _upscale_max)
-    _alter_scale(new_scale)
+    _alter_scale(upscale + scale_change)
 
 
 def set_scale(target_scale: int):
-    new_scale = utility.clamp(target_scale, 1, _upscale_max)
-    _alter_scale(new_scale)
+    _alter_scale(target_scale)
 
 
 def _alter_scale(new_scale: int):
     global upscale
     global screen
+    new_scale = utility.clamp(new_scale, 1, _upscale_max)
     if new_scale == upscale:
         return
     upscale = new_scale
