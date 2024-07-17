@@ -83,7 +83,7 @@ def init(
     upscale = config.get(config.SCREEN_SCALE)
     if upscale == 0:
         upscale = math.ceil(_upscale_max / 2)
-    upscale = utility.clamp(upscale, 0, _upscale_max)
+    upscale = utility.clamp(upscale, 1, _upscale_max)
     _scale_display()
     screen = pygame.Surface(screen_size)
     _fullscreen_offset = None
@@ -97,22 +97,20 @@ def init(
 
 
 def change_scale(scale_change: int):
-    new_scale = upscale + scale_change
-    if new_scale < 1 or new_scale > _upscale_max:
-        return
+    new_scale = utility.clamp(upscale + scale_change, 1, _upscale_max)
     _alter_scale(new_scale)
 
 
 def set_scale(target_scale: int):
     new_scale = min(target_scale, _upscale_max)
-    if new_scale == upscale:
-        return
     _alter_scale(new_scale)
 
 
 def _alter_scale(new_scale: int):
     global upscale
     global screen
+    if new_scale == upscale:
+        return
     upscale = new_scale
     _scale_display()
     if is_fullscreen:
