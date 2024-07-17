@@ -137,10 +137,7 @@ def _set_windowed():
     os.environ['SDL_VIDEO_WINDOW_POS'] = f'{x},{y}'
     _fullscreen_offset = None
     _full_screen = None
-    _disp_screen = _set_mode(
-        _disp_res,
-        _windowed_flags
-    )
+    _disp_screen = _set_mode(_disp_res, _windowed_flags)
 
 
 def _set_fullscreen():
@@ -153,10 +150,7 @@ def _set_fullscreen():
     )
     if _full_screen is None:
         os.environ['SDL_VIDEO_WINDOW_POS'] = '0,0'
-        _full_screen = _set_mode(
-            _monitor_res,
-            _fullscreen_flags
-        )
+        _full_screen = _set_mode(_monitor_res, _fullscreen_flags)
     else:
         _full_screen.fill((0, 0, 0))
     _disp_screen = pygame.Surface(_disp_res).convert()
@@ -167,6 +161,7 @@ def _set_mode(size: tuple[int, int], flags: int):
     if _window_icon:
         pygame.display.set_icon(_window_icon)
     return pygame.display.set_mode(size, flags)
+
 
 def scale_draw():
     """Scale screen onto display surface, then flip the display."""
