@@ -68,15 +68,11 @@ def init(
         screen_size[1] * _upscale_max,
     )
     _windowed_flags = 0
-    if pygame.display.mode_ok(max_disp_res, pygame.DOUBLEBUF):
-        _windowed_flags = pygame.DOUBLEBUF
     _fullscreen_flags = 0
-    if sys.platform != "win32":
-        _fullscreen_flags = pygame.NOFRAME
-    elif pygame.display.mode_ok(_monitor_res, pygame.FULLSCREEN | pygame.DOUBLEBUF):
-        _fullscreen_flags = pygame.FULLSCREEN | pygame.DOUBLEBUF
-    elif pygame.display.mode_ok(_monitor_res, pygame.FULLSCREEN):
+    if pygame.display.mode_ok(_monitor_res, pygame.FULLSCREEN):
         _fullscreen_flags = pygame.FULLSCREEN
+    elif pygame.display.mode_ok(_monitor_res, pygame.NOFRAME):
+        _fullscreen_flags = pygame.NOFRAME
     _fullscreen_offset = None
     _full_screen = None
     is_fullscreen = config.get(config.FULLSCREEN)
