@@ -54,7 +54,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
 
     def save(self):
         return {
-            'rect_center': self.rect.center,
             'source_rect': self.source_rect,
             'pos': (self.pos.x, self.pos.y),
             '_seq': self._seq,
@@ -62,10 +61,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
 
     @classmethod
     def load(cls, save_data):
-        new_obj = cls()
-        new_obj.rect.topleft = save_data['rect_topleft']
+        new_obj = cls(save_data['pos'])
         new_obj.source_rect = save_data['source_rect']
-        new_obj.pos = pygame.math.Vector2(save_data['pos'])
         new_obj._seq = save_data['_seq']
         return new_obj
 
