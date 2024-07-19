@@ -32,6 +32,7 @@ class ModeBase(abc.ABC):
         self._background.fill((255, 255, 255))
         self.sprite_groups = {
             "all": pygame.sprite.LayeredDirty(),
+            "input": pygame.sprite.Group(),
         }
         self._camera = pygame.rect.Rect((0, 0), space_size)
         self._input_frame: InputFrame | None = None
@@ -46,6 +47,8 @@ class ModeBase(abc.ABC):
         for event in events:
             self._take_event(event)
         self._take_frame(input_frame)
+        for sprite in self.sprite_groups["input"].sprites():
+            sprite.take_frame(input_frame)
         self._input_frame = input_frame
 
     @final

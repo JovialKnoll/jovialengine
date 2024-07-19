@@ -7,6 +7,7 @@ from . import load
 from . import game
 from .saveable import Saveable
 from .modebase import ModeBase
+from .inputframe import InputFrame
 
 
 class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
@@ -103,6 +104,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         if mode is None:
             mode = game.get_current_mode()
         mode.sprite_groups["all"].add(self)
+        mode.sprite_groups["input"].add(self)
         self._create(mode)
         return self
 
@@ -114,6 +116,10 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         """Called when a GameSprite is started."""
         pass
 
+    def take_frame(self, input_frame: InputFrame):
+        """Called to pass the current InputFrame to a GameSprite."""
+        pass
+
     def _update(self, dt: int):
-        """Called to apply time updates to a GameSprite"""
+        """Called to apply time updates to a GameSprite."""
         pass
