@@ -103,14 +103,14 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         if mode is None:
             mode = game.get_current_mode()
         mode.sprite_groups["all"].add(self)
-        self._create()
+        self._create(mode)
         return self
 
     @final
     def update(self, *args):
         self._update(args[0])
 
-    def _create(self):
+    def _create(self, mode: ModeBase):
         """Called when a GameSprite is started."""
         pass
 
