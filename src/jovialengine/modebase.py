@@ -40,11 +40,39 @@ class ModeBase(abc.ABC):
         """
         self.next_mode: ModeBase | None = None
 
+    @final
+    def input(self, events: Iterable[pygame.event.Event], input_frame: InputFrame):
+        """All game modes can take in input."""
+        for event in events:
+            self._take_event(event)
+        self._take_frame(input_frame)
+        self._input_frame = input_frame
+
+    @final
+    def update(self, dt: int):
+        """All game modes can update."""
+        self._update_pre_sprites(dt)
+        self.sprite_groups["all"].update(dt)
+        self._update_post_sprites(dt)
+
+    @final
+    def draw(self, screen: pygame.surface.Surface):
+        """All game modes can draw to the screen"""
+        self._update_pre_draw(screen)
+        self._space.blit(self._background, (0, 0))
+        self._draw_pre_sprites(self._space)
+        self.sprite_groups["all"].draw(self._space)
+        self._draw_post_sprites(self._space)
+        screen.blit(self._space, (0, 0), self._camera)
+        self._draw_post_camera(screen)
+
+    @final
     def cleanup(self):
         """All sprite groups we have in this mode should be emptied here.
         We can't just kill the sprites since we might be reusing them between modes."""
         for sprite_group in self.sprite_groups.values():
             sprite_group.empty()
+        self._cleanup()
 
     def _take_event(self, event: pygame.event.Event):
         """Handle any input that requires looking at pygame events directly, like typing."""
@@ -54,22 +82,11 @@ class ModeBase(abc.ABC):
         """Handle all other input."""
         pass
 
-    @final
-    def input(self, events: Iterable[pygame.event.Event], input_frame: InputFrame):
-        """All game modes can take in input."""
-        for event in events:
-            self._take_event(event)
-        self._take_frame(input_frame)
-        self._input_frame = input_frame
-
-    def _update(self, dt: int):
+    def _update_pre_sprites(self, dt: int):
         pass
 
-    @final
-    def update(self, dt: int):
-        """All game modes can update."""
-        self._update(dt)
-        self.sprite_groups["all"].update(dt)
+    def _update_post_sprites(self, dt: int):
+        pass
 
     def _update_pre_draw(self, screen: pygame.surface.Surface):
         pass
@@ -83,16 +100,8 @@ class ModeBase(abc.ABC):
     def _draw_post_camera(self, screen: pygame.surface.Surface):
         pass
 
-    @final
-    def draw(self, screen: pygame.surface.Surface):
-        """All game modes can draw to the screen"""
-        self._update_pre_draw(screen)
-        self._space.blit(self._background, (0, 0))
-        self._draw_pre_sprites(self._space)
-        self.sprite_groups["all"].draw(self._space)
-        self._draw_post_sprites(self._space)
-        screen.blit(self._space, (0, 0), self._camera)
-        self._draw_post_camera(screen)
+    def _cleanup(self):
+        pass
 
     @staticmethod
     def _stop_mixer():
