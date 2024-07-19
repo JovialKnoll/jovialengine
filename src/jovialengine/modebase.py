@@ -1,5 +1,5 @@
 import abc
-from typing import final
+from typing import final, Sequence
 from collections.abc import Iterable
 
 import pygame
@@ -15,6 +15,7 @@ class ModeBase(abc.ABC):
         '_background',
         'sprite_groups',
         '_camera',
+        '_camera_pos',
         '_input_frame',
         'next_mode',
     )
@@ -34,11 +35,25 @@ class ModeBase(abc.ABC):
             "all": pygame.sprite.LayeredDirty(),
         }
         self._camera = pygame.rect.Rect((0, 0), space_size)
+        self._camera_pos = pygame.math.Vector2(self._camera.center)
         self._input_frame: InputFrame | None = None
         """All game modes must set the next mode when they are done.
         Don't create another mode unless you are immediately assigning it to self.next_mode
         """
         self.next_mode: ModeBase | None = None
+
+    @final
+    @property
+    def camera_pos(self):
+        """Get the camera position.
+        Setting this value updates the camera's center, but this can hold floats."""
+        return self._camera_pos
+
+    @final
+    @camera_pos.setter
+    def camera_pos(self, value: Sequence[float]):
+        self._camera_pos = pygame.math.Vector2(value)
+        self._camera.center = self._camera_pos
 
     @final
     def input(self, events: Iterable[pygame.event.Event], input_frame: InputFrame):
