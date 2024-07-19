@@ -22,6 +22,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     _IMAGE_SECTION_SIZE: tuple[int, int] = None
 
     __slots__ = (
+        '_input_frame',
         '_image_count_x',
         '_image_count_y',
         '_seq',
@@ -38,6 +39,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
                 "_ALPHA_OR_COLORKEY must be overridden in children of GameSprite"
             )
         super().__init__()
+        self._input_frame: InputFrame | None = None
         self.dirty = 2  # always draw
         self.image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
         if self._IMAGE_SECTION_SIZE:
@@ -109,15 +111,16 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         return self
 
     @final
+    def take_frame(self, input_frame: InputFrame):
+        """Called to pass the current InputFrame to a GameSprite."""
+        self._input_frame = input_frame
+
+    @final
     def update(self, *args):
         self._update(args[0])
 
     def _create(self, mode: ModeBase):
         """Called when a GameSprite is started."""
-        pass
-
-    def take_frame(self, input_frame: InputFrame):
-        """Called to pass the current InputFrame to a GameSprite."""
         pass
 
     def _update(self, dt: int):
