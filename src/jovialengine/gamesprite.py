@@ -21,10 +21,10 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     _IMAGE_SECTION_SIZE: tuple[int, int] = None
 
     __slots__ = (
-        'pos',
-        '_seq',
         '_image_count_x',
         '_image_count_y',
+        '_seq',
+        '_pos',
     )
 
     def __init__(self, pos: Sequence[float] = (0, 0)):
@@ -38,7 +38,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             )
         super().__init__()
         self.dirty = 2  # always draw
-        self.pos = pygame.math.Vector2(pos)
         self.image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
         if self._IMAGE_SECTION_SIZE:
             self.source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
@@ -50,20 +49,19 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         else:
             self.rect = self.image.get_rect()
             self._seq: int | None = None
-        self.rect.center = self.pos
+        self.pos = pos
 
     def save(self):
         return {
-            'source_rect': self.source_rect,
-            'pos': (self.pos.x, self.pos.y),
             '_seq': self._seq,
+            '_pos': (self._pos.x, self._pos.y),
         }
 
     @classmethod
     def load(cls, save_data):
-        new_obj = cls(save_data['pos'])
-        new_obj.source_rect = save_data['source_rect']
-        new_obj._seq = save_data['_seq']
+        new_obj = cls(save_data['_pos'])
+        if new_obj.seq is not None:
+            new_obj.seq = save_data['_seq']
         return new_obj
 
     @final
@@ -83,6 +81,19 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         self.source_rect.y = (self._seq // self._image_count_x) * self._IMAGE_SECTION_SIZE[1]
 
     @final
+    @property
+    def pos(self):
+        """Get the sprite position.
+        Setting this value updates the sprite's rect center, but this can hold floats."""
+        return self._pos
+
+    @final
+    @pos.setter
+    def pos(self, value: Sequence[float]):
+        self._pos = self.pos = pygame.math.Vector2(value)
+        self.rect.center = self._pos
+
+    @final
     def start(self, mode: ModeBase | None = None):
         """Function to start processing the GameSprite as part of running the game.
         Should usually be called after creating the GameSprite.
@@ -98,7 +109,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     @final
     def update(self, *args):
         self._update(args[0])
-        self.rect.center = self.pos
 
     def _create(self):
         """Called when a GameSprite is started."""
