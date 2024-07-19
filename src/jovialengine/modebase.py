@@ -65,11 +65,13 @@ class ModeBase(abc.ABC):
         screen.blit(self._space, (0, 0), self._camera)
         self._draw_post_camera(screen)
 
+    @final
     def cleanup(self):
         """All sprite groups we have in this mode should be emptied here.
         We can't just kill the sprites since we might be reusing them between modes."""
         for sprite_group in self.sprite_groups.values():
             sprite_group.empty()
+        self._cleanup()
 
     def _take_event(self, event: pygame.event.Event):
         """Handle any input that requires looking at pygame events directly, like typing."""
@@ -92,6 +94,9 @@ class ModeBase(abc.ABC):
         pass
 
     def _draw_post_camera(self, screen: pygame.surface.Surface):
+        pass
+
+    def _cleanup(self):
         pass
 
     @staticmethod
