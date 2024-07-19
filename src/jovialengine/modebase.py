@@ -51,8 +51,9 @@ class ModeBase(abc.ABC):
     @final
     def update(self, dt: int):
         """All game modes can update."""
-        self._update(dt)
+        self._update_pre_sprites(dt)
         self.sprite_groups["all"].update(dt)
+        self._update_post_sprites(dt)
 
     @final
     def draw(self, screen: pygame.surface.Surface):
@@ -81,7 +82,10 @@ class ModeBase(abc.ABC):
         """Handle all other input."""
         pass
 
-    def _update(self, dt: int):
+    def _update_pre_sprites(self, dt: int):
+        pass
+
+    def _update_post_sprites(self, dt: int):
         pass
 
     def _update_pre_draw(self, screen: pygame.surface.Surface):
