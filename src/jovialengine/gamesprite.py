@@ -93,7 +93,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     @final
     @pos.setter
     def pos(self, value: Sequence[float]):
-        self._pos = self.pos = pygame.math.Vector2(value)
+        self._pos = pygame.math.Vector2(value)
         self.rect.center = self._pos
 
     @final
