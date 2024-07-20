@@ -5,8 +5,8 @@ import pygame
 
 @functools.cache
 def image(filename, alpha_or_colorkey=False):
-    """Loads images, converts, and sets colorkey as needed.
-    The results are cached, so don't blit to them."""
+    """Loads an image, converts, and sets colorkey as needed.
+    The results are cached so don't alter them."""
     result = pygame.image.load(filename)
     if alpha_or_colorkey is True:
         result = result.convert_alpha()
@@ -19,6 +19,6 @@ def image(filename, alpha_or_colorkey=False):
 
 @functools.cache
 def sound(filename):
-    """Loads sounds.
-    The results are cached, so don't set volume on them."""
+    """Loads a sound.
+    The results are cached so don't alter them."""
     return pygame.mixer.Sound(filename)
