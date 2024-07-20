@@ -4,15 +4,18 @@ from collections.abc import Iterable
 
 import pygame
 
+from . import display
 from .inputframe import InputFrame
 
 
 class ModeBase(abc.ABC):
     """Base class for all game modes.
     Subclasses should set:
+    required: _SPACE_SIZE, size of the space inside this mode
     optional: _CAMERA_OFFSET, offset for drawing camera view onto screen
     """
-    _CAMERA_OFFSET = (0, 0)
+    _SPACE_SIZE: tuple[int, int] = None
+    _CAMERA_OFFSET: tuple[int, int] = (0, 0)
 
     __slots__ = (
         '_space',
@@ -24,21 +27,14 @@ class ModeBase(abc.ABC):
         'next_mode',
     )
 
-    @abc.abstractmethod
     def __init__(self):
-        """Implementation must contain a call to _init passing in the space size before all else."""
-        raise NotImplementedError(
-            type(self).__name__ + ".__init__(self)"
-        )
-
-    def _init(self, space_size: tuple[int, int]):
-        self._space = pygame.Surface(space_size).convert()
-        self._background = pygame.Surface(space_size).convert()
+        self._space = pygame.Surface(self._SPACE_SIZE).convert()
+        self._background = pygame.Surface(self._SPACE_SIZE).convert()
         self._background.fill((255, 255, 255))
         self.sprite_groups = {
             "all": pygame.sprite.LayeredDirty(),
         }
-        self._camera = pygame.rect.Rect((0, 0), space_size)
+        self._camera = pygame.rect.Rect((0, 0), display.screen_size)
         self._camera_pos = pygame.math.Vector2(self._camera.center)
         self._input_frame: InputFrame | None = None
         """All game modes must set the next mode when they are done.
