@@ -11,10 +11,13 @@ from .inputframe import InputFrame
 class ModeBase(abc.ABC):
     """Base class for all game modes.
     Subclasses should set:
-    required: _SPACE_SIZE, size of the space inside this mode
+    optional: _SPACE_SIZE, size of the space inside this mode, if not supplied will assume display.screen_size
     optional: _CAMERA_OFFSET, offset for drawing camera view onto screen
+
+    When a subclass wants to pass on to another mode, set self.next_mode.
+    Don't create another mode unless you are immediately assigning it to self.next_mode.
     """
-    _SPACE_SIZE: tuple[int, int] = None
+    _SPACE_SIZE: tuple[int, int] | None = None
     _CAMERA_OFFSET: tuple[int, int] = (0, 0)
 
     __slots__ = (
@@ -28,8 +31,8 @@ class ModeBase(abc.ABC):
     )
 
     def __init__(self):
-        self._space = pygame.Surface(self._SPACE_SIZE).convert()
-        self._background = pygame.Surface(self._SPACE_SIZE).convert()
+        self._space = pygame.Surface(self._SPACE_SIZE or display.screen_size).convert()
+        self._background = pygame.Surface(self._SPACE_SIZE or display.screen_size).convert()
         self._background.fill((255, 255, 255))
         self.sprite_groups = {
             "all": pygame.sprite.LayeredDirty(),
@@ -37,9 +40,6 @@ class ModeBase(abc.ABC):
         self._camera = pygame.rect.Rect((0, 0), display.screen_size)
         self._camera_pos = pygame.math.Vector2(self._camera.center)
         self._input_frame: InputFrame | None = None
-        """All game modes must set the next mode when they are done.
-        Don't create another mode unless you are immediately assigning it to self.next_mode
-        """
         self.next_mode: ModeBase | None = None
 
     @final
