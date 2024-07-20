@@ -21,7 +21,8 @@ def image(filename, alpha_or_colorkey=False):
 def mask(filename, alpha_or_colorkey=False):
     """Loads an image and uses this to construct a mask.
     The results are cached so don't alter them."""
-    pass
+    surface = image(filename, alpha_or_colorkey)
+    return pygame.mask.from_surface(surface)
 
 
 @functools.cache
