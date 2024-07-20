@@ -16,10 +16,16 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     required: _IMAGE_LOCATION, location of image file
     required: _ALPHA_OR_COLORKEY, used for loading image
     optional: _IMAGE_SECTION_SIZE, used if only displaying subset of image for sprite animation
+    optional: _COLLISION_RADIUS, set this if a circle collision is appropriate for this sprite
+    optional: _COLLISION_MASK_LOCATION, location of image file for generating a collision mask
+    optional: _COLLISION_MASK_ALPHA_OR_COLORKEY, alpha_or_colorkey for generating a collision mask
     """
     _IMAGE_LOCATION: str = None
     _ALPHA_OR_COLORKEY: bool | tuple[int, int, int] = None
-    _IMAGE_SECTION_SIZE: tuple[int, int] = None
+    _IMAGE_SECTION_SIZE: tuple[int, int] | None = None
+    _COLLISION_RADIUS: float | None = None
+    _COLLISION_MASK_LOCATION: str | None = None
+    _COLLISION_MASK_ALPHA_OR_COLORKEY: bool | tuple[int, int, int] | None = None
 
     __slots__ = (
         '_input_frame',
@@ -38,6 +44,10 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             raise NotImplementedError(
                 "_ALPHA_OR_COLORKEY must be overridden in children of GameSprite"
             )
+        if self._COLLISION_MASK_LOCATION and not self._COLLISION_MASK_ALPHA_OR_COLORKEY:
+            raise NotImplementedError(
+                "if _COLLISION_MASK_LOCATION if overridden, _COLLISION_MASK_ALPHA_OR_COLORKEY must also be overridden"
+            )
         super().__init__()
         self._input_frame: InputFrame | None = None
         self.dirty = 2  # always draw
@@ -52,6 +62,13 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         else:
             self.rect = self.image.get_rect()
             self._seq: int | None = None
+        if self._COLLISION_RADIUS:
+            self.radius = self._COLLISION_RADIUS
+            self.mask = load.mask_circle(self.rect.size, self.radius)
+        if self._COLLISION_MASK_LOCATION:
+            self.mask = load.mask(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
+        if not self._COLLISION_RADIUS and not self._COLLISION_MASK_LOCATION:
+            self.mask = load.mask_filled(self.rect.size)
         self.pos = pos
 
     def save(self):
