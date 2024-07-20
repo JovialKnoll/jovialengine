@@ -47,7 +47,7 @@ class ModeBase(abc.ABC):
     @property
     def camera_pos(self):
         """Get the camera position.
-        Setting this value updates the camera's center, but this can hold floats."""
+        Setting this value updates the camera center, but this can hold floats."""
         return self._camera_pos
 
     @final

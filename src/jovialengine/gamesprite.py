@@ -104,7 +104,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     @property
     def pos(self):
         """Get the sprite position.
-        Setting this value updates the rect's center, but this can hold floats."""
+        Setting this value updates the rect center, but this can hold floats."""
         return self._pos
 
     @final
