@@ -40,7 +40,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
     )
 
     def __init__(self, previous_mode: ModeBase, old_screen: pygame.Surface | None = None):
-        self._init(display.screen_size)
+        super().__init__()
         self._MENU_WIDTH = get_default_font_wrap().font.size('_' * self._MENU_CHAR_WIDTH)[0] + 1
         self._previous_mode = previous_mode
         if old_screen is None:
