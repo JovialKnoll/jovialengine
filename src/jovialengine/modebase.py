@@ -8,8 +8,12 @@ from .inputframe import InputFrame
 
 
 class ModeBase(abc.ABC):
-    """This is an abstract object for game modes.
+    """Base class for all game modes.
+    Subclasses should set:
+    optional: _CAMERA_OFFSET, offset for drawing camera view onto screen
     """
+    _CAMERA_OFFSET = (0, 0)
+
     __slots__ = (
         '_space',
         '_background',
@@ -78,7 +82,7 @@ class ModeBase(abc.ABC):
         self._draw_pre_sprites(self._space)
         self.sprite_groups["all"].draw(self._space)
         self._draw_post_sprites(self._space)
-        screen.blit(self._space, (0, 0), self._camera)
+        screen.blit(self._space, self._CAMERA_OFFSET, self._camera)
         self._draw_post_camera(screen)
 
     @final
