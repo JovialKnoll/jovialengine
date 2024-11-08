@@ -20,6 +20,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     optional: _COLLISION_RADIUS, set this if a circle collision is appropriate for this sprite
     optional: _COLLISION_MASK_LOCATION, location of image file for generating a collision mask
     optional: _COLLISION_MASK_ALPHA_OR_COLORKEY, alpha_or_colorkey for generating a collision mask
+    optional: _GETS_INPUT, set true only if this sprite should take input
     """
     _LABEL: str = None
     _IMAGE_LOCATION: str = None
@@ -28,6 +29,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     _COLLISION_RADIUS: float | None = None
     _COLLISION_MASK_LOCATION: str | None = None
     _COLLISION_MASK_ALPHA_OR_COLORKEY: bool | tuple[int, int, int] | None = None
+    _GETS_INPUT: bool = False
 
     __slots__ = (
         '_input_frame',
@@ -125,7 +127,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         if mode is None:
             mode = game.get_current_mode()
         mode.sprite_groups["all"].add(self)
-        mode.sprite_groups["input"].add(self)
+        if self._GETS_INPUT:
+            mode.sprite_groups["input"].add(self)
         self._create(mode)
         return self
 
