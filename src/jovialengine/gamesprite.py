@@ -13,6 +13,7 @@ from .inputframe import InputFrame
 class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     """Base class for many game objects.
     Subclasses should set:
+    required: _LABEL, a string label for this sprite,
     required: _IMAGE_LOCATION, location of image file
     required: _ALPHA_OR_COLORKEY, used for loading image
     optional: _IMAGE_SECTION_SIZE, used if only displaying subset of image for sprite animation
@@ -20,6 +21,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     optional: _COLLISION_MASK_LOCATION, location of image file for generating a collision mask
     optional: _COLLISION_MASK_ALPHA_OR_COLORKEY, alpha_or_colorkey for generating a collision mask
     """
+    _LABEL: str = None
     _IMAGE_LOCATION: str = None
     _ALPHA_OR_COLORKEY: bool | tuple[int, int, int] = None
     _IMAGE_SECTION_SIZE: tuple[int, int] | None = None
@@ -130,11 +132,9 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     @final
     def input(self, input_frame: InputFrame):
         """Called to pass the current InputFrame to a GameSprite."""
-        self.__take_frame(input_frame)
+        #todo: we have to call functions here based on changes to inputs
+        #we'll want to mark functions with an attribute that registers them for this
         self._input_frame = input_frame
-
-    def __take_frame(self, input_frame: InputFrame):
-        pass
 
     @final
     def update(self, *args):
