@@ -50,18 +50,18 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             )
         super().__init__()
         self._input_frame: InputFrame | None = None
+        self._seq: int | None = None
         self.dirty = 2  # always draw
         self.image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
         if self._IMAGE_SECTION_SIZE:
             self.source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
             self.rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
-            self._seq: int | None = 0
+            self._seq = 0
             image_size = self.image.get_size()
             self._image_count_x = image_size[0] // self._IMAGE_SECTION_SIZE[0]
             self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
         else:
             self.rect = self.image.get_rect()
-            self._seq: int | None = None
         if self._COLLISION_RADIUS:
             self.radius = self._COLLISION_RADIUS
             self.mask = load.mask_circle(self.rect.size, self.radius)
