@@ -130,7 +130,11 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     @final
     def input(self, input_frame: InputFrame):
         """Called to pass the current InputFrame to a GameSprite."""
+        self.__take_frame(input_frame)
         self._input_frame = input_frame
+
+    def __take_frame(self, input_frame: InputFrame):
+        pass
 
     @final
     def update(self, *args):
