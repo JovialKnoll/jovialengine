@@ -97,7 +97,8 @@ class ModeBase(abc.ABC):
         pass
 
     def _take_frame(self, input_frame: InputFrame):
-        """Handle all other input."""
+        """Handle all other input.
+        During this method call self._input_frame still holds the old input_frame."""
         pass
 
     def _update_pre_sprites(self, dt: int):
