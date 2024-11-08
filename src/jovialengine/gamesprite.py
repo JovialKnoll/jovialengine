@@ -128,7 +128,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         return self
 
     @final
-    def take_frame(self, input_frame: InputFrame):
+    def input(self, input_frame: InputFrame):
         """Called to pass the current InputFrame to a GameSprite."""
         self._input_frame = input_frame
 

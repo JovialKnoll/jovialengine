@@ -63,7 +63,7 @@ class ModeBase(abc.ABC):
             self._take_event(event)
         self._take_frame(input_frame)
         for sprite in self.sprite_groups["input"].sprites():
-            sprite.take_frame(input_frame)
+            sprite.input(input_frame)
         self._input_frame = input_frame
 
     @final
