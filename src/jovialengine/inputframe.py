@@ -18,7 +18,7 @@ class InputFrame(object):
     __slots__ = (
         '_states',
         '_states_prev',
-        '_state_changes',
+        'state_changes',
     )
 
     def __init__(
@@ -29,13 +29,13 @@ class InputFrame(object):
     ):
         self._states = states
         self._states_prev = states_prev
-        self._state_changes = state_changes
+        self.state_changes = state_changes
 
     def get_input_state(self, player_id: int, event_type: int):
         return self._states[player_id][event_type]
 
     def was_player_input_pressed(self, player_id: int, event_type: int):
-        for state_change in self._state_changes:
+        for state_change in self.state_changes:
             if state_change.new_value == 1 \
                     and state_change.event_type == event_type \
                     and state_change.player_id == player_id:
@@ -43,14 +43,14 @@ class InputFrame(object):
         return False
 
     def was_input_pressed(self, event_type: int):
-        for state_change in self._state_changes:
+        for state_change in self.state_changes:
             if state_change.new_value == 1 \
                     and state_change.event_type == event_type:
                 return True
         return False
 
     def was_any_player_input_pressed(self, player_id: int, event_types: Collection[int]):
-        for state_change in self._state_changes:
+        for state_change in self.state_changes:
             if state_change.new_value == 1 \
                     and state_change.event_type in event_types \
                     and state_change.player_id == player_id:
@@ -58,7 +58,7 @@ class InputFrame(object):
         return False
 
     def was_any_input_pressed(self, event_types: Collection[int]):
-        for state_change in self._state_changes:
+        for state_change in self.state_changes:
             if state_change.new_value == 1 \
                     and state_change.event_type in event_types:
                 return True
