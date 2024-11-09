@@ -87,7 +87,7 @@ class TestInput(unittest.TestCase):
         gameinput.take_events(events)
         input_frame = gameinput.get_input_frame()
         # Assert
-        self.assertEqual(input_frame._controller_states, [[0, 0, 0, 1, 0, 1, 0, 0,]])
+        self.assertEqual(input_frame._states, [[0, 0, 0, 1, 0, 1, 0, 0,]])
         self.assertTrue(input_frame.was_player_input_pressed(0, gameinput.EVENT_TYPE_START_POS + 1))
         self.assertTrue(input_frame.was_input_pressed(gameinput.EVENT_TYPE_START_POS + 3))
 
