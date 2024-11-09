@@ -5,7 +5,7 @@ from collections.abc import Iterable
 
 import pygame
 
-from .inputframe import ControllerStateChange, InputFrame
+from .inputframe import StateChange, InputFrame
 
 
 class InputType(enum.Enum):
@@ -80,7 +80,7 @@ _input_defaults: tuple[InputDefault]
 _input_mapping: dict[tuple[InputType, int, int], tuple[int, int]]
 _controller_states: list[list[float | int]]
 _controller_states_prev: list[list[float | int]]
-_controller_state_changes: list[ControllerStateChange]
+_controller_state_changes: list[StateChange]
 
 
 def init(input_file: str, max_players_in: int, event_names: tuple[str], input_defaults: tuple[InputDefault]):
@@ -345,7 +345,7 @@ def _map_event(input_type: InputType, input_id: int, controller_id: int = 0):
 def _log_event(player_id: int, event_type: int, event_value: float | int):
     if event_type != TYPE_NONE and _controller_states[player_id][event_type] != event_value:
         _controller_state_changes.append(
-            ControllerStateChange(player_id, event_type, event_value)
+            StateChange(player_id, event_type, event_value)
         )
         _controller_states[player_id][event_type] = event_value
     return event_type != TYPE_SCREENSHOT

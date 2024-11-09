@@ -1,7 +1,7 @@
 from collections.abc import Collection
 
 
-class ControllerStateChange(object):
+class StateChange(object):
     __slots__ = (
         'player_id',
         'event_type',
@@ -25,7 +25,7 @@ class InputFrame(object):
         self,
         states: list[list[float | int]],
         states_prev: list[list[float | int]],
-        state_changes: list[ControllerStateChange]
+        state_changes: list[StateChange]
     ):
         self._states = states
         self._states_prev = states_prev
