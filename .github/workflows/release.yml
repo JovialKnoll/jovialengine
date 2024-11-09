@@ -9,13 +9,13 @@ jobs:
   test-python:
     uses: JovialKnoll/workflows/.github/workflows/test-python.yml@master
     with:
-      python_version: '3.12'
+      python_version: '3.13'
 
   publish-python-package:
     uses: JovialKnoll/workflows/.github/workflows/publish-python-package.yml@master
     needs: test-python
     with:
-      python_version: '3.12'
+      python_version: '3.13'
     secrets:
       TEST_PYPI_API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
       PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
