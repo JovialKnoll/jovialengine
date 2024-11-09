@@ -11,4 +11,4 @@ jobs:
   test-python:
     uses: JovialKnoll/workflows/.github/workflows/test-python.yml@master
     with:
-      python_version: '3.12'
+      python_version: '3.13'
