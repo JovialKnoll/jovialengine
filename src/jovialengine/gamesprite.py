@@ -1,4 +1,5 @@
 import abc
+import functools
 from typing import final, Sequence
 
 import pygame
@@ -13,7 +14,6 @@ from .inputframe import InputFrame, StateChange
 class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     """Base class for many game objects.
     Subclasses should set:
-    required: _LABEL, a string label for this sprite,
     required: _IMAGE_LOCATION, location of image file
     required: _ALPHA_OR_COLORKEY, used for loading image
     optional: _IMAGE_SECTION_SIZE, used if only displaying subset of image for sprite animation
@@ -22,7 +22,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     optional: _COLLISION_MASK_ALPHA_OR_COLORKEY, alpha_or_colorkey for generating a collision mask
     optional: _GETS_INPUT, set true only if this sprite should take input
     """
-    _LABEL: str = None
     _IMAGE_LOCATION: str = None
     _ALPHA_OR_COLORKEY: bool | tuple[int, int, int] = None
     _IMAGE_SECTION_SIZE: tuple[int, int] | None = None
@@ -75,6 +74,17 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             self.mask = load.mask_filled(self.rect.size)
         self.pos = pos
 
+    @classmethod
+    @functools.cache
+    def get_labels(cls):
+        labels = [
+            t.__name__
+            for t in cls.mro()
+            if t not in GameSprite.mro()
+        ]
+        labels.append('all')
+        return tuple(labels)
+
     def save(self):
         return {
             '_seq': self._seq,
@@ -126,9 +136,10 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         """
         if mode is None:
             mode = game.get_current_mode()
-        mode.sprite_groups["all"].add(self)
+        for label in self.get_labels():
+            mode.sprite_groups[label].add(self)
         if self._GETS_INPUT:
-            mode.sprite_groups["input"].add(self)
+            mode.sprite_groups['input'].add(self)
         self._create(mode)
         return self
 
