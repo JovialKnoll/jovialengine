@@ -41,15 +41,15 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
 
     def __init__(self, pos: Sequence[float] = (0, 0)):
         if not self._IMAGE_LOCATION:
-            raise NotImplementedError(
+            raise RuntimeError(
                 "_IMAGE_LOCATION must be overridden in children of GameSprite"
             )
         if not self._ALPHA_OR_COLORKEY:
-            raise NotImplementedError(
+            raise RuntimeError(
                 "_ALPHA_OR_COLORKEY must be overridden in children of GameSprite"
             )
         if self._COLLISION_MASK_LOCATION and not self._COLLISION_MASK_ALPHA_OR_COLORKEY:
-            raise NotImplementedError(
+            raise RuntimeError(
                 "if _COLLISION_MASK_LOCATION if overridden, _COLLISION_MASK_ALPHA_OR_COLORKEY must also be overridden"
             )
         super().__init__()
