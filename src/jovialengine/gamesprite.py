@@ -125,6 +125,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             if t not in GameSprite.mro()
         ]
         labels.append('all')
+        if cls._GETS_INPUT:
+            labels.append('input')
         return tuple(labels)
 
     @final
@@ -138,8 +140,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             mode = game.get_current_mode()
         for label in self.get_labels():
             mode.sprite_groups[label].add(self)
-        if self._GETS_INPUT:
-            mode.sprite_groups['input'].add(self)
         self._create(mode)
         return self
 
