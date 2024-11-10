@@ -37,7 +37,7 @@ class ModeBase(abc.ABC):
         self._background = pygame.Surface(self._SPACE_SIZE or display.screen_size).convert()
         self._background.fill((255, 255, 255))
         self.sprite_groups = {
-            "all": pygame.sprite.LayeredDirty(),
+            'all': pygame.sprite.LayeredDirty(),
         }
         self._camera = pygame.rect.Rect((0, 0), self._CAMERA_SIZE or display.screen_size)
         self._camera_pos = pygame.math.Vector2(self._camera.center)
@@ -69,7 +69,7 @@ class ModeBase(abc.ABC):
     def update(self, dt: int):
         """All game modes can update."""
         self._update_pre_sprites(dt)
-        self.sprite_groups["all"].update(dt)
+        self.sprite_groups['all'].update(dt)
         self._update_post_sprites(dt)
 
     @final
@@ -78,7 +78,7 @@ class ModeBase(abc.ABC):
         self._update_pre_draw(screen)
         self._space.blit(self._background, (0, 0))
         self._draw_pre_sprites(self._space)
-        self.sprite_groups["all"].draw(self._space)
+        self.sprite_groups['all'].draw(self._space)
         self._draw_post_sprites(self._space)
         screen.blit(self._space, self._CAMERA_OFFSET, self._camera)
         self._draw_post_camera(screen)
