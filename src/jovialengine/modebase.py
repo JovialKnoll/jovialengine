@@ -48,7 +48,7 @@ class ModeBase(abc.ABC):
     @property
     def camera_pos(self):
         """Get the camera position.
-        Setting this value updates the camera's center, but this can hold floats."""
+        Setting this value updates the camera center, but this can hold floats."""
         return self._camera_pos
 
     @final
@@ -96,7 +96,8 @@ class ModeBase(abc.ABC):
         pass
 
     def _take_frame(self, input_frame: InputFrame):
-        """Handle all other input."""
+        """Handle all other input.
+        During this method call self._input_frame still holds the old input_frame."""
         pass
 
     def _update_pre_sprites(self, dt: int):
