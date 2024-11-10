@@ -7,7 +7,7 @@ from . import load
 from . import game
 from .saveable import Saveable
 from .modebase import ModeBase
-from .inputframe import InputFrame
+from .inputframe import InputFrame, StateChange
 
 
 class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
@@ -135,8 +135,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     @final
     def input(self, input_frame: InputFrame):
         """Called to pass the current InputFrame to a GameSprite."""
-        #todo: we have to call functions here based on changes to inputs
-        #we'll want to mark functions with an attribute that registers them for this
+        for state_change in input_frame.state_changes:
+            self._take_state_change(state_change)
         self._input_frame = input_frame
 
     @final
@@ -145,6 +145,11 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
 
     def _create(self, mode: ModeBase):
         """Called when a GameSprite is started."""
+        pass
+
+    def _take_state_change(self, state_change: StateChange):
+        """Handle input state change (this is called on all state changes if this GameSprite receives input)
+        During this method call self._input_frame still holds the old input_frame."""
         pass
 
     def _update(self, dt: int):
