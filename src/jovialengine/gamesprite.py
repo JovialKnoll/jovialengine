@@ -74,17 +74,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             self.mask = load.mask_filled(self.rect.size)
         self.pos = pos
 
-    @classmethod
-    @functools.cache
-    def get_labels(cls):
-        labels = [
-            t.__name__
-            for t in cls.mro()
-            if t not in GameSprite.mro()
-        ]
-        labels.append('all')
-        return tuple(labels)
-
     def save(self):
         return {
             '_seq': self._seq,
@@ -126,6 +115,17 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     def pos(self, value: Sequence[float]):
         self._pos = pygame.math.Vector2(value)
         self.rect.center = self._pos
+
+    @classmethod
+    @functools.cache
+    def get_labels(cls):
+        labels = [
+            t.__name__
+            for t in cls.mro()
+            if t not in GameSprite.mro()
+        ]
+        labels.append('all')
+        return tuple(labels)
 
     @final
     def start(self, mode: ModeBase | None = None):
