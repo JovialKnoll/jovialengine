@@ -264,7 +264,7 @@ def _load():
 def _get_save_input(input_type: InputType, input_id: int, controller_id: int):
     result = f'{input_type.name}{_PART_SEP}'
     result += _get_input_id_display(input_type, input_id)
-    if input_type in (InputType.CON_BUTTON, InputType.CON_HAT, InputType.CON_AXIS):
+    if input_type in {InputType.CON_BUTTON, InputType.CON_HAT, InputType.CON_AXIS}:
         result += f'{_PART_SEP}{controller_id}'
     return result
 

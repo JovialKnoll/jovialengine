@@ -171,7 +171,7 @@ class _Game(object):
         return True
 
     def _is_pause_event(self, event: pygame.event.Event):
-        return event.type in (pygame.QUIT, pygame.WINDOWFOCUSLOST, pygame.WINDOWMINIMIZED) \
+        return event.type in {pygame.QUIT, pygame.WINDOWFOCUSLOST, pygame.WINDOWMINIMIZED} \
             or (event.type == pygame.WINDOWMOVED and not self._is_first_loop)
 
     def _get_time(self):
