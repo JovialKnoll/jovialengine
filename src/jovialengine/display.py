@@ -169,7 +169,7 @@ def scale_draw():
 
 def scale_mouse_input(event: pygame.event.Event):
     """Scale mouse position for events in terms of the screen (as opposed to the display surface)."""
-    if event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
+    if event.type in {pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN}:
         if is_fullscreen:
             event_dict = {
                 'pos': (

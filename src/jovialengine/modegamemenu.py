@@ -395,10 +395,10 @@ class ModeGameMenuLoad(ModeGameMenuList):
                             self._selected_save_option = self.OPTION_LOAD
                 self._index = utility.clamp(self._index, 0, len(self._saves) - 1)
             case self.STATE_LOADED_SAVE:
-                if action in (MenuAction.CONFIRM, MenuAction.REJECT):
+                if action in {MenuAction.CONFIRM, MenuAction.REJECT}:
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
             case self.STATE_DELETED_SAVE:
-                if action in (MenuAction.CONFIRM, MenuAction.REJECT):
+                if action in {MenuAction.CONFIRM, MenuAction.REJECT}:
                     self._state = self.STATE_DEFAULT
             case self.STATE_SELECTED_SAVE:
                 match action:
