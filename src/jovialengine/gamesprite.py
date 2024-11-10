@@ -139,6 +139,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         if mode is None:
             mode = game.get_current_mode()
         for label in self.get_labels():
+            if label not in mode.sprite_groups:
+                mode.sprite_groups[label] = pygame.sprite.Group()
             mode.sprite_groups[label].add(self)
         self._create(mode)
         return self
