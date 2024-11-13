@@ -130,6 +130,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         return tuple(labels)
 
     @classmethod
+    @final
     @functools.cache
     def get_collide_labels(cls):
         return tuple(
@@ -161,9 +162,9 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             self._take_state_change(state_change)
         self._input_frame = input_frame
 
-    @final
-    def update(self, *args):
-        self._update(args[0])
+    def update(self, dt: int):
+        """Called to apply time updates to a GameSprite."""
+        pass
 
     def _create(self, mode: ModeBase):
         """Called when a GameSprite is started."""
@@ -172,8 +173,4 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     def _take_state_change(self, state_change: StateChange):
         """Handle input state change (this is called on all state changes if this GameSprite receives input)
         During this method call self._input_frame still holds the old input_frame."""
-        pass
-
-    def _update(self, dt: int):
-        """Called to apply time updates to a GameSprite."""
         pass
