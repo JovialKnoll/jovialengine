@@ -80,12 +80,12 @@ class ModeBase(abc.ABC):
                 if collide_label[0] not in self.sprite_groups:
                     continue
                 for other in self.sprite_groups[collide_label[0]]:
-                    if self.__does_collide(sprite, other):
+                    if self._does_collide(sprite, other):
                         getattr(sprite, collide_label[1])(other)
         self._update_post_sprites(dt)
 
     @staticmethod
-    def __does_collide(sprite, other):
+    def _does_collide(sprite, other):
         if sprite is other:
             return False
         #todo: sprite collision check goes here
