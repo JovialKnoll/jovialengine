@@ -131,11 +131,11 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
 
     @classmethod
     @functools.cache
-    def get_collide_events(cls):
+    def get_collide_labels(cls):
         return tuple(
-            (e.removeprefix('event_collide_'), e,)
+            (e.removeprefix('collide_'), e,)
             for e in dir(cls)
-            if e.startswith('event_collide_')
+            if e.startswith('collide_')
         )
 
     @final
