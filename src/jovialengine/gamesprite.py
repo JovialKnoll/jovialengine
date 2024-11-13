@@ -118,7 +118,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
 
     @classmethod
     @functools.cache
-    def __get_labels(cls):
+    def _get_labels(cls):
         labels = [
             t.__name__
             for t in cls.mro()
@@ -138,7 +138,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         """
         if mode is None:
             mode = game.get_current_mode()
-        for label in self.__get_labels():
+        for label in self._get_labels():
             if label not in mode.sprite_groups:
                 mode.sprite_groups[label] = pygame.sprite.Group()
             mode.sprite_groups[label].add(self)
