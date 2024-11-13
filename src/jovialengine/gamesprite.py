@@ -142,7 +142,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         )
 
     @final
-    def does_collide(self, other):
+    def does_collide(self, other: GameSprite):
         if self is other:
             return False
         elif self.radius and other.radius:
