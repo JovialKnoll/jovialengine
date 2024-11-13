@@ -16,11 +16,11 @@ class TestInput(unittest.TestCase):
 
     def test__get_labels_TestSpriteA(self):
         # Assert
-        self.assertEqual(TestSpriteA._get_labels(), ('all','TestSpriteA',))
+        self.assertEqual(TestSpriteA._get_labels(), ('TestSpriteA','all',))
 
     def test__get_labels_TestSpriteB(self):
         # Assert
-        self.assertEqual(TestSpriteB._get_labels(), ('all','TestSpriteA','TestSpriteB',))
+        self.assertEqual(TestSpriteB._get_labels(), ('TestSpriteB','TestSpriteA','all',))
 
 
 if __name__ == '__main__':
