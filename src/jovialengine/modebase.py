@@ -39,6 +39,7 @@ class ModeBase(abc.ABC):
         self.sprite_groups = {
             'all': pygame.sprite.LayeredDirty(),
             'input': pygame.sprite.Group(),
+            'collide': pygame.sprite.Group(),
         }
         self._camera = pygame.rect.Rect((0, 0), self._CAMERA_SIZE or display.screen_size)
         self._camera_pos = pygame.math.Vector2(self._camera.center)
@@ -74,7 +75,21 @@ class ModeBase(abc.ABC):
         self._update_pre_sprites(dt)
         for sprite in self.sprite_groups['all'].sprites():
             sprite.update(dt)
+        for sprite in self.sprite_groups['collide'].sprites():
+            for collide_label in sprite.get_collide_labels():
+                if collide_label[0] not in self.sprite_groups:
+                    continue
+                for other in self.sprite_groups[collide_label[0]]:
+                    if self.__does_collide(sprite, other):
+                        getattr(sprite, collide_label[1])(other)
         self._update_post_sprites(dt)
+
+    @staticmethod
+    def __does_collide(sprite, other):
+        if sprite is other:
+            return False
+        #todo: sprite collision check goes here
+        pass
 
     @final
     def draw(self, screen: pygame.surface.Surface):

@@ -127,6 +127,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         labels.append('all')
         if cls._GETS_INPUT:
             labels.append('input')
+        if cls.get_collide_labels():
+            labels.append('collide')
         return tuple(labels)
 
     @classmethod
