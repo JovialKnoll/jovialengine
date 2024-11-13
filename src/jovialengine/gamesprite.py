@@ -129,6 +129,15 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             labels.append('input')
         return tuple(labels)
 
+    @classmethod
+    @functools.cache
+    def get_collide_events(cls):
+        return tuple(
+            (e.removeprefix('event_collide_'), e,)
+            for e in dir(cls)
+            if e.startswith('event_collide_')
+        )
+
     @final
     def start(self, mode: ModeBase | None = None):
         """Function to start processing the GameSprite as part of running the game.
