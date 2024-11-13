@@ -142,6 +142,13 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         )
 
     @final
+    def does_collide(self, other):
+        if self is other:
+            return False
+        #todo: sprite collision check goes here
+        pass
+
+    @final
     def start(self, mode: ModeBase | None = None):
         """Function to start processing the GameSprite as part of running the game.
         Should usually be called after creating the GameSprite.
