@@ -145,7 +145,14 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     def does_collide(self, other):
         if self is other:
             return False
-        #todo: sprite collision check goes here
+        elif self.radius and other.radius:
+            # check circle collision
+            pass
+        elif (not self.radius and not other.radius
+              and not self._COLLISION_MASK_LOCATION and not other._COLLISION_MASK_LOCATION):
+            # check rect collision and style above
+            pass
+        # check mask collision
         pass
 
     @final
