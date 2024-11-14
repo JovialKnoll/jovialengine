@@ -1,6 +1,6 @@
 import abc
 import functools
-from typing import final, Sequence
+from typing import final, Sequence, Self
 
 import pygame
 
@@ -142,7 +142,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         )
 
     @final
-    def does_collide(self, other: GameSprite):
+    def does_collide(self, other: Self):
         if self is other:
             return False
         elif self.radius and other.radius:
