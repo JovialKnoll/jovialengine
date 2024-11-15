@@ -20,7 +20,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     optional: _COLLISION_RADIUS, set this if a circle collision is appropriate for this sprite
     optional: _COLLISION_MASK_LOCATION, location of image file for generating a collision mask
     optional: _COLLISION_MASK_ALPHA_OR_COLORKEY, alpha_or_colorkey for generating a collision mask
-    optional: _GETS_INPUT, set true only if this sprite should take input
     """
     _IMAGE_LOCATION: str = None
     _ALPHA_OR_COLORKEY: bool | tuple[int, int, int] = None
@@ -28,7 +27,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     _COLLISION_RADIUS: float | None = None
     _COLLISION_MASK_LOCATION: str | None = None
     _COLLISION_MASK_ALPHA_OR_COLORKEY: bool | tuple[int, int, int] | None = None
-    _GETS_INPUT: bool = False
 
     __slots__ = (
         '_input_frame',
@@ -126,7 +124,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             if t not in GameSprite.mro()
         ]
         labels.append('all')
-        if cls._GETS_INPUT:
+        if cls._take_state_change is not GameSprite._take_state_change:
             labels.append('input')
         if cls.get_collide_labels():
             labels.append('collide')
@@ -186,5 +184,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
 
     def _take_state_change(self, state_change: StateChange):
         """Handle input state change (this is called on all state changes if this GameSprite receives input)
-        During this method call self._input_frame still holds the old input_frame."""
+        During this method call self._input_frame still holds the old input_frame.
+        Override this method to make a child class receive input."""
         pass
