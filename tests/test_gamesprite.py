@@ -93,6 +93,15 @@ class TestInput(unittest.TestCase):
         # Assert
         self.assertFalse(does_collide)
 
+    def test_does_collide_circles_true(self):
+        # Arrange
+        left = TestSpriteCircle((2.5, 3))
+        right = TestSpriteCircle((4.99, 3))
+        # Act
+        does_collide = left.does_collide(right)
+        # Assert
+        self.assertTrue(does_collide)
+
 
 if __name__ == '__main__':
     unittest.main()
