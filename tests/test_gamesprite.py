@@ -30,7 +30,7 @@ class GameSpriteLoading(GameSprite):
             raise RuntimeError(
                 "if _COLLISION_MASK_LOCATION if overridden, _COLLISION_MASK_ALPHA_OR_COLORKEY must also be overridden"
             )
-        super().__init__()
+        pygame.sprite.DirtySprite.__init__(self)
         self._input_frame = None
         self._seq: int | None = None
         self.dirty = 2  # always draw
