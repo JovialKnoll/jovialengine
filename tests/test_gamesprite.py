@@ -1,5 +1,7 @@
 import unittest
 
+import pygame
+
 from jovialengine.gamesprite import GameSprite
 
 
@@ -41,8 +43,14 @@ class TestInput(unittest.TestCase):
 
     def test_does_collide_circles_false(self):
         # Arrange
-        left = TestSpriteCircle((2.5, 3))
-        right = TestSpriteCircle((8.5, 4))
+        try:
+            left = TestSpriteCircle((2.5, 3))
+        except pygame.error:
+            pass
+        try:
+            right = TestSpriteCircle((8.5, 4))
+        except pygame.error:
+            pass
         # Act
         does_collide = left.does_collide(right)
         # Assert
