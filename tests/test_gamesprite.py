@@ -6,6 +6,16 @@ from jovialengine.gamesprite import GameSprite
 import jovialengine.load as load
 
 
+def image(filename, alpha_or_colorkey=False):
+    result = pygame.image.load(filename)
+    if alpha_or_colorkey is True:
+        pass
+    else:
+        if alpha_or_colorkey is not False:
+            result.set_colorkey(alpha_or_colorkey)
+    return result
+load.image = image
+
 class TestSpriteA(GameSprite):
     pass
 
@@ -16,59 +26,16 @@ class TestSpriteC(GameSprite):
     def collide_TestSpriteA(self, other):
         pass
 
-class GameSpriteLoading(GameSprite):
-    def __init__(self, pos = (0, 0)):
-        if not self._IMAGE_LOCATION:
-            raise RuntimeError(
-                "_IMAGE_LOCATION must be overridden in children of GameSprite"
-            )
-        if not self._ALPHA_OR_COLORKEY:
-            raise RuntimeError(
-                "_ALPHA_OR_COLORKEY must be overridden in children of GameSprite"
-            )
-        if self._COLLISION_MASK_LOCATION and not self._COLLISION_MASK_ALPHA_OR_COLORKEY:
-            raise RuntimeError(
-                "if _COLLISION_MASK_LOCATION if overridden, _COLLISION_MASK_ALPHA_OR_COLORKEY must also be overridden"
-            )
-        pygame.sprite.DirtySprite.__init__(self)
-        self._input_frame = None
-        self._seq: int | None = None
-        self.dirty = 2  # always draw
-        self.image = pygame.image.load(self._IMAGE_LOCATION)
-        if self._ALPHA_OR_COLORKEY is not True and self._ALPHA_OR_COLORKEY is not False:
-            self.image.set_colorkey(self._ALPHA_OR_COLORKEY)
-        if self._IMAGE_SECTION_SIZE:
-            self.source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
-            self.rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
-            self._seq = 0
-            image_size = self.image.get_size()
-            self._image_count_x = image_size[0] // self._IMAGE_SECTION_SIZE[0]
-            self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
-        else:
-            self.rect = self.image.get_rect()
-        self.radius = None
-        if self._COLLISION_RADIUS:
-            self.radius = self._COLLISION_RADIUS
-            self.mask = load.mask_circle(self.rect.size, self.radius)
-        if self._COLLISION_MASK_LOCATION:
-            surface = pygame.image.load(self._IMAGE_LOCATION)
-            if self._ALPHA_OR_COLORKEY is not True and self._ALPHA_OR_COLORKEY is not False:
-                surface.set_colorkey(self._ALPHA_OR_COLORKEY)
-            self.mask = pygame.mask.from_surface(surface)
-        if not self._COLLISION_RADIUS and not self._COLLISION_MASK_LOCATION:
-            self.mask = load.mask_filled(self.rect.size)
-        self.pos = pos
-
-class TestSpriteCircle(GameSpriteLoading):
+class TestSpriteCircle(GameSprite):
     _IMAGE_LOCATION = './assets/gfx/4x4_image.png'
     _ALPHA_OR_COLORKEY = (255, 0, 255)
     _COLLISION_RADIUS = 1.5
 
-class TestSpriteRect(GameSpriteLoading):
+class TestSpriteRect(GameSprite):
     _IMAGE_LOCATION = './assets/gfx/4x4_image.png'
     _ALPHA_OR_COLORKEY = (255, 0, 255)
 
-class TestSpriteMask(GameSpriteLoading):
+class TestSpriteMask(GameSprite):
     _IMAGE_LOCATION = './assets/gfx/4x4_image.png'
     _ALPHA_OR_COLORKEY = (255, 0, 255)
     _COLLISION_MASK_LOCATION = './assets/gfx/4x4_image.png'
