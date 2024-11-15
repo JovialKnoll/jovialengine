@@ -13,6 +13,11 @@ class TestSpriteC(GameSprite):
     def collide_TestSpriteA(self, other):
         pass
 
+class TestSpriteCircle(GameSprite):
+    _IMAGE_LOCATION = './assets/gfx/4x4_image.png'
+    _ALPHA_OR_COLORKEY = (255, 0, 255)
+    _COLLISION_RADIUS: 2.5
+
 class TestInput(unittest.TestCase):
     def test__get_labels_GameSprite(self):
         # Assert
@@ -33,6 +38,15 @@ class TestInput(unittest.TestCase):
     def test_get_collide_labels_TestSpriteC(self):
         # Assert
         self.assertEqual(TestSpriteC.get_collide_labels(), (('TestSpriteA','collide_TestSpriteA',),))
+
+    def test_does_collide_circles_false(self):
+        # Arrange
+        left = TestSpriteCircle((2.5, 3))
+        right = TestSpriteCircle((8.5, 4))
+        # Act
+        does_collide = left.does_collide(right)
+        # Assert
+        self.assertFalse(does_collide)
 
 
 if __name__ == '__main__':
