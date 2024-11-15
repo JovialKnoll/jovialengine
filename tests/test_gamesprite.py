@@ -8,11 +8,8 @@ import jovialengine.load as load
 
 def image(filename, alpha_or_colorkey=False):
     result = pygame.image.load(filename)
-    if alpha_or_colorkey is True:
-        pass
-    else:
-        if alpha_or_colorkey is not False:
-            result.set_colorkey(alpha_or_colorkey)
+    if alpha_or_colorkey is not True and alpha_or_colorkey is not False:
+        result.set_colorkey(alpha_or_colorkey)
     return result
 load.image = image
 
