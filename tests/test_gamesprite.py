@@ -47,6 +47,7 @@ class GameSpriteLoading(GameSprite):
         else:
             self.rect = self.image.get_rect()
         if self._COLLISION_RADIUS:
+            print("test")
             self.radius = self._COLLISION_RADIUS
             self.mask = load.mask_circle(self.rect.size, self.radius)
         if self._COLLISION_MASK_LOCATION:
