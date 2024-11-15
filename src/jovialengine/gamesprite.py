@@ -146,14 +146,11 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         if self is other:
             return False
         elif self.radius and other.radius:
-            # check circle collision
-            pass
-        elif (not self.radius and not other.radius
-              and not self._COLLISION_MASK_LOCATION and not other._COLLISION_MASK_LOCATION):
-            # check rect collision and style above
-            pass
-        # check mask collision
-        pass
+            return pygame.sprite.collide_circle(self, other)
+        elif not self.radius and not other.radius \
+                and not self._COLLISION_MASK_LOCATION and not other._COLLISION_MASK_LOCATION:
+            return pygame.sprite.collide_rect(self, other)
+        return pygame.sprite.collide_mask(self, other)
 
     @final
     def start(self, mode: ModeBase | None = None):
