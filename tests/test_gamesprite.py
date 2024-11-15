@@ -131,6 +131,33 @@ class TestInput(unittest.TestCase):
         # Assert
         self.assertTrue(does_collide)
 
+    def test_does_collide_mask_false0(self):
+        # Arrange
+        left = TestSpriteMask((2, 3))
+        right = TestSpriteMask((5, 3))
+        # Act
+        does_collide = left.does_collide(right)
+        # Assert
+        self.assertFalse(does_collide)
+
+    def test_does_collide_mask_false1(self):
+        # Arrange
+        left = TestSpriteMask((3, 3))
+        right = TestSpriteMask((6, 6))
+        # Act
+        does_collide = left.does_collide(right)
+        # Assert
+        self.assertFalse(does_collide)
+
+    def test_does_collide_mask_true(self):
+        # Arrange
+        left = TestSpriteRect((4, 4))
+        right = TestSpriteRect((7, 2))
+        # Act
+        does_collide = left.does_collide(right)
+        # Assert
+        self.assertTrue(does_collide)
+
 
 if __name__ == '__main__':
     unittest.main()
