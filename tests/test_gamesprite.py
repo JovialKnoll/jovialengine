@@ -68,6 +68,12 @@ class TestSpriteRect(GameSpriteLoading):
     _IMAGE_LOCATION = './assets/gfx/4x4_image.png'
     _ALPHA_OR_COLORKEY = (255, 0, 255)
 
+class TestSpriteMask(GameSpriteLoading):
+    _IMAGE_LOCATION = './assets/gfx/4x4_image.png'
+    _ALPHA_OR_COLORKEY = (255, 0, 255)
+    _COLLISION_MASK_LOCATION = './assets/gfx/4x4_image.png'
+    _COLLISION_MASK_ALPHA_OR_COLORKEY = (255, 0, 255)
+
 class TestInput(unittest.TestCase):
     def test__get_labels_GameSprite(self):
         # Assert
