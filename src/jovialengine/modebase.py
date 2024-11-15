@@ -79,7 +79,7 @@ class ModeBase(abc.ABC):
             for collide_label in sprite.get_collide_labels():
                 if collide_label[0] not in self.sprite_groups:
                     continue
-                for other in self.sprite_groups[collide_label[0]]:
+                for other in self.sprite_groups[collide_label[0]].sprites():
                     if sprite.does_collide(other):
                         getattr(sprite, collide_label[1])(other)
         self._update_post_sprites(dt)
