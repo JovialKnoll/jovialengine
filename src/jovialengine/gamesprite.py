@@ -65,6 +65,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
         else:
             self.rect = self.image.get_rect()
+        self.radius = None
         if self._COLLISION_RADIUS:
             self.radius = self._COLLISION_RADIUS
             self.mask = load.mask_circle(self.rect.size, self.radius)
