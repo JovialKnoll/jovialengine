@@ -72,7 +72,8 @@ class ModeBase(abc.ABC):
     def update(self, dt: int):
         """All game modes can update."""
         self._update_pre_sprites(dt)
-        self.sprite_groups['all'].update(dt)
+        for sprite in self.sprite_groups['all'].sprites():
+            sprite.update(dt)
         self._update_post_sprites(dt)
 
     @final
