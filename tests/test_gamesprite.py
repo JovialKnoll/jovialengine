@@ -23,6 +23,10 @@ class TestSpriteC(GameSprite):
     def collide_TestSpriteA(self, other):
         pass
 
+class TestSpriteD(GameSprite):
+    def _take_state_change(self, state_change):
+        print(state_change)
+
 class TestSpriteCircle(GameSprite):
     _IMAGE_LOCATION = './assets/gfx/4x4_image.png'
     _ALPHA_OR_COLORKEY = (255, 0, 255)
@@ -50,6 +54,14 @@ class TestInput(unittest.TestCase):
     def test__get_labels_TestSpriteB(self):
         # Assert
         self.assertEqual(TestSpriteB._get_labels(), ('TestSpriteB','TestSpriteA','all',))
+
+    def test__get_labels_TestSpriteC(self):
+        # Assert
+        self.assertEqual(TestSpriteC._get_labels(), ('TestSpriteC','all','collide',))
+
+    def test__get_labels_TestSpriteD(self):
+        # Assert
+        self.assertEqual(TestSpriteD._get_labels(), ('TestSpriteD','all','input',))
 
     def test_get_collide_labels_TestSpriteA(self):
         # Assert
