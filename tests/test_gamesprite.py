@@ -63,6 +63,10 @@ class TestSpriteCircle(GameSpriteLoading):
     _ALPHA_OR_COLORKEY = (255, 0, 255)
     _COLLISION_RADIUS = 1.5
 
+class TestSpriteRect(GameSpriteLoading):
+    _IMAGE_LOCATION = './assets/gfx/4x4_image.png'
+    _ALPHA_OR_COLORKEY = (255, 0, 255)
+
 class TestInput(unittest.TestCase):
     def test__get_labels_GameSprite(self):
         # Assert
@@ -97,6 +101,24 @@ class TestInput(unittest.TestCase):
         # Arrange
         left = TestSpriteCircle((2.5, 3))
         right = TestSpriteCircle((3.99, 3))
+        # Act
+        does_collide = left.does_collide(right)
+        # Assert
+        self.assertTrue(does_collide)
+
+    def test_does_collide_rects_false(self):
+        # Arrange
+        left = TestSpriteRect((2.5, 3))
+        right = TestSpriteRect((8.5, 4))
+        # Act
+        does_collide = left.does_collide(right)
+        # Assert
+        self.assertFalse(does_collide)
+
+    def test_does_collide_rects_true(self):
+        # Arrange
+        left = TestSpriteRect((2, 3))
+        right = TestSpriteRect((5, 6))
         # Act
         does_collide = left.does_collide(right)
         # Assert
