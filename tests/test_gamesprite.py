@@ -151,8 +151,8 @@ class TestInput(unittest.TestCase):
 
     def test_does_collide_mask_true(self):
         # Arrange
-        left = TestSpriteRect((4, 4))
-        right = TestSpriteRect((7, 2))
+        left = TestSpriteMask((4, 4))
+        right = TestSpriteMask((7, 2))
         # Act
         does_collide = left.does_collide(right)
         # Assert
