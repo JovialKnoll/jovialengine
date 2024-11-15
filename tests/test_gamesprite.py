@@ -47,7 +47,6 @@ class GameSpriteLoading(GameSprite):
         else:
             self.rect = self.image.get_rect()
         if self._COLLISION_RADIUS:
-            print("test")
             self.radius = self._COLLISION_RADIUS
             self.mask = load.mask_circle(self.rect.size, self.radius)
         if self._COLLISION_MASK_LOCATION:
@@ -62,7 +61,7 @@ class GameSpriteLoading(GameSprite):
 class TestSpriteCircle(GameSpriteLoading):
     _IMAGE_LOCATION = './assets/gfx/4x4_image.png'
     _ALPHA_OR_COLORKEY = (255, 0, 255)
-    _COLLISION_RADIUS: 2.5
+    _COLLISION_RADIUS = 2.5
 
 class TestInput(unittest.TestCase):
     def test__get_labels_GameSprite(self):
