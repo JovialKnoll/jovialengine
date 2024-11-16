@@ -98,11 +98,11 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
             return True
         return False
 
-    def update(self, *args):
+    def update(self, dt: int):
         if self.last_pos is None:
             self.last_pos = self.rect.center
         # adding dt
-        self.time += args[0]
+        self.time += dt
         while self.anims and self.time >= self.anims[0].time:
             done_anim = self.anims.popleft()
             self.time -= done_anim.time
