@@ -20,6 +20,7 @@ class TestSpriteB(TestSpriteA):
     pass
 
 class TestSpriteC(GameSprite):
+    _GETS_INPUT = True
     def collide_TestSpriteA(self, other):
         pass
 
@@ -57,7 +58,7 @@ class TestInput(unittest.TestCase):
 
     def test__get_labels_TestSpriteC(self):
         # Assert
-        self.assertEqual(TestSpriteC._get_labels(), ('TestSpriteC','all','collide',))
+        self.assertEqual(TestSpriteC._get_labels(), ('TestSpriteC','all','input','collide',))
 
     def test__get_labels_TestSpriteD(self):
         # Assert
