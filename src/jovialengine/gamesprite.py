@@ -35,9 +35,11 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         '_image_count_x',
         '_image_count_y',
         '_seq',
-        '_pos',
         '_mask_source_rect',
+        '_mask_image_count_x',
+        '_mask_image_count_y',
         '_mask_seq',
+        '_pos',
     )
 
     def __init__(self, pos: Sequence[float] = (0, 0)):
@@ -58,6 +60,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         self._seq: int | None = None
         self.dirty = 2  # always draw
         self.image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
+        self._image_count_x: int | None = None
+        self._image_count_y: int | None = None
         if self._IMAGE_SECTION_SIZE:
             self.rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
             self.source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
@@ -71,6 +75,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         self.mask = load.mask_filled(self.rect.size)
         self._mask_source_rect: pygame.Rect | None = None
         self._mask_seq: int | None = None
+        self._mask_image_count_x: int | None = None
+        self._mask_image_count_y: int | None = None
         if self._COLLISION_RADIUS:
             self.radius = self._COLLISION_RADIUS
             self.mask = load.mask_circle(self.rect.size, self.radius)
@@ -80,6 +86,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
                 self._mask_source_rect = pygame.rect.Rect((0, 0), self.rect.size)
                 self._mask_seq = 0
                 mask_image_size = self._mask_image.get_size()
+                self._mask_image_count_x = mask_image_size[0] // self.rect.size[0]
+                self._mask_image_count_y = mask_image_size[1] // self.rect.size[1]
                 # todo: set up _mask_seq stuff here
             else:
                 self.mask = load.mask_surface(self._mask_image)
