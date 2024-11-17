@@ -80,13 +80,16 @@ class ModeBase(abc.ABC):
 
     def __handle_collisions(self):
         sprite_collisions = dict()
+        collide_events = []
         for sprite in self.sprite_groups['collide'].sprites():
             for collide_label in sprite.get_collide_labels():
                 if collide_label[0] not in self.sprite_groups:
                     continue
                 for other in self.sprite_groups[collide_label[0]].sprites():
                     if self.__does_collide(sprite_collisions, sprite, other):
-                        getattr(sprite, collide_label[1])(other)
+                        collide_events.append((getattr(sprite, collide_label[1]), other,))
+        for collide_event in collide_events:
+            collide_event[0](collide_event[1])
 
     @staticmethod
     def __does_collide(sprite_collisions: dict, sprite, other) -> bool:
