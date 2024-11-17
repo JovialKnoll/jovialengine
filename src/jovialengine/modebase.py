@@ -26,7 +26,6 @@ class ModeBase(abc.ABC):
         '_space',
         '_background',
         'sprite_groups',
-        '_sprite_collisions',
         '_camera',
         '_camera_pos',
         '_input_frame',
@@ -42,7 +41,6 @@ class ModeBase(abc.ABC):
             'input': pygame.sprite.Group(),
             'collide': pygame.sprite.Group(),
         }
-        self._sprite_collisions = dict()
         self._camera = pygame.rect.Rect((0, 0), self._CAMERA_SIZE or display.screen_size)
         self._camera_pos = pygame.math.Vector2(self._camera.center)
         self._input_frame: InputFrame | None = None
@@ -81,21 +79,22 @@ class ModeBase(abc.ABC):
         self._update_post_sprites(dt)
 
     def __handle_collisions(self):
-        self._sprite_collisions = dict()
+        sprite_collisions = dict()
         for sprite in self.sprite_groups['collide'].sprites():
             for collide_label in sprite.get_collide_labels():
                 if collide_label[0] not in self.sprite_groups:
                     continue
                 for other in self.sprite_groups[collide_label[0]].sprites():
-                    if self.__does_collide:
+                    if self.__does_collide(sprite_collisions, sprite, other):
                         getattr(sprite, collide_label[1])(other)
 
-    def __does_collide(self, sprite, other):
+    @staticmethod
+    def __does_collide(sprite_collisions, sprite, other):
         sprites = frozenset((sprite, other))
-        does_collide = self._sprite_collisions.get(sprites)
+        does_collide = sprite_collisions.get(sprites)
         if does_collide is None:
             does_collide = sprite.does_collide(other)
-            self._sprite_collisions[sprites] = does_collide
+            sprite_collisions[sprites] = does_collide
         return does_collide
 
     @final
