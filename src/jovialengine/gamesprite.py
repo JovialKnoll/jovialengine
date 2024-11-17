@@ -79,6 +79,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             if self.rect.size != self._mask_image.get_size():
                 self._mask_source_rect = pygame.rect.Rect((0, 0), self.rect.size)
                 self._mask_seq = 0
+                mask_image_size = self._mask_image.get_size()
                 # todo: set up _mask_seq stuff here
             else:
                 self.mask = load.mask_surface(self._mask_image)
