@@ -89,7 +89,7 @@ class ModeBase(abc.ABC):
                         getattr(sprite, collide_label[1])(other)
 
     @staticmethod
-    def __does_collide(sprite_collisions, sprite, other):
+    def __does_collide(sprite_collisions: dict, sprite, other) -> bool:
         sprites = frozenset((sprite, other))
         does_collide = sprite_collisions.get(sprites)
         if does_collide is None:
