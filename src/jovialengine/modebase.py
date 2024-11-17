@@ -77,6 +77,10 @@ class ModeBase(abc.ABC):
         self._update_pre_sprites(dt)
         for sprite in self.sprite_groups['all'].sprites():
             sprite.update(dt)
+        self.__handle_collisions()
+        self._update_post_sprites(dt)
+
+    def __handle_collisions(self):
         self._sprite_collisions = dict()
         for sprite in self.sprite_groups['collide'].sprites():
             for collide_label in sprite.get_collide_labels():
@@ -85,7 +89,6 @@ class ModeBase(abc.ABC):
                 for other in self.sprite_groups[collide_label[0]].sprites():
                     if self.__does_collide:
                         getattr(sprite, collide_label[1])(other)
-        self._update_post_sprites(dt)
 
     def __does_collide(self, sprite, other):
         sprites = frozenset((sprite, other))
