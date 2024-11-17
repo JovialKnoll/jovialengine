@@ -72,13 +72,12 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         else:
             self.rect = self.image.get_rect()
         self.radius = None
+        self.mask = load.mask_filled(self.rect.size)
         if self._COLLISION_RADIUS:
             self.radius = self._COLLISION_RADIUS
             self.mask = load.mask_circle(self.rect.size, self.radius)
         if self._COLLISION_MASK_LOCATION:
             self.mask = load.mask(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
-        if not self._COLLISION_RADIUS and not self._COLLISION_MASK_LOCATION:
-            self.mask = load.mask_filled(self.rect.size)
         self.pos = pos
 
     def save(self):
