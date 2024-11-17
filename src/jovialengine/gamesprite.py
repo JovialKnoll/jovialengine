@@ -88,9 +88,17 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
                 mask_image_size = self._mask_image.get_size()
                 self._mask_image_count_x = mask_image_size[0] // self.rect.size[0]
                 self._mask_image_count_y = mask_image_size[1] // self.rect.size[1]
-                # todo: set up _mask_seq stuff here
+                self.mask = load.mask_surface(
+                    self._mask_image,
+                    self._mask_source_rect.topleft,
+                    self._mask_source_rect.size)
             else:
                 self.mask = load.mask_surface(self._mask_image)
+            self.mask = load.mask_surface(
+                self._mask_image,
+                self._mask_source_rect and self._mask_source_rect.topleft,
+                self._mask_source_rect and self._mask_source_rect.size
+            )
         self.pos = pos
 
     def save(self):

@@ -18,6 +18,16 @@ def image(filename, alpha_or_colorkey=False):
 
 
 @functools.cache
+def mask_surface(
+        surface: pygame.Surface,
+        offset: tuple[int, int] | None=None,
+        size: tuple[int, int] | None=None):
+    """Constructs a mask from a surface.
+    The results are cached so don't alter them."""
+    return pygame.mask.from_surface(surface)
+
+
+@functools.cache
 def mask_surface(surface: pygame.Surface):
     """Constructs a mask from a surface.
     The results are cached so don't alter them."""
