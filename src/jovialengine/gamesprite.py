@@ -20,7 +20,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     optional: _COLLISION_RADIUS, set this if a circle collision is appropriate for this sprite
     optional: _COLLISION_MASK_LOCATION, location of image file for generating a collision mask
     optional: _COLLISION_MASK_ALPHA_OR_COLORKEY, alpha_or_colorkey for generating a collision mask
-    optional: _COLLISION_MASK_IMAGE_SECTION_SIZE, used if only checking subset of image for generating a collision mask
     optional: _GETS_INPUT, set this true to force this sprite to receive input
     """
     _IMAGE_LOCATION: str = None
@@ -29,7 +28,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     _COLLISION_RADIUS: float | None = None
     _COLLISION_MASK_LOCATION: str | None = None
     _COLLISION_MASK_ALPHA_OR_COLORKEY: bool | tuple[int, int, int] | None = None
-    _COLLISION_MASK_IMAGE_SECTION_SIZE: tuple[int, int] | None = None
     _GETS_INPUT: bool = False
 
     __slots__ = (
@@ -38,6 +36,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         '_image_count_y',
         '_seq',
         '_pos',
+        '_mask_source_rect',
+        '_mask_seq',
     )
 
     def __init__(self, pos: Sequence[float] = (0, 0)):
@@ -53,31 +53,35 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             raise RuntimeError(
                 "if _COLLISION_MASK_LOCATION is overridden, _COLLISION_MASK_ALPHA_OR_COLORKEY must also be overridden"
             )
-        if self._COLLISION_MASK_IMAGE_SECTION_SIZE and not self._COLLISION_MASK_LOCATION:
-            raise RuntimeError(
-                "if _COLLISION_MASK_IMAGE_SECTION_SIZE is overridden, _COLLISION_MASK_LOCATION must also be overridden"
-            )
         super().__init__()
         self._input_frame: InputFrame | None = None
         self._seq: int | None = None
         self.dirty = 2  # always draw
         self.image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
         if self._IMAGE_SECTION_SIZE:
-            self.source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
             self.rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
+            self.source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
             self._seq = 0
             image_size = self.image.get_size()
             self._image_count_x = image_size[0] // self._IMAGE_SECTION_SIZE[0]
             self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
         else:
             self.rect = self.image.get_rect()
-        self.radius = None
+        self.radius: float | None = None
         self.mask = load.mask_filled(self.rect.size)
+        self._mask_source_rect: pygame.Rect | None = None
+        self._mask_seq: int | None = None
         if self._COLLISION_RADIUS:
             self.radius = self._COLLISION_RADIUS
             self.mask = load.mask_circle(self.rect.size, self.radius)
         if self._COLLISION_MASK_LOCATION:
-            self.mask = load.mask(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
+            self._mask_image = load.image(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
+            if self.rect.size != self._mask_image.get_size():
+                self._mask_source_rect = pygame.rect.Rect((0, 0), self.rect.size)
+                self._mask_seq = 0
+                # todo: set up _mask_seq stuff here
+            else:
+                self.mask = load.mask_surface(self._mask_image)
         self.pos = pos
 
     def save(self):
