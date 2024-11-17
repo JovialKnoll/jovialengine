@@ -49,7 +49,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             )
         if self._COLLISION_MASK_LOCATION and not self._COLLISION_MASK_ALPHA_OR_COLORKEY:
             raise RuntimeError(
-                "if _COLLISION_MASK_LOCATION if overridden, _COLLISION_MASK_ALPHA_OR_COLORKEY must also be overridden"
+                "if _COLLISION_MASK_LOCATION is overridden, _COLLISION_MASK_ALPHA_OR_COLORKEY must also be overridden"
             )
         super().__init__()
         self._input_frame: InputFrame | None = None
@@ -57,8 +57,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         self.dirty = 2  # always draw
         self.image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
         if self._IMAGE_SECTION_SIZE:
-            self.source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
             self.rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
+            self.source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
             self._seq = 0
             image_size = self.image.get_size()
             self._image_count_x = image_size[0] // self._IMAGE_SECTION_SIZE[0]
