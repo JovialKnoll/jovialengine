@@ -47,33 +47,33 @@ class TestSpriteMaskSeq(TestSpriteMask):
     _IMAGE_SECTION_SIZE = (2, 2)
 
 class TestInput(unittest.TestCase):
-    def test__get_labels_GameSprite(self):
+    def test_get_collision_labels_GameSprite(self):
         # Assert
-        self.assertEqual(GameSprite._get_labels(), ('all',))
+        self.assertEqual(GameSprite.get_collision_labels(), ('GameSprite',))
 
-    def test__get_labels_TestSpriteA(self):
+    def test_get_collision_labels_TestSpriteA(self):
         # Assert
-        self.assertEqual(TestSpriteA._get_labels(), ('TestSpriteA','all',))
+        self.assertEqual(TestSpriteA.get_collision_labels(), ('TestSpriteA','GameSprite',))
 
-    def test__get_labels_TestSpriteB(self):
+    def test_get_collision_labels_TestSpriteB(self):
         # Assert
-        self.assertEqual(TestSpriteB._get_labels(), ('TestSpriteB','TestSpriteA','all',))
+        self.assertEqual(TestSpriteB.get_collision_labels(), ('TestSpriteB','TestSpriteA','GameSprite',))
 
-    def test__get_labels_TestSpriteC(self):
+    def test_get_collision_labels_TestSpriteC(self):
         # Assert
-        self.assertEqual(TestSpriteC._get_labels(), ('TestSpriteC','all','input','collide',))
+        self.assertEqual(TestSpriteC.get_collision_labels(), ('TestSpriteC','GameSprite',))
 
-    def test__get_labels_TestSpriteD(self):
+    def test_get_collision_labels_TestSpriteD(self):
         # Assert
-        self.assertEqual(TestSpriteD._get_labels(), ('TestSpriteD','all','input',))
+        self.assertEqual(TestSpriteD.get_collision_labels(), ('TestSpriteD','GameSprite',))
 
-    def test_get_collide_labels_TestSpriteA(self):
+    def test_get_collides_with_TestSpriteA(self):
         # Assert
-        self.assertEqual(TestSpriteA.get_collide_labels(), ())
+        self.assertEqual(TestSpriteA.get_collides_with(), ())
 
-    def test_get_collide_labels_TestSpriteC(self):
+    def test_get_collides_with_TestSpriteC(self):
         # Assert
-        self.assertEqual(TestSpriteC.get_collide_labels(), (('TestSpriteA','collide_TestSpriteA',),))
+        self.assertEqual(TestSpriteC.get_collides_with(), ('TestSpriteA',))
 
     def test_does_collide_circles_false(self):
         # Arrange

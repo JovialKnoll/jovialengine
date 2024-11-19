@@ -38,8 +38,8 @@ class ModeBase(abc.ABC):
         self._background.fill((255, 255, 255))
         self.sprite_groups = {
             'all': pygame.sprite.LayeredDirty(),
-            'input': pygame.sprite.Group(),
             'collide': pygame.sprite.Group(),
+            'input': pygame.sprite.Group(),
         }
         self._camera = pygame.rect.Rect((0, 0), self._CAMERA_SIZE or display.screen_size)
         self._camera_pos = pygame.math.Vector2(self._camera.center)
@@ -79,26 +79,22 @@ class ModeBase(abc.ABC):
         self._update_post_sprites(dt)
 
     def __handle_collisions(self):
-        sprite_collisions = dict()
         collide_events = []
-        for sprite in self.sprite_groups['collide'].sprites():
-            for collide_label in sprite.get_collide_labels():
-                if collide_label[0] not in self.sprite_groups:
+        collide_sprites = self.sprite_groups['collide'].sprites()
+        for i, sprite0 in enumerate(collide_sprites):
+            for j in range(i + 1, len(collide_sprites)):
+                sprite1 = collide_sprites[j]
+                sprite0_collides = sprite0.get_collides_with() & sprite1.get_collision_labels()
+                sprite1_collides = sprite1.get_collides_with() & sprite0.get_collision_labels()
+                if (not sprite0_collides and not sprite1_collides) \
+                        or not sprite0.does_collide(sprite1):
                     continue
-                for other in self.sprite_groups[collide_label[0]].sprites():
-                    if self.__does_collide(sprite_collisions, sprite, other):
-                        collide_events.append((getattr(sprite, collide_label[1]), other,))
+                for sprite0_collide in sprite0_collides:
+                    collide_events.append((getattr(sprite0, 'collide_' + sprite0_collide), sprite1,))
+                for sprite1_collide in sprite1_collides:
+                    collide_events.append((getattr(sprite1, 'collide_' + sprite1_collide), sprite0,))
         for collide_event in collide_events:
             collide_event[0](collide_event[1])
-
-    @staticmethod
-    def __does_collide(sprite_collisions: dict, sprite, other) -> bool:
-        sprites = frozenset((sprite, other))
-        does_collide = sprite_collisions.get(sprites)
-        if does_collide is None:
-            does_collide = sprite.does_collide(other)
-            sprite_collisions[sprites] = does_collide
-        return does_collide
 
     @final
     def draw(self, screen: pygame.surface.Surface):
