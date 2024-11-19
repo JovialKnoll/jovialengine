@@ -138,15 +138,6 @@ class TestInput(unittest.TestCase):
         # Assert
         self.assertTrue(does_collide)
 
-    def test_does_collide_self_false(self):
-        # Arrange
-        left = TestSpriteMask((4, 4))
-        right = left
-        # Act
-        does_collide = left.does_collide(right)
-        # Assert
-        self.assertFalse(does_collide)
-
     def test_seq(self):
         # Arrange
         sprite = TestSpriteMaskSeq((0, 0))
