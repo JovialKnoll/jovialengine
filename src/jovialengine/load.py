@@ -1,9 +1,9 @@
-import functools
+from functools import cache
 
 import pygame
 
 
-@functools.cache
+@cache
 def image(filename, alpha_or_colorkey=False):
     """Loads an image, converts, and sets colorkey as needed.
     The results are cached so don't alter them."""
@@ -17,7 +17,7 @@ def image(filename, alpha_or_colorkey=False):
     return result
 
 
-@functools.cache
+@cache
 def mask(filename, alpha_or_colorkey=False):
     """Loads an image and uses this to construct a mask.
     The results are cached so don't alter them."""
@@ -25,14 +25,14 @@ def mask(filename, alpha_or_colorkey=False):
     return pygame.mask.from_surface(surface)
 
 
-@functools.cache
+@cache
 def mask_filled(size: tuple[int, int]):
     """Constructs a filled mask.
     The results are cached so don't alter them."""
     return pygame.mask.Mask(size, True)
 
 
-@functools.cache
+@cache
 def mask_circle(size: tuple[int, int], radius: float):
     """Constructs a mask with a filled circle centered in the size at the given radius.
     The results are cached so don't alter them."""
@@ -43,7 +43,7 @@ def mask_circle(size: tuple[int, int], radius: float):
     return pygame.mask.from_surface(surface)
 
 
-@functools.cache
+@cache
 def sound(filename):
     """Loads a sound.
     The results are cached so don't alter them."""
