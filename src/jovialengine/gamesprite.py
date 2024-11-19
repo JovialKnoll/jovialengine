@@ -35,6 +35,10 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         '_image_count_x',
         '_image_count_y',
         '_seq',
+        '_mask_source_rect',
+        '_mask_image_count_x',
+        '_mask_image_count_y',
+        '_mask_seq',
         '_pos',
     )
 
@@ -69,17 +73,33 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             self.rect = self.image.get_rect()
         self.radius: float | None = None
         self.mask = load.mask_filled(self.rect.size)
+        self._mask_source_rect: pygame.Rect | None = None
+        self._mask_seq: int | None = None
+        self._mask_image_count_x: int | None = None
+        self._mask_image_count_y: int | None = None
         if self._COLLISION_RADIUS:
             self.radius = self._COLLISION_RADIUS
             self.mask = load.mask_circle(self.rect.size, self.radius)
         if self._COLLISION_MASK_LOCATION:
-            self.mask = load.mask(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
+            self._mask_image = load.image(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
+            if self.rect.size != self._mask_image.get_size():
+                self._mask_source_rect = pygame.rect.Rect((0, 0), self.rect.size)
+                self._mask_seq = 0
+                mask_image_size = self._mask_image.get_size()
+                self._mask_image_count_x = mask_image_size[0] // self.rect.size[0]
+                self._mask_image_count_y = mask_image_size[1] // self.rect.size[1]
+            self.mask = load.mask_surface(
+                self._mask_image,
+                self._mask_source_rect and self._mask_source_rect.topleft,
+                self._mask_source_rect and self._mask_source_rect.size
+            )
         self.pos = pos
 
     def save(self):
         return {
             '_pos': self._pos,
             '_seq': self._seq,
+            '_mask_seq': self._mask_seq,
         }
 
     @classmethod
@@ -87,6 +107,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         new_obj = cls(save_data['_pos'])
         if new_obj.seq is not None:
             new_obj.seq = save_data['_seq']
+        if new_obj.mask_seq is not None:
+            new_obj.mask_seq = save_data['_mask_seq']
         return new_obj
 
     @final
@@ -104,6 +126,27 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         self._seq = value % (self._image_count_x * self._image_count_y)
         self.source_rect.x = (self._seq % self._image_count_x) * self._IMAGE_SECTION_SIZE[0]
         self.source_rect.y = (self._seq // self._image_count_x) * self._IMAGE_SECTION_SIZE[1]
+
+    @final
+    @property
+    def mask_seq(self):
+        """Get the sprite sequence.
+        Set this value to change to a different part of the sprite sheet."""
+        return self._mask_seq
+
+    @final
+    @mask_seq.setter
+    def mask_seq(self, value: int):
+        if self._mask_seq is None:
+            raise RuntimeError("error: setting mask_seq for GameSprite not using a sprite sheet")
+        self._mask_seq = value % (self._image_count_x * self._image_count_y)
+        self._mask_source_rect.x = (self._mask_seq % self._mask_image_count_x) * self.rect.size[0]
+        self._mask_source_rect.y = (self._mask_seq // self._mask_image_count_y) * self.rect.size[1]
+        self.mask = load.mask_surface(
+            self._mask_image,
+            self._mask_source_rect and self._mask_source_rect.topleft,
+            self._mask_source_rect and self._mask_source_rect.size
+        )
 
     @final
     @property

@@ -2,8 +2,8 @@ import unittest
 
 import pygame
 
-from jovialengine.gamesprite import GameSprite
 import jovialengine.load as load
+from jovialengine.gamesprite import GameSprite
 
 
 def image(filename, alpha_or_colorkey=False):
@@ -42,6 +42,9 @@ class TestSpriteMask(GameSprite):
     _ALPHA_OR_COLORKEY = (255, 0, 255)
     _COLLISION_MASK_LOCATION = './assets/gfx/4x4_image.png'
     _COLLISION_MASK_ALPHA_OR_COLORKEY = (255, 0, 255)
+
+class TestSpriteMaskSeq(TestSpriteMask):
+    _IMAGE_SECTION_SIZE = (2, 2)
 
 class TestInput(unittest.TestCase):
     def test__get_labels_GameSprite(self):
@@ -143,6 +146,22 @@ class TestInput(unittest.TestCase):
         does_collide = left.does_collide(right)
         # Assert
         self.assertFalse(does_collide)
+
+    def test_seq(self):
+        # Arrange
+        sprite = TestSpriteMaskSeq((0, 0))
+        # Act
+        sprite.seq = 4
+        # Assert
+        self.assertEqual(sprite.seq, 0)
+
+    def test_mask_seq(self):
+        # Arrange
+        sprite = TestSpriteMaskSeq((0, 0))
+        # Act
+        sprite.mask_seq = 4
+        # Assert
+        self.assertEqual(sprite.mask_seq, 0)
 
 
 if __name__ == '__main__':

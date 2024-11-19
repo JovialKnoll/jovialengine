@@ -18,10 +18,14 @@ def image(filename, alpha_or_colorkey=False):
 
 
 @cache
-def mask(filename, alpha_or_colorkey=False):
-    """Loads an image and uses this to construct a mask.
+def mask_surface(
+        surface: pygame.Surface,
+        offset: tuple[int, int] | None=None,
+        size: tuple[int, int] | None=None):
+    """Constructs a mask from a surface.
     The results are cached so don't alter them."""
-    surface = image(filename, alpha_or_colorkey)
+    if offset and size:
+        surface = surface.subsurface((offset, size))
     return pygame.mask.from_surface(surface)
 
 
