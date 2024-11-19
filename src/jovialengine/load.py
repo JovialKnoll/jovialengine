@@ -24,6 +24,8 @@ def mask_surface(
         size: tuple[int, int] | None=None):
     """Constructs a mask from a surface.
     The results are cached so don't alter them."""
+    if offset and size:
+        surface = surface.subsurface((offset, size))
     return pygame.mask.from_surface(surface)
 
 
