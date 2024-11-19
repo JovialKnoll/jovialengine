@@ -2,8 +2,8 @@ import unittest
 
 import pygame
 
-from jovialengine.gamesprite import GameSprite
 import jovialengine.load as load
+from jovialengine.gamesprite import GameSprite
 
 
 def image(filename, alpha_or_colorkey=False):
