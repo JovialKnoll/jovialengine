@@ -1,5 +1,5 @@
 import abc
-import functools
+from functools import cache
 from typing import final, Sequence, Self
 
 import pygame
@@ -56,6 +56,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         self._seq: int | None = None
         self.dirty = 2  # always draw
         self.image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
+        self._image_count_x: int | None = None
+        self._image_count_y: int | None = None
         if self._IMAGE_SECTION_SIZE:
             self.rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
             self.source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
@@ -65,20 +67,19 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
             self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
         else:
             self.rect = self.image.get_rect()
-        self.radius = None
+        self.radius: float | None = None
+        self.mask = load.mask_filled(self.rect.size)
         if self._COLLISION_RADIUS:
             self.radius = self._COLLISION_RADIUS
             self.mask = load.mask_circle(self.rect.size, self.radius)
         if self._COLLISION_MASK_LOCATION:
             self.mask = load.mask(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
-        if not self._COLLISION_RADIUS and not self._COLLISION_MASK_LOCATION:
-            self.mask = load.mask_filled(self.rect.size)
         self.pos = pos
 
     def save(self):
         return {
+            '_pos': self._pos,
             '_seq': self._seq,
-            '_pos': (self._pos.x, self._pos.y),
         }
 
     @classmethod
@@ -118,7 +119,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         self.rect.center = self._pos
 
     @classmethod
-    @functools.cache
+    @final
+    @cache
     def _get_labels(cls):
         labels = [
             t.__name__
@@ -134,7 +136,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
 
     @classmethod
     @final
-    @functools.cache
+    @cache
     def get_collide_labels(cls):
         return tuple(
             (e.removeprefix('collide_'), e,)
