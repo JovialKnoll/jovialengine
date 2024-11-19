@@ -1,5 +1,5 @@
 import abc
-import functools
+from functools import cache
 from typing import final, Sequence, Self
 
 import pygame
@@ -163,7 +163,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
 
     @classmethod
     @final
-    @functools.cache
+    @cache
     def _get_labels(cls):
         labels = [
             t.__name__
@@ -179,7 +179,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
 
     @classmethod
     @final
-    @functools.cache
+    @cache
     def get_collide_labels(cls):
         return tuple(
             (e.removeprefix('collide_'), e,)
