@@ -162,6 +162,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         self.rect.center = self._pos
 
     @classmethod
+    @final
     @functools.cache
     def _get_labels(cls):
         labels = [
