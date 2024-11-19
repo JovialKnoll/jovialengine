@@ -78,8 +78,8 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
 
     def save(self):
         return {
+            '_pos': self._pos,
             '_seq': self._seq,
-            '_pos': (self._pos.x, self._pos.y),
         }
 
     @classmethod
