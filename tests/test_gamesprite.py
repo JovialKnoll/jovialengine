@@ -49,31 +49,31 @@ class TestSpriteMaskSeq(TestSpriteMask):
 class TestInput(unittest.TestCase):
     def test_get_collision_labels_GameSprite(self):
         # Assert
-        self.assertEqual(GameSprite.get_collision_labels(), ('GameSprite',))
+        self.assertEqual(GameSprite.get_collision_labels(), frozenset(('GameSprite',)))
 
     def test_get_collision_labels_TestSpriteA(self):
         # Assert
-        self.assertEqual(TestSpriteA.get_collision_labels(), ('TestSpriteA','GameSprite',))
+        self.assertEqual(TestSpriteA.get_collision_labels(), frozenset(('TestSpriteA','GameSprite',)))
 
     def test_get_collision_labels_TestSpriteB(self):
         # Assert
-        self.assertEqual(TestSpriteB.get_collision_labels(), ('TestSpriteB','TestSpriteA','GameSprite',))
+        self.assertEqual(TestSpriteB.get_collision_labels(), frozenset(('TestSpriteB','TestSpriteA','GameSprite',)))
 
     def test_get_collision_labels_TestSpriteC(self):
         # Assert
-        self.assertEqual(TestSpriteC.get_collision_labels(), ('TestSpriteC','GameSprite',))
+        self.assertEqual(TestSpriteC.get_collision_labels(), frozenset(('TestSpriteC','GameSprite',)))
 
     def test_get_collision_labels_TestSpriteD(self):
         # Assert
-        self.assertEqual(TestSpriteD.get_collision_labels(), ('TestSpriteD','GameSprite',))
+        self.assertEqual(TestSpriteD.get_collision_labels(), frozenset(('TestSpriteD','GameSprite',)))
 
     def test_get_collides_with_TestSpriteA(self):
         # Assert
-        self.assertEqual(TestSpriteA.get_collides_with(), ())
+        self.assertEqual(TestSpriteA.get_collides_with(), frozenset(()))
 
     def test_get_collides_with_TestSpriteC(self):
         # Assert
-        self.assertEqual(TestSpriteC.get_collides_with(), ('TestSpriteA',))
+        self.assertEqual(TestSpriteC.get_collides_with(), frozenset(('TestSpriteA',)))
 
     def test_does_collide_circles_false(self):
         # Arrange
