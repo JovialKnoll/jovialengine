@@ -86,13 +86,11 @@ class ModeBase(abc.ABC):
                 sprite1 = collide_sprites[j]
                 sprite0_collides = sprite0.get_collides_with() & sprite1.get_collision_labels()
                 sprite1_collides = sprite1.get_collides_with() & sprite0.get_collision_labels()
-                if (not sprite0_collides and not sprite1_collides) \
-                        or not sprite0.does_collide(sprite1):
-                    continue
-                for sprite0_collide in sprite0_collides:
-                    collide_events.append((getattr(sprite0, 'collide_' + sprite0_collide), sprite1,))
-                for sprite1_collide in sprite1_collides:
-                    collide_events.append((getattr(sprite1, 'collide_' + sprite1_collide), sprite0,))
+                if (sprite0_collides or sprite1_collides) and sprite0.does_collide(sprite1):
+                    for sprite0_collide in sprite0_collides:
+                        collide_events.append((getattr(sprite0, 'collide_' + sprite0_collide), sprite1,))
+                    for sprite1_collide in sprite1_collides:
+                        collide_events.append((getattr(sprite1, 'collide_' + sprite1_collide), sprite0,))
         for collide_event in collide_events:
             collide_event[0](collide_event[1])
 
