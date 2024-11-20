@@ -21,6 +21,12 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     optional: _COLLISION_MASK_LOCATION, location of image file for generating a collision mask
     optional: _COLLISION_MASK_ALPHA_OR_COLORKEY, alpha_or_colorkey for generating a collision mask
     optional: _GETS_INPUT, set this true to force this sprite to receive input
+
+    To hook in to collision checking, create a function like so:
+    def collide_OtherGameSpriteClassName(self, other: OtherGameSpriteClassName):
+        do_something()
+    collide_OtherGameSpriteClassName will be called whenever there is a collision with a OtherGameSpriteClassName
+    Other will be the GameSprite collided with.
     """
     _IMAGE_LOCATION: str = None
     _ALPHA_OR_COLORKEY: bool | tuple[int, int, int] = None
@@ -164,34 +170,28 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     @classmethod
     @final
     @cache
-    def _get_labels(cls):
+    def get_collision_labels(cls):
         labels = [
             t.__name__
             for t in cls.mro()
             if t not in GameSprite.mro()
         ]
-        labels.append('all')
-        if cls._GETS_INPUT or cls._take_state_change is not GameSprite._take_state_change:
-            labels.append('input')
-        if cls.get_collide_labels():
-            labels.append('collide')
-        return tuple(labels)
+        labels.append('GameSprite')
+        return frozenset(labels)
 
     @classmethod
     @final
     @cache
-    def get_collide_labels(cls):
-        return tuple(
-            (e.removeprefix('collide_'), e,)
+    def get_collides_with(cls):
+        return frozenset([
+            e.removeprefix('collide_')
             for e in dir(cls)
             if e.startswith('collide_')
-        )
+        ])
 
     @final
     def does_collide(self, other: Self):
-        if self is other:
-            return False
-        elif self.radius and other.radius:
+        if self.radius and other.radius:
             return pygame.sprite.collide_circle(self, other)
         elif not self.radius and not other.radius \
                 and not self._COLLISION_MASK_LOCATION and not other._COLLISION_MASK_LOCATION:
@@ -207,10 +207,10 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         """
         if mode is None:
             mode = game.get_current_mode()
-        for label in self._get_labels():
-            if label not in mode.sprite_groups:
-                mode.sprite_groups[label] = pygame.sprite.Group()
-            mode.sprite_groups[label].add(self)
+        mode.sprite_groups['all'].add(self)
+        mode.sprite_groups['collide'].add(self)
+        if self._GETS_INPUT or self._take_state_change is not GameSprite._take_state_change:
+            mode.sprite_groups['input'].add(self)
         self._create(mode)
         return self
 
