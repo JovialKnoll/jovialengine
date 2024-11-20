@@ -21,6 +21,12 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     optional: _COLLISION_MASK_LOCATION, location of image file for generating a collision mask
     optional: _COLLISION_MASK_ALPHA_OR_COLORKEY, alpha_or_colorkey for generating a collision mask
     optional: _GETS_INPUT, set this true to force this sprite to receive input
+
+    To hook in to collision checking, create a function like so:
+    def collide_OtherGameSpriteClassName(self, other: OtherGameSpriteClassName):
+        do_something()
+    collide_OtherGameSpriteClassName will be called whenever there is a collision with a OtherGameSpriteClassName
+    Other will be the GameSprite collided with.
     """
     _IMAGE_LOCATION: str = None
     _ALPHA_OR_COLORKEY: bool | tuple[int, int, int] = None
