@@ -183,12 +183,11 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
     @final
     @cache
     def get_collides_with(cls):
-        collides_with = [
+        return frozenset([
             e.removeprefix('collide_')
             for e in dir(cls)
             if e.startswith('collide_')
-        ]
-        return frozenset(collides_with)
+        ])
 
     @final
     def does_collide(self, other: Self):
