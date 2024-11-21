@@ -5,7 +5,7 @@ MAX_FRAMERATE = 'MaxFramerate'
 FULLSCREEN = 'Fullscreen'
 SCREEN_SCALE = 'ScreenScale'
 _DEFAULTS = {
-    MAX_FRAMERATE: 1000,
+    MAX_FRAMERATE: 120,
     SCREEN_SCALE: 0,
     FULLSCREEN: False,
 }
