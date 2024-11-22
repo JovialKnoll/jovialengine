@@ -25,7 +25,9 @@ class ModeBase(abc.ABC):
     __slots__ = (
         '_space',
         '_background',
-        'sprite_groups',
+        'sprites_all',
+        'sprites_collide',
+        'sprites_input',
         '_camera',
         '_camera_pos',
         '_input_frame',
@@ -36,11 +38,9 @@ class ModeBase(abc.ABC):
         self._space = pygame.Surface(self._SPACE_SIZE or display.screen_size).convert()
         self._background = pygame.Surface(self._SPACE_SIZE or display.screen_size).convert()
         self._background.fill((255, 255, 255))
-        self.sprite_groups = {
-            'all': pygame.sprite.LayeredDirty(),
-            'collide': pygame.sprite.Group(),
-            'input': pygame.sprite.Group(),
-        }
+        self.sprites_all = pygame.sprite.LayeredDirty()
+        self.sprites_collide = pygame.sprite.Group()
+        self.sprites_input = pygame.sprite.Group()
         self._camera = pygame.rect.Rect((0, 0), self._CAMERA_SIZE or display.screen_size)
         self._camera_pos = pygame.math.Vector2(self._camera.center)
         self._input_frame: InputFrame | None = None
@@ -65,7 +65,7 @@ class ModeBase(abc.ABC):
         for event in events:
             self._take_event(event)
         self._take_frame(input_frame)
-        for sprite in self.sprite_groups['input'].sprites():
+        for sprite in self.sprites_input.sprites():
             sprite.input(input_frame)
         self._input_frame = input_frame
 
@@ -73,14 +73,14 @@ class ModeBase(abc.ABC):
     def update(self, dt: int):
         """All game modes can update."""
         self._update_pre_sprites(dt)
-        for sprite in self.sprite_groups['all'].sprites():
+        for sprite in self.sprites_all.sprites():
             sprite.update(dt)
         self.__handle_collisions()
         self._update_post_sprites(dt)
 
     def __handle_collisions(self):
         collide_events = []
-        collide_sprites = self.sprite_groups['collide'].sprites()
+        collide_sprites = self.sprites_collide.sprites()
         for i, sprite0 in enumerate(collide_sprites):
             for j in range(i + 1, len(collide_sprites)):
                 sprite1 = collide_sprites[j]
@@ -100,7 +100,7 @@ class ModeBase(abc.ABC):
         self._update_pre_draw(screen)
         self._space.blit(self._background, (0, 0))
         self._draw_pre_sprites(self._space)
-        self.sprite_groups['all'].draw(self._space)
+        self.sprites_all.draw(self._space)
         self._draw_post_sprites(self._space)
         screen.blit(self._space, self._CAMERA_OFFSET, self._camera)
         self._draw_post_camera(screen)
@@ -109,8 +109,8 @@ class ModeBase(abc.ABC):
     def cleanup(self):
         """All sprite groups we have in this mode should be emptied here.
         We can't just kill the sprites since we might be reusing them between modes."""
-        for sprite_group in self.sprite_groups.values():
-            sprite_group.empty()
+        for sprites in (self.sprites_all, self.sprites_collide, self.sprites_input):
+            sprites.empty()
         self._cleanup()
 
     def _take_event(self, event: pygame.event.Event):
