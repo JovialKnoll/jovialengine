@@ -207,10 +207,10 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         """
         if mode is None:
             mode = game.get_current_mode()
-        mode.sprite_groups['all'].add(self)
-        mode.sprite_groups['collide'].add(self)
+        mode.sprites_all.add(self)
+        mode.sprites_collide.add(self)
         if self._GETS_INPUT or self._take_state_change is not GameSprite._take_state_change:
-            mode.sprite_groups['input'].add(self)
+            mode.sprites_input.add(self)
         self._create(mode)
         return self
 
