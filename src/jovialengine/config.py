@@ -6,18 +6,22 @@ import pygame
 MAX_FRAMERATE = 'MaxFramerate'
 FULLSCREEN = 'Fullscreen'
 SCREEN_SCALE = 'ScreenScale'
-_DEFAULTS = {
-    MAX_FRAMERATE: max(pygame.display.get_desktop_refresh_rates()) or 120,
-    SCREEN_SCALE: 0,
-    FULLSCREEN: False,
-}
 _SECTION = 'Game'
-_config = configparser.ConfigParser(_DEFAULTS, default_section=_SECTION)
+_defaults: dict
+_config: configparser.ConfigParser
 _config_file: str | None = None
 
 
 def init(config_file: str):
+    global _defaults
+    global _config
     global _config_file
+    _defaults = {
+        MAX_FRAMERATE: max(pygame.display.get_desktop_refresh_rates()) or 120,
+        SCREEN_SCALE: 0,
+        FULLSCREEN: False,
+    }
+    _config = configparser.ConfigParser(_defaults, default_section=_SECTION)
     if _config_file:
         raise RuntimeError("error: _config_file is already set")
     _config_file = config_file
@@ -27,7 +31,7 @@ def init(config_file: str):
 
 
 def get(key: str):
-    match _DEFAULTS.get(key):
+    match _defaults.get(key):
         case bool():
             return _config.getboolean(_SECTION, key)
         case int():
