@@ -7,7 +7,7 @@ def clamp(number, minimum, maximum):
     return max(minimum, min(maximum, number))
 
 
-def get_int_movement(tracking, vel, dt):
+def get_int_movement(tracking: float, vel: float, dt: int):
     tracking += vel * dt
     tracking_int = int(tracking)
     tracking -= tracking_int
