@@ -13,13 +13,15 @@ class FontWrap(object):
         self.line_height = line_height
         self._antialias = antialias
 
-    def render_to(self, surf: pygame.Surface, dest, text: str, color, background=None):
-        surf.blit(self.font.render(text, self._antialias, color, background), dest)
+    def render_to(self, surf: pygame.Surface, dest: pygame.typing.IntPoint, text: str,
+                  color: pygame.typing.ColorLike, bgcolor: pygame.typing.ColorLike | None=None):
+        surf.blit(self.font.render(text, self._antialias, color, bgcolor), dest)
 
-    def render_to_centered(self, surf: pygame.Surface, dest, text: str, color, background=None):
+    def render_to_centered(self, surf: pygame.Surface, dest: pygame.typing.IntPoint, text: str,
+                           color: pygame.typing.ColorLike, bgcolor: pygame.typing.ColorLike | None = None):
         text_size = self.font.size(text)
         surf.blit(
-            self.font.render(text, self._antialias, color, background),
+            self.font.render(text, self._antialias, color, bgcolor),
             (dest[0] - text_size[0] // 2, dest[1] - text_size[1] // 2)
         )
 
@@ -33,7 +35,9 @@ class FontWrap(object):
                 lines[-1] += " " + new_word
         return lines
 
-    def render_to_inside(self, surf: pygame.Surface, dest, width: int, text: str, color, background=None):
+    def render_to_inside(self, surf: pygame.Surface, dest: pygame.typing.IntPoint, width: int, text: str,
+                         color: pygame.typing.ColorLike,
+                         bgcolor: pygame.typing.ColorLike | None = None):
         # probably more efficient to do once?
         part_dest = [dest[0], dest[1]]
         for words in [line.split() for line in text.splitlines()]:
@@ -42,31 +46,35 @@ class FontWrap(object):
             lines = self._calculate_lines_for_words(width, words)
             for line in lines:
                 surf.blit(
-                    self.font.render(line, self._antialias, color, background),
+                    self.font.render(line, self._antialias, color, bgcolor),
                     part_dest
                 )
                 part_dest[1] += self.line_height
 
-    def _render_words_inside(self, width: int, words: list[str], color, background):
+    def _render_words_inside(self, width: int, words: list[str],
+                             color: pygame.typing.ColorLike,
+                             bgcolor: pygame.typing.ColorLike | None = None):
         """Returns a surface of the width with the words drawn on it.
         If any word is too long to fit, it will be in its own line, and truncated.
         """
         lines = self._calculate_lines_for_words(width, words)
         result = pygame.Surface((width, self.line_height * len(lines))).convert()
-        result.fill(background)
+        result.fill(bgcolor)
         for i, line in enumerate(lines):
-            drawn_line = self.font.render(line, self._antialias, color, background).convert()
+            drawn_line = self.font.render(line, self._antialias, color, bgcolor).convert()
             result.blit(drawn_line, (0, i * self.line_height))
         return result
 
-    def render_inside(self, width: int, text: str, color, background):
+    def render_inside(self, width: int, text: str,
+                      color: pygame.typing.ColorLike,
+                      bgcolor: pygame.typing.ColorLike | None = None):
         # probably more efficient if keeping resultant surface and using that to draw over and over?
         height = 0
         images = []
         for words in [line.split() for line in text.splitlines()]:
             if not words:
                 words = [""]
-            images.append(self._render_words_inside(width, words, color, background))
+            images.append(self._render_words_inside(width, words, color, bgcolor))
             height += images[-1].get_height()
         result = pygame.Surface((width, height)).convert()
         dest = [0, 0]
