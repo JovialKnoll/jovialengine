@@ -4,7 +4,7 @@ import pygame
 
 
 @cache
-def image(filename, alpha_or_colorkey=False):
+def image(filename: str, alpha_or_colorkey: bool | pygame.typing.ColorLike=False):
     """Loads an image, converts, and sets colorkey as needed.
     The results are cached so don't alter them."""
     result = pygame.image.load(filename)
@@ -48,7 +48,7 @@ def mask_circle(size: tuple[int, int], radius: float):
 
 
 @cache
-def sound(filename):
+def sound(filename: str):
     """Loads a sound.
     The results are cached so don't alter them."""
     return pygame.mixer.Sound(filename)
