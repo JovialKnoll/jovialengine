@@ -167,6 +167,28 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         self._pos = pygame.math.Vector2(value)
         self.rect.center = self._pos
 
+    @final
+    @property
+    def pos_x(self):
+        return self._pos.x
+
+    @final
+    @pos_x.setter
+    def pos_x(self, value: int | float):
+        self._pos.x = value
+        self.rect.center = self._pos
+
+    @final
+    @property
+    def pos_y(self):
+        return self._pos.y
+
+    @final
+    @pos_y.setter
+    def pos_y(self, value: int | float):
+        self._pos.y = value
+        self.rect.center = self._pos
+
     @classmethod
     @final
     @cache
