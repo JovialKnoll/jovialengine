@@ -1,6 +1,6 @@
 import abc
 from functools import cache
-from typing import final, Sequence, Self
+from typing import final, Self
 
 import pygame
 
@@ -48,7 +48,7 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         '_pos',
     )
 
-    def __init__(self, pos: Sequence[float] = (0, 0)):
+    def __init__(self, pos: pygame.typing.Point = (0, 0)):
         if not self._IMAGE_LOCATION:
             raise RuntimeError(
                 "_IMAGE_LOCATION must be overridden in children of GameSprite"

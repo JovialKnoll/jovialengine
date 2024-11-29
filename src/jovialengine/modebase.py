@@ -1,5 +1,5 @@
 import abc
-from typing import final, Sequence
+from typing import final
 from collections.abc import Iterable
 
 import pygame
@@ -55,7 +55,7 @@ class ModeBase(abc.ABC):
 
     @final
     @camera_pos.setter
-    def camera_pos(self, value: Sequence[float]):
+    def camera_pos(self, value: pygame.typing.Point):
         self._camera_pos = pygame.math.Vector2(value)
         self._camera.center = self._camera_pos
 
