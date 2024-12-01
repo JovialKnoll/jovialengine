@@ -155,7 +155,7 @@ def _set_mode(size: tuple[int, int], flags: int):
     pygame.display.set_caption(_title)
     if _window_icon:
         pygame.display.set_icon(_window_icon)
-    return pygame.display.set_mode(size, flags)
+    return pygame.display.set_mode(size, flags, vsync=-1)
 
 
 def scale_draw():
