@@ -23,6 +23,7 @@ screen: pygame.Surface | None = None
 _fullscreen_offset: tuple[int, int] | None
 _full_screen: pygame.Surface | None
 _disp_screen: pygame.Surface
+is_vsync: bool = False
 
 
 def init(
@@ -152,9 +153,11 @@ def _set_fullscreen():
 
 
 def _set_mode(size: tuple[int, int], flags: int):
+    global is_vsync
     pygame.display.set_caption(_title)
     if _window_icon:
         pygame.display.set_icon(_window_icon)
+    is_vsync = True
     try:
         return pygame.display.set_mode(size, flags, vsync=-1)
     except pygame.error:
@@ -163,6 +166,7 @@ def _set_mode(size: tuple[int, int], flags: int):
         return pygame.display.set_mode(size, flags, vsync=1)
     except pygame.error:
         pass
+    is_vsync = False
     return pygame.display.set_mode(size, flags)
 
 
