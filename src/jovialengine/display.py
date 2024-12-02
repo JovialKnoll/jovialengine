@@ -162,6 +162,7 @@ def _set_mode(size: tuple[int, int], flags: int):
         return pygame.display.set_mode(size, flags, vsync=1)
     except pygame.error:
         pass
+    print("vsync not enabled")
     is_vsync = False
     return pygame.display.set_mode(size, flags)
 
