@@ -68,14 +68,8 @@ def init(
         screen_size[1] * _upscale_max,
     )
     _windowed_flags = 0
-    if pygame.display.mode_ok(_monitor_res, pygame.OPENGL):
-        _windowed_flags = pygame.OPENGL
     _fullscreen_flags = 0
-    if pygame.display.mode_ok(_monitor_res, pygame.FULLSCREEN | pygame.OPENGL):
-        _fullscreen_flags = pygame.FULLSCREEN | pygame.OPENGL
-    elif pygame.display.mode_ok(_monitor_res, pygame.NOFRAME | pygame.OPENGL):
-        _fullscreen_flags = pygame.NOFRAME | pygame.OPENGL
-    elif pygame.display.mode_ok(_monitor_res, pygame.FULLSCREEN):
+    if pygame.display.mode_ok(_monitor_res, pygame.FULLSCREEN):
         _fullscreen_flags = pygame.FULLSCREEN
     elif pygame.display.mode_ok(_monitor_res, pygame.NOFRAME):
         _fullscreen_flags = pygame.NOFRAME
@@ -164,10 +158,6 @@ def _set_mode(size: tuple[int, int], flags: int):
     if _window_icon:
         pygame.display.set_icon(_window_icon)
     is_vsync = True
-    try:
-        return pygame.display.set_mode(size, flags, vsync=-1)
-    except (pygame.error, ValueError):
-        pass
     try:
         return pygame.display.set_mode(size, flags, vsync=1)
     except pygame.error:
