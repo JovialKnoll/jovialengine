@@ -23,7 +23,7 @@ screen: pygame.Surface | None = None
 _fullscreen_offset: tuple[int, int] | None
 _full_screen: pygame.Surface | None
 _disp_screen: pygame.Surface
-is_vsync: bool = False
+max_framerate: int = 0
 
 
 def init(
@@ -153,16 +153,16 @@ def _set_fullscreen():
 
 
 def _set_mode(size: tuple[int, int], flags: int):
-    global is_vsync
+    global max_framerate
     pygame.display.set_caption(_title)
     if _window_icon:
         pygame.display.set_icon(_window_icon)
-    is_vsync = True
+    max_framerate = 0
     try:
         return pygame.display.set_mode(size, flags, vsync=1)
     except pygame.error:
         pass
-    is_vsync = False
+    max_framerate = max(pygame.display.get_desktop_refresh_rates())
     return pygame.display.set_mode(size, flags)
 
 

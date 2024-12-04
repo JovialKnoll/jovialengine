@@ -3,7 +3,6 @@ import configparser
 import pygame
 
 
-MAX_FRAMERATE = 'MaxFramerate'
 FULLSCREEN = 'Fullscreen'
 SCREEN_SCALE = 'ScreenScale'
 _SECTION = 'Game'
@@ -17,7 +16,6 @@ def init(config_file: str):
     global _config
     global _config_file
     _defaults = {
-        MAX_FRAMERATE: max(pygame.display.get_desktop_refresh_rates()) or 120,
         SCREEN_SCALE: 0,
         FULLSCREEN: False,
     }

@@ -21,7 +21,6 @@ class _Game(object):
         'start_mode_cls',
         '_state_cls',
         '_clock',
-        '_max_framerate',
         '_joysticks',
         '_is_first_loop',
         'current_mode',
@@ -73,7 +72,6 @@ class _Game(object):
             font = pygame.font.SysFont(None, font_size)
         fontwrap.init(font, font_height, font_antialias)
         self._clock = pygame.time.Clock()
-        self._max_framerate = config.get(config.MAX_FRAMERATE)
         self._joysticks = [
             pygame.joystick.Joystick(i)
             for i
@@ -175,9 +173,7 @@ class _Game(object):
             or (event.type == pygame.WINDOWMOVED and not self._is_first_loop)
 
     def _get_time(self):
-        return self._clock.tick(
-            0 if display.is_vsync else self._max_framerate
-        )
+        return self._clock.tick_busy_loop(display.max_framerate)
 
 
 _game: _Game | None = None
