@@ -173,7 +173,7 @@ class _Game(object):
             or (event.type == pygame.WINDOWMOVED and not self._is_first_loop)
 
     def _get_time(self):
-        return self._clock.tick(display.max_framerate)
+        return self._clock.tick_busy_loop(display.max_framerate)
 
 
 _game: _Game | None = None
