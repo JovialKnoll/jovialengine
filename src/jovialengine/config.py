@@ -1,7 +1,5 @@
 import configparser
 
-import pygame
-
 
 FULLSCREEN = 'Fullscreen'
 SCREEN_SCALE = 'ScreenScale'
