@@ -98,6 +98,7 @@ class ModeBase(abc.ABC):
     def draw(self, screen: pygame.surface.Surface):
         """All game modes can draw to the screen"""
         self._update_pre_draw()
+        self._space.set_clip(self._camera)
         self._space.blit(self._background, (0, 0))
         self._draw_pre_sprites(self._space)
         self.sprites_all.draw(self._space)
