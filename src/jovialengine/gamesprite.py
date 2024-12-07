@@ -72,7 +72,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         self._image_count_y: int | None = None
         self._seq: int | None = None
         if self._IMAGE_SECTION_SIZE:
-            self._source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
+            self._source_rect = pygame.Rect((0, 0), self._IMAGE_SECTION_SIZE)
             image_size = self._base_image.get_size()
             self._image_count_x = image_size[0] // self._IMAGE_SECTION_SIZE[0]
             self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
@@ -94,7 +94,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         if self._COLLISION_MASK_LOCATION:
             self._mask_image = load.image(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
             if self.rect.size != self._mask_image.get_size():
-                self._mask_source_rect = pygame.rect.Rect((0, 0), self.rect.size)
+                self._mask_source_rect = pygame.Rect((0, 0), self.rect.size)
                 mask_image_size = self._mask_image.get_size()
                 self._mask_image_count_x = mask_image_size[0] // self.rect.size[0]
                 self._mask_image_count_y = mask_image_size[1] // self.rect.size[1]

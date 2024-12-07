@@ -41,7 +41,7 @@ class ModeBase(abc.ABC):
         self.sprites_all = pygame.sprite.LayeredUpdates()
         self.sprites_collide = pygame.sprite.Group()
         self.sprites_input = pygame.sprite.Group()
-        self._camera = pygame.rect.Rect((0, 0), self._CAMERA_SIZE or display.screen_size)
+        self._camera = pygame.Rect((0, 0), self._CAMERA_SIZE or display.screen_size)
         self._camera_pos = pygame.math.Vector2(self._camera.center)
         self._input_frame: InputFrame | None = None
         self.next_mode: ModeBase | None = None
@@ -95,7 +95,7 @@ class ModeBase(abc.ABC):
             collide_event[0](collide_event[1])
 
     @final
-    def draw(self, screen: pygame.surface.Surface):
+    def draw(self, screen: pygame.Surface):
         """All game modes can draw to the screen"""
         self._update_pre_draw()
         self._space.set_clip(self._camera)
@@ -133,13 +133,13 @@ class ModeBase(abc.ABC):
         """Handle anything that only needs to happen right before drawing, like updating the camera position."""
         pass
 
-    def _draw_pre_sprites(self, screen: pygame.surface.Surface):
+    def _draw_pre_sprites(self, screen: pygame.Surface):
         pass
 
-    def _draw_post_sprites(self, screen: pygame.surface.Surface):
+    def _draw_post_sprites(self, screen: pygame.Surface):
         pass
 
-    def _draw_post_camera(self, screen: pygame.surface.Surface):
+    def _draw_post_camera(self, screen: pygame.Surface):
         pass
 
     def _cleanup(self):
