@@ -11,7 +11,7 @@ from .modebase import ModeBase
 from .inputframe import InputFrame, StateChange
 
 
-class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
+class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     """Base class for many game objects.
     Subclasses should set:
     required: _IMAGE_LOCATION, location of image file
@@ -64,7 +64,6 @@ class GameSprite(pygame.sprite.DirtySprite, Saveable, abc.ABC):
         super().__init__()
         self._input_frame: InputFrame | None = None
         self._seq: int | None = None
-        self.dirty = 2  # always draw
         self.image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
         self._image_count_x: int | None = None
         self._image_count_y: int | None = None

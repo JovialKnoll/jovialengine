@@ -38,7 +38,7 @@ class ModeBase(abc.ABC):
         self._space = pygame.Surface(self._SPACE_SIZE or display.screen_size).convert()
         self._background = pygame.Surface(self._SPACE_SIZE or display.screen_size).convert()
         self._background.fill((255, 255, 255))
-        self.sprites_all = pygame.sprite.LayeredDirty()
+        self.sprites_all = pygame.sprite.LayeredUpdates()
         self.sprites_collide = pygame.sprite.Group()
         self.sprites_input = pygame.sprite.Group()
         self._camera = pygame.rect.Rect((0, 0), self._CAMERA_SIZE or display.screen_size)
