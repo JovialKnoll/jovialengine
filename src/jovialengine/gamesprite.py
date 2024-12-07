@@ -39,9 +39,11 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     __slots__ = (
         '_input_frame',
         '_base_image',
+        '_source_rect',
         '_image_count_x',
         '_image_count_y',
         '_seq',
+        '_mask_image',
         '_mask_source_rect',
         '_mask_image_count_x',
         '_mask_image_count_y',
@@ -64,31 +66,29 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
             )
         super().__init__()
         self._input_frame: InputFrame | None = None
-        self._seq: int | None = None
         self._base_image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
+        self._source_rect: pygame.Rect | None = None
         self._image_count_x: int | None = None
         self._image_count_y: int | None = None
+        self._seq: int | None = None
         if self._IMAGE_SECTION_SIZE:
+            self._source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
             image_size = self._base_image.get_size()
             self._image_count_x = image_size[0] // self._IMAGE_SECTION_SIZE[0]
             self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
             self._seq = 0
-            self.source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
-            self.image = load.subsurface(self._base_image, self.source_rect.topleft, self.source_rect.size)
-
-
-
-
-            self.rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
+            self._source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
+            self.image = load.subsurface(self._base_image, self._source_rect.topleft, self._source_rect.size)
         else:
             self.image = self._base_image
-            self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect()
         self.radius: float | None = None
         self.mask = load.mask_filled(self.rect.size)
+        self._mask_image: pygame.Surface | None = None
         self._mask_source_rect: pygame.Rect | None = None
-        self._mask_seq: int | None = None
         self._mask_image_count_x: int | None = None
         self._mask_image_count_y: int | None = None
+        self._mask_seq: int | None = None
         if self._COLLISION_RADIUS:
             self.radius = self._COLLISION_RADIUS
             self.mask = load.mask_circle(self.rect.size, self.radius)
@@ -96,10 +96,10 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
             self._mask_image = load.image(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
             if self.rect.size != self._mask_image.get_size():
                 self._mask_source_rect = pygame.rect.Rect((0, 0), self.rect.size)
-                self._mask_seq = 0
                 mask_image_size = self._mask_image.get_size()
                 self._mask_image_count_x = mask_image_size[0] // self.rect.size[0]
                 self._mask_image_count_y = mask_image_size[1] // self.rect.size[1]
+                self._mask_seq = 0
             self.mask = load.mask_surface(
                 self._mask_image,
                 self._mask_source_rect and self._mask_source_rect.topleft,
@@ -136,8 +136,8 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         if self._seq is None:
             raise RuntimeError("error: setting seq for GameSprite not using a sprite sheet")
         self._seq = value % (self._image_count_x * self._image_count_y)
-        self.source_rect.x = (self._seq % self._image_count_x) * self._IMAGE_SECTION_SIZE[0]
-        self.source_rect.y = (self._seq // self._image_count_x) * self._IMAGE_SECTION_SIZE[1]
+        self._source_rect.x = (self._seq % self._image_count_x) * self._IMAGE_SECTION_SIZE[0]
+        self._source_rect.y = (self._seq // self._image_count_x) * self._IMAGE_SECTION_SIZE[1]
 
     @final
     @property
