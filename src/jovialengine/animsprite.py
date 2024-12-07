@@ -39,7 +39,7 @@ class Anim(Saveable):
         return cls(*save_data)
 
 
-class AnimSprite(pygame.sprite.DirtySprite, Saveable):
+class AnimSprite(pygame.sprite.Sprite, Saveable):
     BINARY = 'Binary'
     LERP = 'LERP'
     INC_SPEED = 'INC'
@@ -69,7 +69,6 @@ class AnimSprite(pygame.sprite.DirtySprite, Saveable):
 
     def __init__(self):
         super().__init__()
-        self.dirty = 2  # always draw
         self.anims = deque()
         self.last_pos = None
         self.time = 0
