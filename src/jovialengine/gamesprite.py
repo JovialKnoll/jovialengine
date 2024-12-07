@@ -84,14 +84,14 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         self.rect = self.image.get_rect()
         self.radius: float | None = None
         self.mask = load.mask_filled(self.rect.size)
+        if self._COLLISION_RADIUS:
+            self.radius = self._COLLISION_RADIUS
+            self.mask = load.mask_circle(self.rect.size, self.radius)
         self._mask_image: pygame.Surface | None = None
         self._mask_source_rect: pygame.Rect | None = None
         self._mask_image_count_x: int | None = None
         self._mask_image_count_y: int | None = None
         self._mask_seq: int | None = None
-        if self._COLLISION_RADIUS:
-            self.radius = self._COLLISION_RADIUS
-            self.mask = load.mask_circle(self.rect.size, self.radius)
         if self._COLLISION_MASK_LOCATION:
             self._mask_image = load.image(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
             if self.rect.size != self._mask_image.get_size():
