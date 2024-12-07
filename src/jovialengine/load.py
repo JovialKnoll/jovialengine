@@ -25,9 +25,7 @@ def subsurface(surface: pygame.Surface, rect: tuple[int, int, int, int]):
 
 
 @cache
-def mask_surface(
-        surface: pygame.Surface,
-        rect: tuple[int, int, int, int] | None=None):
+def mask_surface(surface: pygame.Surface, rect: tuple[int, int, int, int] | None=None):
     """Constructs a mask from a surface.
     The results are cached so don't alter them."""
     if rect:
