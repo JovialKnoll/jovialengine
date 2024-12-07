@@ -77,7 +77,6 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
             self._image_count_x = image_size[0] // self._IMAGE_SECTION_SIZE[0]
             self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
             self._seq = 0
-            self._source_rect = pygame.rect.Rect((0, 0), self._IMAGE_SECTION_SIZE)
             self.image = load.subsurface(self._base_image, self._source_rect.topleft, self._source_rect.size)
         else:
             self.image = self._base_image
@@ -138,6 +137,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         self._seq = value % (self._image_count_x * self._image_count_y)
         self._source_rect.x = (self._seq % self._image_count_x) * self._IMAGE_SECTION_SIZE[0]
         self._source_rect.y = (self._seq // self._image_count_x) * self._IMAGE_SECTION_SIZE[1]
+        self.image = load.subsurface(self._base_image, self._source_rect.topleft, self._source_rect.size)
 
     @final
     @property
