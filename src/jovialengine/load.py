@@ -18,24 +18,20 @@ def image(filename: str, alpha_or_colorkey: bool | pygame.typing.ColorLike=False
 
 
 @cache
-def subsurface(
-        surface: pygame.Surface,
-        offset: tuple[int, int],
-        size: tuple[int, int]):
+def subsurface(surface: pygame.Surface, rect: tuple[int, int, int, int]):
     """Gets a subsurface from a surface.
     The results are cached so don't alter them."""
-    return surface.subsurface((offset, size))
+    return surface.subsurface(rect)
 
 
 @cache
 def mask_surface(
         surface: pygame.Surface,
-        offset: tuple[int, int] | None=None,
-        size: tuple[int, int] | None=None):
+        rect: tuple[int, int, int, int] | None=None):
     """Constructs a mask from a surface.
     The results are cached so don't alter them."""
-    if offset and size:
-        surface = subsurface(surface, offset, size)
+    if rect:
+        surface = subsurface(surface, rect)
     return pygame.mask.from_surface(surface)
 
 
