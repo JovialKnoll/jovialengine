@@ -97,7 +97,7 @@ class AnimSprite(pygame.sprite.Sprite, Saveable):
             return True
         return False
 
-    def update(self, dt: int):
+    def update(self, dt: int, camera: pygame.Rect):
         if self.last_pos is None:
             self.last_pos = self.rect.center
         # adding dt
@@ -127,7 +127,7 @@ class AnimSprite(pygame.sprite.Sprite, Saveable):
             self.time = 0
         if self.positional_sound:
             if self.sound_channel.get_busy():
-                channel_l, channel_r = display.get_positional_channel_mix(self.rect.centerx)
+                channel_l, channel_r = utility.get_positional_channel_mix(self.rect.center, camera)
                 self.sound_channel.set_volume(channel_l, channel_r)
             else:
                 self.positional_sound = False
