@@ -36,7 +36,7 @@ class Anim(Saveable):
 
     @classmethod
     def load(cls, save_data):
-        return cls(*save_data)
+        return Anim(*save_data)
 
 
 class AnimSprite(GameSprite):
@@ -77,9 +77,9 @@ class AnimSprite(GameSprite):
 
     def save(self):
         return {
-            '_pos': self._pos,
-            '_seq': self._seq,
-            '_mask_seq': self._mask_seq,
+            'pos': self.pos,
+            'seq': self.seq,
+            'mask_seq': self.mask_seq,
             'anims': self.anims,
             'last_pos': self.last_pos,
             'time': self.time,
@@ -87,11 +87,11 @@ class AnimSprite(GameSprite):
 
     @classmethod
     def load(cls, save_data):
-        new_obj = cls(save_data['_pos'])
+        new_obj = AnimSprite(save_data['pos'])
         if new_obj.seq is not None:
-            new_obj.seq = save_data['_seq']
+            new_obj.seq = save_data['seq']
         if new_obj.mask_seq is not None:
-            new_obj.mask_seq = save_data['_mask_seq']
+            new_obj.mask_seq = save_data['mask_seq']
         new_obj.anims = save_data['anims']
         new_obj.last_pos = save_data['last_pos']
         new_obj.time = save_data['time']
