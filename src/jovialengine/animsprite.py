@@ -68,6 +68,10 @@ class AnimSprite(GameSprite):
     )
 
     def __init__(self, pos: pygame.typing.Point = (0, 0)):
+        print(f"AnimSprite {pos}")
+        print(self.__class__)
+        print(self.__class__._IMAGE_LOCATION)
+        print(self._IMAGE_LOCATION)
         super().__init__(pos)
         self.anims = deque()
         self.last_pos = None

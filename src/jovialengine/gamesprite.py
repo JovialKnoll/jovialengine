@@ -60,7 +60,13 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
             raise RuntimeError(
                 "if _COLLISION_MASK_LOCATION is set, _COLLISION_MASK_ALPHA_OR_COLORKEY must be set"
             )
+        print(f"GameSprite {pos}")
+        print(self.__class__)
+        print(self.__class__._IMAGE_LOCATION)
+        print(self._IMAGE_LOCATION)
         super().__init__()
+        self.image = None
+        self.rect = None
         self._input_frame: InputFrame | None = None
         self._base_image: pygame.Surface | None = None
         self._source_rect: pygame.Rect | None = None
@@ -69,6 +75,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         self._seq: int | None = None
         if self._IMAGE_LOCATION:
             self._base_image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
+            self.image = self._base_image
             if self._IMAGE_SECTION_SIZE:
                 self._source_rect = pygame.Rect((0, 0), self._IMAGE_SECTION_SIZE)
                 image_size = self._base_image.get_size()
@@ -76,8 +83,6 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                 self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
                 self._seq = 0
                 self.image = load.subsurface(self._base_image, tuple(self._source_rect))
-            else:
-                self.image = self._base_image
             self.rect = self.image.get_rect()
         self.radius: float | None = None
         self._mask_image: pygame.Surface | None = None
@@ -100,6 +105,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                     self._mask_seq = 0
                 self.mask = load.mask_surface(self._mask_image, self._mask_source_rect and tuple(self._mask_source_rect))
             self.pos = pos
+        self._pos = pos
 
     def save(self):
         return {
