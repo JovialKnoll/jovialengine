@@ -1,6 +1,6 @@
 import random
 import math
-from datetime import datetime
+import datetime
 
 import pygame
 
@@ -82,4 +82,4 @@ def dec_inc_speed_lerp(start, end, mix):
 
 
 def get_datetime_file_name():
-    return datetime.utcnow().isoformat().replace(':', '')
+    return datetime.datetime.now(datetime.UTC).isoformat().replace(':', '')
