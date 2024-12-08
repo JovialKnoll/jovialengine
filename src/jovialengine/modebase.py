@@ -74,7 +74,7 @@ class ModeBase(abc.ABC):
         """All game modes can update."""
         self._update_pre_sprites(dt)
         for sprite in self.sprites_all.sprites():
-            sprite.update(dt)
+            sprite.update(dt, self._camera)
         self.__handle_collisions()
         self._update_post_sprites(dt)
 

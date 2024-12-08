@@ -1,10 +1,13 @@
 import unittest
 
+import pygame
+
 import jovialengine.utility as utility
 
 
 class TestUtility(unittest.TestCase):
     def test_clamp(self):
+        # Assert
         self.assertEqual(
             utility.clamp(123, 5, 10),
             10
@@ -19,12 +22,25 @@ class TestUtility(unittest.TestCase):
         )
 
     def test_get_int_movement(self):
+        # Arrange
         tracking = 0.6
+        # Act
         tracking, tracking_int = utility.get_int_movement(tracking, 3.75, 10)
+        # Assert
         self.assertEqual(tracking_int, 38)
         self.assertTrue(0.0999999999 < tracking < 0.1000000001)
 
+    def test_get_positional_channel_mix(self):
+        # Arrange
+        pos = (100, 100)
+        camera = pygame.Rect(10, 0, 320, 240)
+        # Act
+        result = utility.get_positional_channel_mix(pos, camera)
+        # Assert
+        self.assertEqual(result, (0.9231914344987546, 0.5420440747442257))
+
     def test_binary(self):
+        # Assert
         self.assertEqual(
             utility.binary(1.0, 2.0, 0.0),
             1
@@ -43,6 +59,7 @@ class TestUtility(unittest.TestCase):
         )
 
     def test_lerp(self):
+        # Assert
         self.assertEqual(
             utility.lerp(1.0, 2.0, 0.0),
             1
@@ -61,6 +78,7 @@ class TestUtility(unittest.TestCase):
         )
 
     def test_inc_speed_lerp(self):
+        # Assert
         self.assertEqual(
             utility.inc_speed_lerp(1.0, 2.0, 0.0),
             1
@@ -79,6 +97,7 @@ class TestUtility(unittest.TestCase):
         )
 
     def test_dec_speed_lerp(self):
+        # Assert
         self.assertEqual(
             utility.dec_speed_lerp(1.0, 2.0, 0.0),
             1
@@ -97,6 +116,7 @@ class TestUtility(unittest.TestCase):
         )
 
     def test_inc_dec_speed_lerp(self):
+        # Assert
         self.assertEqual(
             utility.inc_dec_speed_lerp(1.0, 2.0, 0.0),
             1
@@ -115,6 +135,7 @@ class TestUtility(unittest.TestCase):
         )
 
     def test_dec_inc_speed_lerp(self):
+        # Assert
         self.assertEqual(
             utility.dec_inc_speed_lerp(1.0, 2.0, 0.0),
             1

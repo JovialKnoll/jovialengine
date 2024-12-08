@@ -18,12 +18,12 @@ class Anim(Saveable):
         'callback',
     )
 
-    def __init__(self, func: str, time: int, x_or_pair, y=None,
+    def __init__(self, func: str, time: int, pos: pygame.typing.Point,
                  sound: pygame.mixer.Sound = None, positional_sound: bool = False,
                  callback: Callable[[], None] = None):
         self.func = func
         self.time = time
-        self.pos = pygame.math.Vector2(x_or_pair, y)
+        self.pos = pygame.math.Vector2(pos)
         self.sound = sound
         self.positional_sound = positional_sound
         self.callback = callback
@@ -97,7 +97,7 @@ class AnimSprite(pygame.sprite.Sprite, Saveable):
             return True
         return False
 
-    def update(self, dt: int):
+    def update(self, dt: int, camera: pygame.Rect):
         if self.last_pos is None:
             self.last_pos = self.rect.center
         # adding dt
@@ -127,23 +127,23 @@ class AnimSprite(pygame.sprite.Sprite, Saveable):
             self.time = 0
         if self.positional_sound:
             if self.sound_channel.get_busy():
-                channel_l, channel_r = display.get_positional_channel_mix(self.rect.centerx)
+                channel_l, channel_r = utility.get_positional_channel_mix(self.rect.center, camera)
                 self.sound_channel.set_volume(channel_l, channel_r)
             else:
                 self.positional_sound = False
                 self.sound_channel = None
 
-    def add_pos_abs(self, func: str, time: int, x_or_pair, y=None,
+    def add_pos_abs(self, func: str, time: int, pos: pygame.typing.Point,
                     sound: pygame.mixer.Sound = None, positional_sound: bool = False,
                     callback: Callable[[], None] = None):
         self.anims.append(
-            Anim(func, time, x_or_pair, y, sound, positional_sound, callback)
+            Anim(func, time, pos, sound, positional_sound, callback)
         )
 
-    def add_pos_rel(self, func: str, time: int, x_or_pair, y=None,
+    def add_pos_rel(self, func: str, time: int, pos: pygame.typing.Point,
                     sound: pygame.mixer.Sound = None, positional_sound: bool = False,
                     callback: Callable[[], None] = None):
-        new_pos = pygame.math.Vector2(x_or_pair, y)
+        new_pos = pygame.math.Vector2(pos)
         if self.anims:
             new_pos += self.anims[-1].pos
         else:
@@ -153,4 +153,4 @@ class AnimSprite(pygame.sprite.Sprite, Saveable):
     def add_wait(self, time: int,
                  sound: pygame.mixer.Sound = None, positional_sound: bool = False,
                  callback: Callable[[], None] = None):
-        self.add_pos_rel(AnimSprite.BINARY, time, 0, 0, sound, positional_sound, callback)
+        self.add_pos_rel(AnimSprite.BINARY, time, (0, 0), sound, positional_sound, callback)

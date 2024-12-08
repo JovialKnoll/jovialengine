@@ -224,17 +224,6 @@ def get_blurred_screen(mode: ModeBase):
     return result
 
 
-def get_positional_channel_mix(x: int | float):
-    pos = utility.clamp(x / screen_size[0], 0, 1)
-    channel_l = _bound_channel_volume(utility.cos_curve(pos))
-    channel_r = _bound_channel_volume(utility.sin_curve(pos))
-    return channel_l, channel_r
-
-
-def _bound_channel_volume(volume: float):
-    return .2 + (volume * .8)
-
-
 def take_screenshot():
     try:
         os.mkdir(_screenshot_directory)
