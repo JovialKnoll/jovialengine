@@ -2,6 +2,8 @@ import random
 import math
 from datetime import datetime
 
+import pygame
+
 
 def clamp(number, minimum, maximum):
     return max(minimum, min(maximum, number))
@@ -30,6 +32,19 @@ def cos_curve(number: float | int):
     if number == 1:
         return 0
     return math.cos(number * math.pi / 2)
+
+
+def get_positional_channel_mix(pos: pygame.typing.Point, camera: pygame.Rect):
+    pos = clamp((pos[0] - camera.left) / camera.width, 0, 1)
+    # currently doesn't start to get quieter as sprites get further off-screen to left or right (or up or down)
+    # possibly should
+    channel_l = _bound_channel_volume(cos_curve(pos))
+    channel_r = _bound_channel_volume(sin_curve(pos))
+    return channel_l, channel_r
+
+
+def _bound_channel_volume(volume: float):
+    return .2 + (volume * .8)
 
 
 def binary(start, end, mix):

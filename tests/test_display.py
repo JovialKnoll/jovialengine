@@ -97,14 +97,6 @@ class TestDisplay(unittest.TestCase):
         # Assert
         self.assertFalse(result)
 
-    def test_get_positional_channel_mix(self):
-        # Arrange
-        self.set_up_windowed()
-        # Act
-        result = display.get_positional_channel_mix(90)
-        # Assert
-        self.assertEqual(result, (0.9231914344987546, 0.5420440747442257))
-
 
 if __name__ == '__main__':
     unittest.main()
