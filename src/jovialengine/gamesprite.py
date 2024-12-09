@@ -14,7 +14,7 @@ from .inputframe import InputFrame, StateChange
 class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     """Base class for many game objects.
     Subclasses should set:
-    optional: _IMAGE_LOCATION, location of image file (if not set subclass must set image)
+    optional: _IMAGE_LOCATION, location of image file (if not set subclass must set image and rect)
     optional: _ALPHA_OR_COLORKEY, used for loading image, required if _IMAGE_LOCATION is set
     optional: _IMAGE_SECTION_SIZE, used if only displaying subset of image for sprite animation
     optional: _COLLISION_RADIUS, set this if a circle collision is appropriate for this sprite
@@ -61,6 +61,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                 "if _COLLISION_MASK_LOCATION is set, _COLLISION_MASK_ALPHA_OR_COLORKEY must be set"
             )
         super().__init__()
+        self._pos = pygame.math.Vector2(pos)
         self.image = None
         self.rect = None
         self._input_frame: InputFrame | None = None
@@ -101,7 +102,6 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                     self._mask_seq = 0
                 self.mask = load.mask_surface(self._mask_image, self._mask_source_rect and tuple(self._mask_source_rect))
             self.pos = pos
-        self._pos = pos
 
     def save(self):
         return {
