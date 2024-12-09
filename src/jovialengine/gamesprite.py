@@ -167,7 +167,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         self.rect.center = self._pos
 
     @final
-    def match_pos_to_rect(self):
+    def reset_pos(self):
         self._pos = pygame.math.Vector2(self.rect.center)
 
     @classmethod
