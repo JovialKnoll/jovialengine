@@ -60,10 +60,6 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
             raise RuntimeError(
                 "if _COLLISION_MASK_LOCATION is set, _COLLISION_MASK_ALPHA_OR_COLORKEY must be set"
             )
-        print(f"GameSprite {pos}")
-        print(self.__class__)
-        print(self.__class__._IMAGE_LOCATION)
-        print(self._IMAGE_LOCATION)
         super().__init__()
         self.image = None
         self.rect = None
