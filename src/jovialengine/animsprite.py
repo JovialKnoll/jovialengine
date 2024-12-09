@@ -3,8 +3,8 @@ from collections.abc import Callable
 
 import pygame
 
-from . import display
 from .saveable import Saveable
+from .gamesprite import GameSprite
 from . import utility
 
 
@@ -36,10 +36,10 @@ class Anim(Saveable):
 
     @classmethod
     def load(cls, save_data):
-        return cls(*save_data)
+        return Anim(*save_data)
 
 
-class AnimSprite(pygame.sprite.Sprite, Saveable):
+class AnimSprite(GameSprite):
     BINARY = 'Binary'
     LERP = 'LERP'
     INC_SPEED = 'INC'
@@ -67,8 +67,8 @@ class AnimSprite(pygame.sprite.Sprite, Saveable):
         'sound_channel',
     )
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, pos: pygame.typing.Point = (0, 0)):
+        super().__init__(pos)
         self.anims = deque()
         self.last_pos = None
         self.time = 0
@@ -77,7 +77,9 @@ class AnimSprite(pygame.sprite.Sprite, Saveable):
 
     def save(self):
         return {
-            'rect_topleft': self.rect.topleft,
+            'pos': self.pos,
+            'seq': self.seq,
+            'mask_seq': self.mask_seq,
             'anims': self.anims,
             'last_pos': self.last_pos,
             'time': self.time,
@@ -85,8 +87,11 @@ class AnimSprite(pygame.sprite.Sprite, Saveable):
 
     @classmethod
     def load(cls, save_data):
-        new_obj = cls()
-        new_obj.rect.topleft = save_data['rect_topleft']
+        new_obj = AnimSprite(save_data['pos'])
+        if new_obj.seq is not None:
+            new_obj.seq = save_data['seq']
+        if new_obj.mask_seq is not None:
+            new_obj.mask_seq = save_data['mask_seq']
         new_obj.anims = save_data['anims']
         new_obj.last_pos = save_data['last_pos']
         new_obj.time = save_data['time']
@@ -99,14 +104,14 @@ class AnimSprite(pygame.sprite.Sprite, Saveable):
 
     def update(self, dt: int, camera: pygame.Rect):
         if self.last_pos is None:
-            self.last_pos = self.rect.center
+            self.last_pos = self.pos
         # adding dt
         self.time += dt
         while self.anims and self.time >= self.anims[0].time:
             done_anim = self.anims.popleft()
             self.time -= done_anim.time
-            self.rect.center = done_anim.pos
-            self.last_pos = self.rect.center
+            self.pos = done_anim.pos
+            self.last_pos = self.pos
             if done_anim.sound:
                 self.positional_sound = done_anim.positional_sound
                 channel = done_anim.sound.play()
@@ -117,7 +122,7 @@ class AnimSprite(pygame.sprite.Sprite, Saveable):
         if self.anims:
             current_anim = self.anims[0]
             func = self.to_func(current_anim.func)
-            self.rect.center = func(
+            self.pos = func(
                 self.last_pos,
                 current_anim.pos,
                 self.time / current_anim.time
@@ -127,7 +132,7 @@ class AnimSprite(pygame.sprite.Sprite, Saveable):
             self.time = 0
         if self.positional_sound:
             if self.sound_channel.get_busy():
-                channel_l, channel_r = utility.get_positional_channel_mix(self.rect.center, camera)
+                channel_l, channel_r = utility.get_positional_channel_mix(self.pos, camera)
                 self.sound_channel.set_volume(channel_l, channel_r)
             else:
                 self.positional_sound = False
@@ -147,7 +152,7 @@ class AnimSprite(pygame.sprite.Sprite, Saveable):
         if self.anims:
             new_pos += self.anims[-1].pos
         else:
-            new_pos += self.rect.center
+            new_pos += self.pos
         self.add_pos_abs(func, time, new_pos, sound=sound, positional_sound=positional_sound, callback=callback)
 
     def add_wait(self, time: int,
