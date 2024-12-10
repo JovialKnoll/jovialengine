@@ -214,7 +214,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         mode.sprites_collide.add(self)
         if self._GETS_INPUT or self._take_state_change is not GameSprite._take_state_change:
             mode.sprites_input.add(self)
-        self._create(mode)
+        self._start(mode)
         return self
 
     @final
@@ -228,7 +228,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         """Called to apply time updates to a GameSprite."""
         pass
 
-    def _create(self, mode: ModeBase):
+    def _start(self, mode: ModeBase):
         """Called when a GameSprite is started."""
         pass
 
