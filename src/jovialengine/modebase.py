@@ -5,7 +5,7 @@ from collections.abc import Iterable
 import pygame
 
 from . import display
-from .cameragroup import CameraGroup
+from .offsetgroup import OffsetGroup
 from .inputframe import InputFrame
 
 
@@ -39,7 +39,7 @@ class ModeBase(abc.ABC):
         self._space = pygame.Surface(self._SPACE_SIZE or display.screen_size).convert()
         self._background = pygame.Surface(self._SPACE_SIZE or display.screen_size).convert()
         self._background.fill((0, 0, 0))
-        self.sprites_all = CameraGroup()
+        self.sprites_all = OffsetGroup()
         self.sprites_collide = pygame.sprite.Group()
         self.sprites_input = pygame.sprite.Group()
         self._camera = pygame.Rect((0, 0), self._CAMERA_SIZE or display.screen_size)
