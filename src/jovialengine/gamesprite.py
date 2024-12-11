@@ -80,7 +80,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                 self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
                 self._seq = 0
                 self.image = load.subsurface(self._base_image, tuple(self._source_rect))
-            self.rect = self.image.get_rect()
+            self.rect = self.image.get_rect(center=self._pos)
         self.radius: float | None = None
         self._mask_image: pygame.Surface | None = None
         self._mask_source_rect: pygame.Rect | None = None
@@ -101,7 +101,6 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                     self._mask_image_count_y = mask_image_size[1] // self.rect.size[1]
                     self._mask_seq = 0
                 self.mask = load.mask_surface(self._mask_image, self._mask_source_rect and tuple(self._mask_source_rect))
-            self.pos = pos
 
     def save(self):
         return {
