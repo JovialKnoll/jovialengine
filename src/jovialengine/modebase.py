@@ -24,7 +24,6 @@ class ModeBase(abc.ABC):
     _CAMERA_OFFSET: tuple[int, int] = (0, 0)
 
     __slots__ = (
-        '_space',
         '_background',
         'sprites_all',
         'sprites_collide',
@@ -36,7 +35,6 @@ class ModeBase(abc.ABC):
     )
 
     def __init__(self):
-        self._space = pygame.Surface(self._SPACE_SIZE or display.screen_size).convert()
         self._background = pygame.Surface(self._SPACE_SIZE or display.screen_size).convert()
         self._background.fill((0, 0, 0))
         self.sprites_all = OffsetGroup()
