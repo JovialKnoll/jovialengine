@@ -99,12 +99,13 @@ class ModeBase(abc.ABC):
     def draw(self, screen: pygame.Surface):
         """All game modes can draw to the screen"""
         self._update_pre_draw()
-        self._space.set_clip(self._camera)
-        self._space.blit(self._background, (0, 0))
-        self._draw_pre_sprites(self._space)
-        self.sprites_all.draw(self._space)
-        self._draw_post_sprites(self._space)
-        screen.blit(self._space, self._CAMERA_OFFSET, self._camera)
+        screen.set_clip((self._CAMERA_OFFSET, self._camera.size))
+        offset = (self._CAMERA_OFFSET[0] - self._camera.x, self._CAMERA_OFFSET[1] - self._camera.y)
+        screen.blit(self._background, offset)
+        self._draw_pre_sprites(screen, offset)
+        self.sprites_all.draw(screen, offset)
+        self._draw_post_sprites(screen, offset)
+        screen.set_clip(None)
         self._draw_post_camera(screen)
 
     @final
@@ -134,10 +135,10 @@ class ModeBase(abc.ABC):
         """Handle anything that only needs to happen right before drawing, like updating the camera position."""
         pass
 
-    def _draw_pre_sprites(self, screen: pygame.Surface):
+    def _draw_pre_sprites(self, screen: pygame.Surface, offset: tuple[int, int]):
         pass
 
-    def _draw_post_sprites(self, screen: pygame.Surface):
+    def _draw_post_sprites(self, screen: pygame.Surface, offset: tuple[int, int]):
         pass
 
     def _draw_post_camera(self, screen: pygame.Surface):
