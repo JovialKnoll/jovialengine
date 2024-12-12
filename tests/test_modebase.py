@@ -6,9 +6,12 @@ from mode import ModeTest
 
 
 class TestModeBase(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        pygame.display.set_mode((1, 1), pygame.NOFRAME)
+
     def test_draw(self):
         # Arrange
-        pygame.display.set_mode((1,1), pygame.NOFRAME)
         screen = pygame.Surface((6, 6))
         screen.fill(pygame.Color('white'))
         mode = ModeTest()
