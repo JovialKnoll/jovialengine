@@ -46,7 +46,7 @@ class TestSpriteMask(GameSprite):
 class TestSpriteMaskSeq(TestSpriteMask):
     _IMAGE_SECTION_SIZE = (2, 2)
 
-class TestInput(unittest.TestCase):
+class TestGameSprite(unittest.TestCase):
     def test_get_collision_labels_GameSprite(self):
         # Assert
         self.assertEqual(GameSprite.get_collision_labels(), frozenset(('GameSprite',)))
