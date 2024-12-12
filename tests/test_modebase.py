@@ -31,6 +31,14 @@ class TestModeBase(unittest.TestCase):
                     expected = pygame.Color('blue')
                 self.assertEqual(screen.get_at((x, y)), expected)
 
+    def test_cleanup(self):
+        # Arrange
+        mode = ModeTest()
+        # Act
+        mode.cleanup()
+        # Assert
+        self.assertEqual(len(mode.sprites_all), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
