@@ -26,7 +26,6 @@ class TestModeBase(unittest.TestCase):
                     expected = pygame.Color('green')
                 if x == 5 and y in {0, 5}:
                     expected = pygame.Color('blue')
-                print(f"checking {x}, {y}; {screen.get_at((x, y))} : {expected}")
                 self.assertEqual(screen.get_at((x, y)), expected)
 
 
