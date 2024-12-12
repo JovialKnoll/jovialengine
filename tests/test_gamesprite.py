@@ -2,16 +2,8 @@ import unittest
 
 import pygame
 
-import jovialengine.load as load
 from jovialengine.gamesprite import GameSprite
 
-
-def image(filename, alpha_or_colorkey=False):
-    result = pygame.image.load(filename)
-    if alpha_or_colorkey is not True and alpha_or_colorkey is not False:
-        result.set_colorkey(alpha_or_colorkey)
-    return result
-load.image = image
 
 class TestSpriteA(GameSprite):
     pass
@@ -47,6 +39,10 @@ class TestSpriteMaskSeq(TestSpriteMask):
     _IMAGE_SECTION_SIZE = (2, 2)
 
 class TestGameSprite(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        pygame.display.set_mode((1, 1), pygame.NOFRAME)
+
     def test_get_collision_labels_GameSprite(self):
         # Assert
         self.assertEqual(GameSprite.get_collision_labels(), frozenset(('GameSprite',)))
