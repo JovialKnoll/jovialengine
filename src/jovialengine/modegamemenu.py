@@ -195,7 +195,7 @@ class ModeGameMenuTop(ModeGameMenu):
                         game.stop()
         self._selected = utility.clamp(self._selected, 0, len(self._OPTIONS) - 1)
 
-    def _draw_pre_sprites(self, screen):
+    def _draw_post_camera(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         disp_text += "ARROW KEYS + ENTER)"
         for index, option in enumerate(self._OPTIONS):
@@ -203,7 +203,7 @@ class ModeGameMenuTop(ModeGameMenu):
             disp_text += self._get_selected_char(self._selected == index)
             disp_text += option
         self._draw_text(disp_text)
-        screen.blit(self._menu_surface, (0, 0))
+        screen.blit(self._menu_surface)
 
 
 class ModeGameMenuSave(ModeGameMenu):
@@ -323,7 +323,7 @@ class ModeGameMenuSave(ModeGameMenu):
             self._cursor_switch = not self._cursor_switch
             self._cursor_timer -= self._CURSOR_TIME
 
-    def _draw_pre_sprites(self, screen):
+    def _draw_post_camera(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         draw_cursor = False
         if not isinstance(self._previous_mode, Saveable):
@@ -352,7 +352,7 @@ class ModeGameMenuSave(ModeGameMenu):
                     (1, get_default_font_wrap().line_height)
                 )
             )
-        screen.blit(self._menu_surface, (0, 0))
+        screen.blit(self._menu_surface)
 
 
 class ModeGameMenuLoad(ModeGameMenuList):
@@ -433,7 +433,7 @@ class ModeGameMenuLoad(ModeGameMenuList):
     def _get_option_status(self, option: int):
         return self._get_selected_char(self._selected_save_option == option)
 
-    def _draw_pre_sprites(self, screen):
+    def _draw_post_camera(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         match self._state:
             case self.STATE_DEFAULT:
@@ -452,7 +452,7 @@ class ModeGameMenuLoad(ModeGameMenuList):
                 disp_text += f"\n{self._get_option_status(self.OPTION_LOAD)}Load" \
                     + f"\n{self._get_option_status(self.OPTION_DELETE)}Delete"
         self._draw_text(disp_text)
-        screen.blit(self._menu_surface, (0, 0))
+        screen.blit(self._menu_surface)
 
 
 class ModeGameMenuOptions(ModeGameMenu):
@@ -498,12 +498,12 @@ class ModeGameMenuOptions(ModeGameMenu):
             target_scale = int(event.unicode)
             display.set_scale(target_scale)
 
-    def _draw_pre_sprites(self, screen):
+    def _draw_post_camera(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         disp_text += f"ARROW KEYS) Upscaling: {display.upscale}" \
             + f"\nENTER) Fullscreen: {self.get_tick_box(display.is_fullscreen)}"
         self._draw_text(disp_text)
-        screen.blit(self._menu_surface, (0, 0))
+        screen.blit(self._menu_surface)
 
     @staticmethod
     def get_tick_box(value: bool):
@@ -582,7 +582,7 @@ class ModeGameMenuControls(ModeGameMenuList):
             if self._selection_timer <= 0:
                 self._state = self.STATE_CHOOSE_EVENT
 
-    def _draw_pre_sprites(self, screen):
+    def _draw_post_camera(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         if self._state != self.STATE_CHOOSE_INPUT:
             disp_text += "ARROW KEYS + ENTER)\n"
@@ -596,4 +596,4 @@ class ModeGameMenuControls(ModeGameMenuList):
             disp_text += "\n\n____press a button to select"
             disp_text += f"\n____(wait {(self._selection_timer // 1000) + 1} seconds to exit)"
         self._draw_text(disp_text)
-        screen.blit(self._menu_surface, (0, 0))
+        screen.blit(self._menu_surface)
