@@ -4,10 +4,6 @@ from jovialengine.modebase import ModeBase
 from jovialengine.saveable import Saveable
 
 
-def convert_noop(self):
-    pass
-pygame.Surface.convert = convert_noop
-
 class ModeTest(ModeBase, Saveable):
     _SPACE_SIZE = (8, 8)
     _CAMERA_SIZE = (4, 4)
