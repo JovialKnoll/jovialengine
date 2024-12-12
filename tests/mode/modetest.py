@@ -39,4 +39,5 @@ class ModeTest(ModeBase, Saveable):
         pass
 
     def _draw_post_camera(self, screen: pygame.Surface):
+        screen.set_at((5, 0), pygame.Color('blue'))
         screen.set_at((5, 5), pygame.Color('blue'))

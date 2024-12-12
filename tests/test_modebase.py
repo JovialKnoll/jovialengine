@@ -20,12 +20,12 @@ class TestModeBase(unittest.TestCase):
                 expected = pygame.Color('white')
                 if 0 < x < 5 and 0 < y < 5:
                     expected = pygame.Color('red')
-                    if x == 2 and y == 4:
-                        expected = pygame.Color('black')
-                    if x == 3 and y == 2:
-                        expected = pygame.Color('green')
-                    if x == 5 and y == 5:
-                        expected = pygame.Color('blue')
+                if x == 2 and y == 4:
+                    expected = pygame.Color('black')
+                if x == 3 and y == 2:
+                    expected = pygame.Color('green')
+                if x == 5 and y in {0, 5}:
+                    expected = pygame.Color('blue')
                 print(f"checking {x}, {y}; {screen.get_at((x, y))} : {expected}")
                 self.assertEqual(screen.get_at((x, y)), expected)
 
