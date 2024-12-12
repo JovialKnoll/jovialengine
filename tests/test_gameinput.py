@@ -6,7 +6,7 @@ import pygame
 import jovialengine.gameinput as gameinput
 
 
-class TestInput(unittest.TestCase):
+class TestGameInput(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         gameinput.init(
