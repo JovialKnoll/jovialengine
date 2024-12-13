@@ -18,6 +18,7 @@ from . import save
 
 class _Game(object):
     __slots__ = (
+        '_running',
         'start_mode_cls',
         '_state_cls',
         '_clock',
@@ -26,7 +27,6 @@ class _Game(object):
         '_is_first_loop',
         'current_mode',
         'state',
-        '_running',
     )
 
     def __init__(
@@ -47,6 +47,7 @@ class _Game(object):
         font_antialias: bool,
         max_dt: int
     ):
+        self._running = False
         self.start_mode_cls = start_mode_cls
         self._state_cls = state_cls
         config.init(
@@ -83,7 +84,6 @@ class _Game(object):
         self._is_first_loop = True
         self.current_mode: ModeBase | None = None
         self.state: Saveable | None = None
-        self._running = False
 
     def start(self):
         """Start the game, must be called before run()."""
