@@ -21,6 +21,7 @@ class _Game(object):
         'start_mode_cls',
         '_state_cls',
         '_clock',
+        '_max_dt',
         '_joysticks',
         '_is_first_loop',
         'current_mode',
@@ -43,7 +44,8 @@ class _Game(object):
         font_location: str | None,
         font_size: int,
         font_height: int,
-        font_antialias: bool
+        font_antialias: bool,
+        max_dt: int
     ):
         self.start_mode_cls = start_mode_cls
         self._state_cls = state_cls
@@ -72,6 +74,7 @@ class _Game(object):
             font = pygame.font.SysFont(None, font_size)
         fontwrap.init(font, font_height, font_antialias)
         self._clock = pygame.time.Clock()
+        self._max_dt = max_dt
         self._joysticks = [
             pygame.joystick.Joystick(i)
             for i
@@ -116,8 +119,11 @@ class _Game(object):
                 pygame.mixer.pause()
                 events = []
         self.current_mode.input(events, input_frame)
-        for i in range(self._get_time()):
-            self.current_mode.update(1)
+        dt = self._clock.tick_busy_loop(display.max_framerate)
+        while dt > self._max_dt:
+            dt -= self._max_dt
+            self.current_mode.update(self._max_dt)
+        self.current_mode.update(dt)
         self.current_mode.draw(display.screen)
         display.scale_draw()
         if self.current_mode.next_mode is not None:
@@ -172,9 +178,6 @@ class _Game(object):
         return event.type in {pygame.QUIT, pygame.WINDOWFOCUSLOST, pygame.WINDOWMINIMIZED} \
             or (event.type == pygame.WINDOWMOVED and not self._is_first_loop)
 
-    def _get_time(self):
-        return self._clock.tick_busy_loop(display.max_framerate)
-
 
 _game: _Game | None = None
 
@@ -193,7 +196,8 @@ def init(
     font_location: str | None,
     font_size: int,
     font_height: int,
-    font_antialias: bool
+    font_antialias: bool,
+    max_dt: int=5
 ):
     """Loads up the game and prepares it for running.
     Arguments:
@@ -211,6 +215,7 @@ def init(
     font_size: default font size
     font_height: default font height
     font_antialias: default font antialias
+    max_dt: maximum dt for updates, if over this will run updates and collision checks multiple times
     """
     global _game
     if _game:
@@ -229,7 +234,8 @@ def init(
         font_location,
         font_size,
         font_height,
-        font_antialias
+        font_antialias,
+        max_dt
     )
     _game.start()
     return _game

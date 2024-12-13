@@ -51,7 +51,7 @@ class ModeGameMenu(ModeBase, abc.ABC):
         self._previous_hat = (0, 0)
 
     def _get_old_screen(self):
-        return display.get_blurred_screen(self._previous_mode)
+        return display.get_blurred_screengmail(self._previous_mode)
 
     def _get_action(self, event: pygame.event.Event):
         match event.type:
