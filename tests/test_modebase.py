@@ -20,7 +20,7 @@ class TestModeBase(unittest.TestCase):
         # Assert
         for y in range(6):
             for x in range(6):
-                print(screen.get_at((x, y)))
+                print(f"{x},{y}: {screen.get_at((x, y)).rgb}")
         for y in range(6):
             for x in range(6):
                 expected = pygame.Color('white')
