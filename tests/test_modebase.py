@@ -1,4 +1,5 @@
 import unittest
+import os
 
 import pygame
 
@@ -18,21 +19,40 @@ class TestModeBase(unittest.TestCase):
         # Act
         mode.draw(screen)
         # Assert
+        got = ""
         for y in range(6):
             for x in range(6):
-                print(f"{x},{y}: {screen.get_at((x, y)).rgb}")
-        for y in range(6):
-            for x in range(6):
-                expected = pygame.Color('white')
-                if 0 < x < 5 and 0 < y < 5:
-                    expected = pygame.Color('red')
-                if x == 2 and y == 4:
-                    expected = pygame.Color('black')
-                if x == 3 and y == 2:
-                    expected = pygame.Color('green')
-                if x == 5 and y in {0, 5}:
-                    expected = pygame.Color('blue')
-                self.assertEqual(screen.get_at((x, y)), expected)
+                color = screen.get_at((x, y))
+                if color == pygame.Color('white'):
+                    got += "W"
+                elif color == pygame.Color('red'):
+                    got += "r"
+                elif color == pygame.Color('green'):
+                    got += "g"
+                elif color == pygame.Color('blue'):
+                    got += "b"
+                elif color == pygame.Color('black'):
+                    got += "B"
+            got += os.linesep
+        expected = "WWWWWb" + os.linesep \
+            + "WrrrrW" + os.linesep \
+            + "WrrgrW" + os.linesep \
+            + "WrrrrW" + os.linesep \
+            + "WrBrrW" + os.linesep \
+            + "WWWWWb" + os.linesep
+        self.assertEqual(got, expected)
+        #for y in range(6):
+        #    for x in range(6):
+        #        expected = pygame.Color('white')
+        #        if 0 < x < 5 and 0 < y < 5:
+        #            expected = pygame.Color('red')
+        #        if x == 2 and y == 4:
+        #            expected = pygame.Color('black')
+        #        if x == 3 and y == 2:
+        #            expected = pygame.Color('green')
+        #        if x == 5 and y in {0, 5}:
+        #            expected = pygame.Color('blue')
+        #        self.assertEqual(screen.get_at((x, y)), expected)
 
     def test_cleanup(self):
         # Arrange
