@@ -72,11 +72,11 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
             self._base_image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
             self.image = self._base_image
             if self._IMAGE_SECTION_SIZE:
-                self._source_rect = pygame.Rect((0, 0), self._IMAGE_SECTION_SIZE)
                 image_size = self._base_image.get_size()
                 self._image_count_x = image_size[0] // self._IMAGE_SECTION_SIZE[0]
                 self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
                 self._seq = 0
+                self._source_rect = pygame.Rect((0, 0), self._IMAGE_SECTION_SIZE)
                 self.image = load.subsurface(self._base_image, tuple(self._source_rect))
             self.rect = self.image.get_frect(center=pos)
         self.radius: float | None = None
@@ -95,10 +95,10 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                 self._mask_image = load.image(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
                 mask_image_size = self._mask_image.get_size()
                 if size != mask_image_size:
-                    self._mask_source_rect = pygame.Rect((0, 0), size)
                     self._mask_image_count_x = mask_image_size[0] // size[0]
                     self._mask_image_count_y = mask_image_size[1] // size[1]
                     self._mask_seq = 0
+                    self._mask_source_rect = pygame.Rect((0, 0), size)
                 self.mask = load.mask_surface(self._mask_image, self._mask_source_rect and tuple(self._mask_source_rect))
 
     def save(self):
@@ -146,11 +146,11 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     def mask_seq(self, value: int):
         if self._mask_seq is None:
             raise RuntimeError("error: setting mask_seq for GameSprite not using a sprite sheet")
-        self._mask_seq = value % (self._image_count_x * self._image_count_y)
         size = self.image.get_size()
+        self._mask_seq = value % (self._image_count_x * self._image_count_y)
         self._mask_source_rect.x = (self._mask_seq % self._mask_image_count_x) * size[0]
         self._mask_source_rect.y = (self._mask_seq // self._mask_image_count_y) * size[1]
-        self.mask = load.mask_surface(self._mask_image, self._mask_source_rect and tuple(self._mask_source_rect))
+        self.mask = load.mask_surface(self._mask_image, tuple(self._mask_source_rect))
 
     @classmethod
     @final
