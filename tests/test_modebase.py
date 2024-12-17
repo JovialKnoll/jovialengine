@@ -20,6 +20,9 @@ class TestModeBase(unittest.TestCase):
         # Assert
         for y in range(6):
             for x in range(6):
+                print(screen.get_at((x, y)))
+        for y in range(6):
+            for x in range(6):
                 expected = pygame.Color('white')
                 if 0 < x < 5 and 0 < y < 5:
                     expected = pygame.Color('red')
