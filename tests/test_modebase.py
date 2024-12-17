@@ -41,18 +41,6 @@ class TestModeBase(unittest.TestCase):
             + "WrBrrW" + os.linesep \
             + "WWWWWb" + os.linesep
         self.assertEqual(got, expected)
-        #for y in range(6):
-        #    for x in range(6):
-        #        expected = pygame.Color('white')
-        #        if 0 < x < 5 and 0 < y < 5:
-        #            expected = pygame.Color('red')
-        #        if x == 2 and y == 4:
-        #            expected = pygame.Color('black')
-        #        if x == 3 and y == 2:
-        #            expected = pygame.Color('green')
-        #        if x == 5 and y in {0, 5}:
-        #            expected = pygame.Color('blue')
-        #        self.assertEqual(screen.get_at((x, y)), expected)
 
     def test_cleanup(self):
         # Arrange
