@@ -34,7 +34,7 @@ def cos_curve(number: float | int):
     return math.cos(number * math.pi / 2)
 
 
-def get_positional_channel_mix(pos: pygame.typing.Point, camera: pygame.Rect):
+def get_positional_channel_mix(pos: pygame.typing.Point, camera: pygame.FRect):
     lr_pos = clamp((pos[0] - camera.left) / camera.width, 0, 1)
     # currently doesn't start to get quieter as sprites get further off-screen to left or right (or up or down)
     # possibly should

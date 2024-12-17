@@ -206,7 +206,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
             self._take_state_change(state_change)
         self._input_frame = input_frame
 
-    def update(self, dt: int, camera: pygame.Rect):
+    def update(self, dt: int, camera: pygame.FRect):
         """Called to apply time updates to a GameSprite."""
         pass
 

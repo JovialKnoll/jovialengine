@@ -102,7 +102,7 @@ class AnimSprite(GameSprite):
             return True
         return False
 
-    def update(self, dt: int, camera: pygame.Rect):
+    def update(self, dt: int, camera: pygame.FRect):
         if self.last_pos is None:
             self.last_pos = self.rect.center
         # adding dt
