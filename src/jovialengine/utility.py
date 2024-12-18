@@ -24,11 +24,11 @@ def reduce_number(number, divisor):
     return result
 
 
-def sin_curve(number: float | int):
+def sin_curve(number: float):
     return math.sin(number * math.pi / 2)
 
 
-def cos_curve(number: float | int):
+def cos_curve(number: float):
     if number == 1:
         return 0
     return math.cos(number * math.pi / 2)

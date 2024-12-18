@@ -35,11 +35,11 @@ class TestModeBase(unittest.TestCase):
                     got += "B"
             got += os.linesep
         expected = "WWWWWb" + os.linesep \
-            + "WrrrrW" + os.linesep \
-            + "WrrgrW" + os.linesep \
-            + "WrrrrW" + os.linesep \
-            + "WrBrrW" + os.linesep \
-            + "WWWWWb" + os.linesep
+                   + "WrrrrW" + os.linesep \
+                   + "WrrgrW" + os.linesep \
+                   + "WrrrrW" + os.linesep \
+                   + "WrBrrW" + os.linesep \
+                   + "WWWWWb" + os.linesep
         self.assertEqual(got, expected)
 
     def test_cleanup(self):
