@@ -13,15 +13,15 @@ class ModeTest(ModeBase, Saveable):
         'test_value',
     )
 
-    def __init__(self):
+    def __init__(self, sprite_pos: pygame.typing.Point=(0,0)):
         super().__init__()
         self._background.fill(pygame.Color('red'))
         self._background.set_at((2, 5), pygame.Color('black'))
-        self._camera.topleft = (1, 2)
         test_sprite = pygame.sprite.Sprite()
-        test_sprite.rect = pygame.FRect(3, 3, 1, 1)
         test_sprite.image = pygame.Surface((1, 1))
         test_sprite.image.fill(pygame.Color('green'))
+        test_sprite.rect = test_sprite.image.get_frect()
+        test_sprite.rect.topleft = sprite_pos
         self.sprites_all.add(test_sprite)
         self.test_value = 1
 
