@@ -140,6 +140,7 @@ class ModeBase(abc.ABC):
         pass
 
     def _draw_post_camera(self, screen: pygame.Surface):
+        """Handle drawing onto screen after camera-aware drawing is done."""
         pass
 
     def _cleanup(self):
