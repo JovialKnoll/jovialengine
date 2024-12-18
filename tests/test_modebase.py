@@ -48,6 +48,18 @@ class TestModeBase(unittest.TestCase):
         draw_result = self.get_surface_string(screen)
         self.assertEqual(draw_result, self.DRAW_EXPECTED)
 
+    def test_draw_rounding_camera(self):
+        # Arrange
+        screen = pygame.Surface((6, 6))
+        screen.fill(pygame.Color('white'))
+        mode = ModeTest()
+        mode._camera.topleft = (0.9, 1.9)
+        # Act
+        mode.draw(screen)
+        # Assert
+        draw_result = self.get_surface_string(screen)
+        self.assertEqual(draw_result, self.DRAW_EXPECTED)
+
     def test_cleanup(self):
         # Arrange
         mode = ModeTest()
