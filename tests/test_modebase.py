@@ -7,6 +7,32 @@ from mode import ModeTest
 
 
 class TestModeBase(unittest.TestCase):
+    DRAW_EXPECTED = "WWWWWb" + os.linesep \
+                   + "WrrrrW" + os.linesep \
+                   + "WrrgrW" + os.linesep \
+                   + "WrrrrW" + os.linesep \
+                   + "WrBrrW" + os.linesep \
+                   + "WWWWWb" + os.linesep
+
+    @staticmethod
+    def get_surface_string(surface: pygame.Surface):
+        result = ""
+        for y in range(surface.height):
+            for x in range(surface.width):
+                color = surface.get_at((x, y))
+                if color == pygame.Color('white'):
+                    result += "W"
+                elif color == pygame.Color('red'):
+                    result += "r"
+                elif color == pygame.Color('green'):
+                    result += "g"
+                elif color == pygame.Color('blue'):
+                    result += "b"
+                elif color == pygame.Color('black'):
+                    result += "B"
+            result += os.linesep
+        return result
+
     @classmethod
     def setUpClass(cls):
         pygame.display.set_mode((1, 1), pygame.NOFRAME)
@@ -19,28 +45,8 @@ class TestModeBase(unittest.TestCase):
         # Act
         mode.draw(screen)
         # Assert
-        got = ""
-        for y in range(6):
-            for x in range(6):
-                color = screen.get_at((x, y))
-                if color == pygame.Color('white'):
-                    got += "W"
-                elif color == pygame.Color('red'):
-                    got += "r"
-                elif color == pygame.Color('green'):
-                    got += "g"
-                elif color == pygame.Color('blue'):
-                    got += "b"
-                elif color == pygame.Color('black'):
-                    got += "B"
-            got += os.linesep
-        expected = "WWWWWb" + os.linesep \
-                   + "WrrrrW" + os.linesep \
-                   + "WrrgrW" + os.linesep \
-                   + "WrrrrW" + os.linesep \
-                   + "WrBrrW" + os.linesep \
-                   + "WWWWWb" + os.linesep
-        self.assertEqual(got, expected)
+        draw_result = self.get_surface_string(screen)
+        self.assertEqual(draw_result, self.DRAW_EXPECTED)
 
     def test_cleanup(self):
         # Arrange
