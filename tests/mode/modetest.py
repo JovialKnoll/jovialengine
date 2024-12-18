@@ -17,7 +17,7 @@ class ModeTest(ModeBase, Saveable):
         super().__init__()
         self._background.fill(pygame.Color('red'))
         self._background.set_at((2, 5), pygame.Color('black'))
-        self._camera.center = (3, 4)
+        self._camera.topleft = (1, 2)
         test_sprite = pygame.sprite.Sprite()
         test_sprite.rect = pygame.Rect(3, 3, 1, 1)
         test_sprite.image = pygame.Surface((1, 1))
