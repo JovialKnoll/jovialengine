@@ -41,7 +41,8 @@ class TestModeBase(unittest.TestCase):
         # Arrange
         screen = pygame.Surface((6, 6))
         screen.fill(pygame.Color('white'))
-        mode = ModeTest()
+        mode = ModeTest((3, 3))
+        mode._camera.topleft = (1, 2)
         # Act
         mode.draw(screen)
         # Assert
