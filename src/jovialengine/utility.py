@@ -5,6 +5,10 @@ import datetime
 import pygame
 
 
+def round_point(pos: pygame.typing.Point):
+    return round(pos[0]), round(pos[1])
+
+
 def clamp(number, minimum, maximum):
     return max(minimum, min(maximum, number))
 
