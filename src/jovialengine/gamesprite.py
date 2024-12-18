@@ -66,27 +66,27 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         self.rect = None
         self._input_frame: InputFrame | None = None
         self._base_image: pygame.Surface | None = None
-        self._source_rect: pygame.Rect | None = None
         self._image_count_x: int | None = None
         self._image_count_y: int | None = None
         self._seq: int | None = None
+        self._source_rect: pygame.Rect | None = None
         if self._IMAGE_LOCATION:
             self._base_image = load.image(self._IMAGE_LOCATION, self._ALPHA_OR_COLORKEY)
             self.image = self._base_image
             if self._IMAGE_SECTION_SIZE:
-                self._source_rect = pygame.Rect((0, 0), self._IMAGE_SECTION_SIZE)
                 image_size = self._base_image.get_size()
                 self._image_count_x = image_size[0] // self._IMAGE_SECTION_SIZE[0]
                 self._image_count_y = image_size[1] // self._IMAGE_SECTION_SIZE[1]
                 self._seq = 0
+                self._source_rect = pygame.Rect((0, 0), self._IMAGE_SECTION_SIZE)
                 self.image = load.subsurface(self._base_image, tuple(self._source_rect))
             self.rect = self.image.get_rect(center=self._pos)
         self.radius: float | None = None
         self._mask_image: pygame.Surface | None = None
-        self._mask_source_rect: pygame.Rect | None = None
         self._mask_image_count_x: int | None = None
         self._mask_image_count_y: int | None = None
         self._mask_seq: int | None = None
+        self._mask_source_rect: pygame.Rect | None = None
         if self.rect:
             self.mask = load.mask_filled(self.rect.size)
             if self._COLLISION_RADIUS:
@@ -94,12 +94,12 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                 self.mask = load.mask_circle(self.rect.size, self.radius)
             if self._COLLISION_MASK_LOCATION:
                 self._mask_image = load.image(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
-                if self.rect.size != self._mask_image.get_size():
-                    self._mask_source_rect = pygame.Rect((0, 0), self.rect.size)
-                    mask_image_size = self._mask_image.get_size()
+                mask_image_size = self._mask_image.get_size()
+                if self.rect.size != mask_image_size:
                     self._mask_image_count_x = mask_image_size[0] // self.rect.size[0]
                     self._mask_image_count_y = mask_image_size[1] // self.rect.size[1]
                     self._mask_seq = 0
+                    self._mask_source_rect = pygame.Rect((0, 0), self.rect.size)
                 self.mask = load.mask_surface(self._mask_image, self._mask_source_rect and tuple(self._mask_source_rect))
 
     def save(self):

@@ -24,22 +24,22 @@ def reduce_number(number, divisor):
     return result
 
 
-def sin_curve(number: float | int):
+def sin_curve(number: float):
     return math.sin(number * math.pi / 2)
 
 
-def cos_curve(number: float | int):
+def cos_curve(number: float):
     if number == 1:
         return 0
     return math.cos(number * math.pi / 2)
 
 
 def get_positional_channel_mix(pos: pygame.typing.Point, camera: pygame.Rect):
-    pos = clamp((pos[0] - camera.left) / camera.width, 0, 1)
+    lr_pos = clamp((pos[0] - camera.left) / camera.width, 0, 1)
     # currently doesn't start to get quieter as sprites get further off-screen to left or right (or up or down)
     # possibly should
-    channel_l = _bound_channel_volume(cos_curve(pos))
-    channel_r = _bound_channel_volume(sin_curve(pos))
+    channel_l = _bound_channel_volume(cos_curve(lr_pos))
+    channel_r = _bound_channel_volume(sin_curve(lr_pos))
     return channel_l, channel_r
 
 
