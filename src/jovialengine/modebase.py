@@ -84,7 +84,7 @@ class ModeBase(abc.ABC):
         self._update_pre_draw()
         screen.set_clip((self._CAMERA_OFFSET, self._CAMERA_SIZE or display.screen_size))
         offset = (self._CAMERA_OFFSET[0] - self._camera.x, self._CAMERA_OFFSET[1] - self._camera.y)
-        screen.blit(self._background, offset)
+        screen.blit(self._background, pygame.Vector2(offset))
         self._draw_pre_sprites(screen, offset)
         self.sprites_all.draw(screen, offset)
         self._draw_post_sprites(screen, offset)
