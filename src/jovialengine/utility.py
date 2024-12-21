@@ -5,6 +5,10 @@ import datetime
 import pygame
 
 
+def round_point(pos: pygame.typing.Point):
+    return round(pos[0]), round(pos[1])
+
+
 def clamp(number, minimum, maximum):
     return max(minimum, min(maximum, number))
 
@@ -34,7 +38,7 @@ def cos_curve(number: float):
     return math.cos(number * math.pi / 2)
 
 
-def get_positional_channel_mix(pos: pygame.typing.Point, camera: pygame.Rect):
+def get_positional_channel_mix(pos: pygame.typing.Point, camera: pygame.FRect):
     lr_pos = clamp((pos[0] - camera.left) / camera.width, 0, 1)
     # currently doesn't start to get quieter as sprites get further off-screen to left or right (or up or down)
     # possibly should

@@ -48,7 +48,6 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         '_mask_image_count_x',
         '_mask_image_count_y',
         '_mask_seq',
-        '_pos',
     )
 
     def __init__(self, pos: pygame.typing.Point = (0, 0)):
@@ -61,7 +60,6 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                 "if _COLLISION_MASK_LOCATION is set, _COLLISION_MASK_ALPHA_OR_COLORKEY must be set"
             )
         super().__init__()
-        self._pos = pygame.math.Vector2(pos)
         self.image = None
         self.rect = None
         self._input_frame: InputFrame | None = None
@@ -80,38 +78,39 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                 self._seq = 0
                 self._source_rect = pygame.Rect((0, 0), self._IMAGE_SECTION_SIZE)
                 self.image = load.subsurface(self._base_image, tuple(self._source_rect))
-            self.rect = self.image.get_rect(center=self._pos)
+            self.rect = self.image.get_frect(center=pos)
         self.radius: float | None = None
         self._mask_image: pygame.Surface | None = None
         self._mask_image_count_x: int | None = None
         self._mask_image_count_y: int | None = None
         self._mask_seq: int | None = None
         self._mask_source_rect: pygame.Rect | None = None
-        if self.rect:
-            self.mask = load.mask_filled(self.rect.size)
+        if self.image:
+            size = self.image.get_size()
+            self.mask = load.mask_filled(size)
             if self._COLLISION_RADIUS:
                 self.radius = self._COLLISION_RADIUS
-                self.mask = load.mask_circle(self.rect.size, self.radius)
+                self.mask = load.mask_circle(size, self.radius)
             if self._COLLISION_MASK_LOCATION:
                 self._mask_image = load.image(self._COLLISION_MASK_LOCATION, self._COLLISION_MASK_ALPHA_OR_COLORKEY)
                 mask_image_size = self._mask_image.get_size()
-                if self.rect.size != mask_image_size:
-                    self._mask_image_count_x = mask_image_size[0] // self.rect.size[0]
-                    self._mask_image_count_y = mask_image_size[1] // self.rect.size[1]
+                if size != mask_image_size:
+                    self._mask_image_count_x = mask_image_size[0] // size[0]
+                    self._mask_image_count_y = mask_image_size[1] // size[1]
                     self._mask_seq = 0
-                    self._mask_source_rect = pygame.Rect((0, 0), self.rect.size)
+                    self._mask_source_rect = pygame.Rect((0, 0), size)
                 self.mask = load.mask_surface(self._mask_image, self._mask_source_rect and tuple(self._mask_source_rect))
 
     def save(self):
         return {
-            '_pos': self._pos,
+            'rect_center': self.rect.center,
             '_seq': self._seq,
             '_mask_seq': self._mask_seq,
         }
 
     @classmethod
     def load(cls, save_data):
-        new_obj = GameSprite(save_data['_pos'])
+        new_obj = GameSprite(save_data['rect_center'])
         if new_obj.seq is not None:
             new_obj.seq = save_data['_seq']
         if new_obj.mask_seq is not None:
@@ -147,27 +146,11 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     def mask_seq(self, value: int):
         if self._mask_seq is None:
             raise RuntimeError("error: setting mask_seq for GameSprite not using a sprite sheet")
+        size = self.image.get_size()
         self._mask_seq = value % (self._image_count_x * self._image_count_y)
-        self._mask_source_rect.x = (self._mask_seq % self._mask_image_count_x) * self.rect.size[0]
-        self._mask_source_rect.y = (self._mask_seq // self._mask_image_count_y) * self.rect.size[1]
-        self.mask = load.mask_surface(self._mask_image, self._mask_source_rect and tuple(self._mask_source_rect))
-
-    @final
-    @property
-    def pos(self):
-        """Get the sprite position.
-        Setting this value updates the rect center, but this can hold floats."""
-        return self._pos
-
-    @final
-    @pos.setter
-    def pos(self, value: pygame.typing.Point):
-        self._pos = pygame.math.Vector2(value)
-        self.rect.center = self._pos
-
-    @final
-    def reset_pos(self):
-        self._pos = pygame.math.Vector2(self.rect.center)
+        self._mask_source_rect.x = (self._mask_seq % self._mask_image_count_x) * size[0]
+        self._mask_source_rect.y = (self._mask_seq // self._mask_image_count_x) * size[1]
+        self.mask = load.mask_surface(self._mask_image, tuple(self._mask_source_rect))
 
     @classmethod
     @final
@@ -223,7 +206,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
             self._take_state_change(state_change)
         self._input_frame = input_frame
 
-    def update(self, dt: int, camera: pygame.Rect):
+    def update(self, dt: int, camera: pygame.FRect):
         """Called to apply time updates to a GameSprite."""
         pass
 

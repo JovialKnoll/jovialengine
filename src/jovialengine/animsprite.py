@@ -77,7 +77,7 @@ class AnimSprite(GameSprite):
 
     def save(self):
         return {
-            'pos': self.pos,
+            'rect_center': self.rect.center,
             'seq': self.seq,
             'mask_seq': self.mask_seq,
             'anims': self.anims,
@@ -87,7 +87,7 @@ class AnimSprite(GameSprite):
 
     @classmethod
     def load(cls, save_data):
-        new_obj = AnimSprite(save_data['pos'])
+        new_obj = AnimSprite(save_data['rect_center'])
         if new_obj.seq is not None:
             new_obj.seq = save_data['seq']
         if new_obj.mask_seq is not None:
@@ -102,16 +102,16 @@ class AnimSprite(GameSprite):
             return True
         return False
 
-    def update(self, dt: int, camera: pygame.Rect):
+    def update(self, dt: int, camera: pygame.FRect):
         if self.last_pos is None:
-            self.last_pos = self.pos
+            self.last_pos = self.rect.center
         # adding dt
         self.time += dt
         while self.anims and self.time >= self.anims[0].time:
             done_anim = self.anims.popleft()
             self.time -= done_anim.time
-            self.pos = done_anim.pos
-            self.last_pos = self.pos
+            self.rect.center = done_anim.pos
+            self.last_pos = self.rect.center
             if done_anim.sound:
                 self.positional_sound = done_anim.positional_sound
                 channel = done_anim.sound.play()
@@ -122,7 +122,7 @@ class AnimSprite(GameSprite):
         if self.anims:
             current_anim = self.anims[0]
             func = self.to_func(current_anim.func)
-            self.pos = func(
+            self.rect.center = func(
                 self.last_pos,
                 current_anim.pos,
                 self.time / current_anim.time
@@ -132,7 +132,7 @@ class AnimSprite(GameSprite):
             self.time = 0
         if self.positional_sound:
             if self.sound_channel.get_busy():
-                channel_l, channel_r = utility.get_positional_channel_mix(self.pos, camera)
+                channel_l, channel_r = utility.get_positional_channel_mix(self.rect.center, camera)
                 self.sound_channel.set_volume(channel_l, channel_r)
             else:
                 self.positional_sound = False
@@ -152,7 +152,7 @@ class AnimSprite(GameSprite):
         if self.anims:
             new_pos += self.anims[-1].pos
         else:
-            new_pos += self.pos
+            new_pos += self.rect.center
         self.add_pos_abs(func, time, new_pos, sound=sound, positional_sound=positional_sound, callback=callback)
 
     def add_wait(self, time: int,
