@@ -35,12 +35,10 @@ class TestSpriteMask(GameSprite):
     _COLLISION_MASK_LOCATION = './assets/gfx/4x4_image.png'
     _COLLISION_MASK_ALPHA_OR_COLORKEY = (255, 0, 255)
 
-class TestSpriteMaskSeq(TestSpriteMask):
-    _IMAGE_SECTION_SIZE = (2, 2)
-
 class TestSpriteSheet(GameSprite):
     _IMAGE_LOCATION = './assets/gfx/4x4_sheet_tests.png'
     _ALPHA_OR_COLORKEY = (255, 0, 255)
+    _IMAGE_SECTION_SIZE = (2, 2)
     _COLLISION_MASK_LOCATION = './assets/gfx/4x4_mask_tests.png'
     _COLLISION_MASK_ALPHA_OR_COLORKEY = (255, 0, 255)
 
@@ -142,7 +140,7 @@ class TestGameSprite(unittest.TestCase):
 
     def test_seq(self):
         # Arrange
-        sprite = TestSpriteMaskSeq((0, 0))
+        sprite = TestSpriteSheet()
         # Act
         sprite.seq = 4
         # Assert
@@ -150,7 +148,7 @@ class TestGameSprite(unittest.TestCase):
 
     def test_mask_seq(self):
         # Arrange
-        sprite = TestSpriteMaskSeq((0, 0))
+        sprite = TestSpriteSheet()
         # Act
         sprite.mask_seq = 4
         # Assert
