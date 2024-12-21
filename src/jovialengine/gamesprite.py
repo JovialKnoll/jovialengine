@@ -149,7 +149,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         size = self.image.get_size()
         self._mask_seq = value % (self._image_count_x * self._image_count_y)
         self._mask_source_rect.x = (self._mask_seq % self._mask_image_count_x) * size[0]
-        self._mask_source_rect.y = (self._mask_seq // self._mask_image_count_y) * size[1]
+        self._mask_source_rect.y = (self._mask_seq // self._mask_image_count_x) * size[1]
         self.mask = load.mask_surface(self._mask_image, tuple(self._mask_source_rect))
 
     @classmethod
