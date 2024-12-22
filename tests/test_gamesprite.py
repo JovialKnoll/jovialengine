@@ -43,6 +43,13 @@ class TestSpriteSheet(GameSprite):
     _COLLISION_MASK_ALPHA_OR_COLORKEY = (255, 0, 255)
 
 class TestGameSprite(unittest.TestCase):
+    IMAGE_POINTS = (
+        (0, 0),
+        (0, 1),
+        (1, 0),
+        (1, 1),
+    )
+
     @classmethod
     def setUpClass(cls):
         pygame.display.set_mode((1, 1), pygame.NOFRAME)
@@ -145,6 +152,15 @@ class TestGameSprite(unittest.TestCase):
         sprite.seq = 6
         # Assert
         self.assertEqual(sprite.seq, 0)
+
+    def test_seq_image_0(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.seq = 0
+        # Assert
+        for pos in self.IMAGE_POINTS:
+            self.assertEqual(sprite.image.get_at(pos), pygame.Color('red'))
 
     def test_mask_seq(self):
         # Arrange
