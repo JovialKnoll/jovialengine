@@ -35,10 +35,21 @@ class TestSpriteMask(GameSprite):
     _COLLISION_MASK_LOCATION = './assets/gfx/4x4_image.png'
     _COLLISION_MASK_ALPHA_OR_COLORKEY = (255, 0, 255)
 
-class TestSpriteMaskSeq(TestSpriteMask):
+class TestSpriteSheet(GameSprite):
+    _IMAGE_LOCATION = './assets/gfx/6x4_sheet_tests.png'
+    _ALPHA_OR_COLORKEY = (255, 0, 255)
     _IMAGE_SECTION_SIZE = (2, 2)
+    _COLLISION_MASK_LOCATION = './assets/gfx/6x4_mask_tests.png'
+    _COLLISION_MASK_ALPHA_OR_COLORKEY = (255, 0, 255)
 
 class TestGameSprite(unittest.TestCase):
+    IMAGE_POINTS = (
+        (0, 0),
+        (1, 0),
+        (0, 1),
+        (1, 1),
+    )
+
     @classmethod
     def setUpClass(cls):
         pygame.display.set_mode((1, 1), pygame.NOFRAME)
@@ -136,19 +147,151 @@ class TestGameSprite(unittest.TestCase):
 
     def test_seq(self):
         # Arrange
-        sprite = TestSpriteMaskSeq((0, 0))
+        sprite = TestSpriteSheet()
         # Act
-        sprite.seq = 4
+        sprite.seq = 6
         # Assert
         self.assertEqual(sprite.seq, 0)
 
+    def test_seq_image_0(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.seq = 0
+        # Assert
+        self.assertEqual(sprite.image.size, (2, 2))
+        for pos in self.IMAGE_POINTS:
+            self.assertEqual(sprite.image.get_at(pos), pygame.Color('red'))
+
+    def test_seq_image_1(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.seq = 1
+        # Assert
+        self.assertEqual(sprite.image.size, (2, 2))
+        for pos in self.IMAGE_POINTS:
+            self.assertEqual(sprite.image.get_at(pos), pygame.Color('green'))
+
+    def test_seq_image_2(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.seq = 2
+        # Assert
+        self.assertEqual(sprite.image.size, (2, 2))
+        for pos in self.IMAGE_POINTS:
+            self.assertEqual(sprite.image.get_at(pos), pygame.Color('blue'))
+
+    def test_seq_image_3(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.seq = 3
+        # Assert
+        self.assertEqual(sprite.image.size, (2, 2))
+        for pos in self.IMAGE_POINTS:
+            self.assertEqual(sprite.image.get_at(pos), pygame.Color('black'))
+
+    def test_seq_image_4(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.seq = 4
+        # Assert
+        self.assertEqual(sprite.image.size, (2, 2))
+        for pos in self.IMAGE_POINTS:
+            self.assertEqual(sprite.image.get_at(pos), pygame.Color('white'))
+
+    def test_seq_image_5(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.seq = 5
+        # Assert
+        self.assertEqual(sprite.image.size, (2, 2))
+        for pos in self.IMAGE_POINTS:
+            self.assertEqual(sprite.image.get_at(pos), pygame.Color('black'))
+
     def test_mask_seq(self):
         # Arrange
-        sprite = TestSpriteMaskSeq((0, 0))
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.mask_seq = 6
+        # Assert
+        self.assertEqual(sprite.mask_seq, 0)
+
+    def test_mask_seq_mask_0(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.mask_seq = 0
+        # Assert
+        self.assertEqual(sprite.mask.get_size(), (2, 2))
+        self.assertEqual(sprite.mask.get_at((0, 0)), 0)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 1)), 1)
+
+    def test_mask_seq_mask_1(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.mask_seq = 1
+        # Assert
+        self.assertEqual(sprite.mask.get_size(), (2, 2))
+        self.assertEqual(sprite.mask.get_at((0, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 0)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 1)), 1)
+
+    def test_mask_seq_mask_2(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.mask_seq = 2
+        # Assert
+        self.assertEqual(sprite.mask.get_size(), (2, 2))
+        self.assertEqual(sprite.mask.get_at((0, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 0)
+        self.assertEqual(sprite.mask.get_at((1, 1)), 1)
+
+    def test_mask_seq_mask_3(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.mask_seq = 3
+        # Assert
+        self.assertEqual(sprite.mask.get_size(), (2, 2))
+        self.assertEqual(sprite.mask.get_at((0, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 1)), 0)
+
+    def test_mask_seq_mask_4(self):
+        # Arrange
+        sprite = TestSpriteSheet()
         # Act
         sprite.mask_seq = 4
         # Assert
-        self.assertEqual(sprite.mask_seq, 0)
+        self.assertEqual(sprite.mask.get_size(), (2, 2))
+        self.assertEqual(sprite.mask.get_at((0, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 1)), 1)
+
+    def test_mask_seq_mask_5(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.mask_seq = 5
+        # Assert
+        self.assertEqual(sprite.mask.get_size(), (2, 2))
+        self.assertEqual(sprite.mask.get_at((0, 0)), 0)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 0)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 0)
+        self.assertEqual(sprite.mask.get_at((1, 1)), 0)
 
 
 if __name__ == '__main__':
