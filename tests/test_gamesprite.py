@@ -221,6 +221,78 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertEqual(sprite.mask_seq, 0)
 
+    def test_mask_seq_mask_0(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.mask_seq = 0
+        # Assert
+        self.assertEqual(sprite.mask.get_size(), (2, 2))
+        self.assertEqual(sprite.mask.get_at((0, 0)), 0)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 1)), 1)
+
+    def test_mask_seq_mask_1(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.mask_seq = 1
+        # Assert
+        self.assertEqual(sprite.mask.get_size(), (2, 2))
+        self.assertEqual(sprite.mask.get_at((0, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 0)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 1)), 1)
+
+    def test_mask_seq_mask_2(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.mask_seq = 2
+        # Assert
+        self.assertEqual(sprite.mask.get_size(), (2, 2))
+        self.assertEqual(sprite.mask.get_at((0, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 0)
+        self.assertEqual(sprite.mask.get_at((1, 1)), 1)
+
+    def test_mask_seq_mask_3(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.mask_seq = 3
+        # Assert
+        self.assertEqual(sprite.mask.get_size(), (2, 2))
+        self.assertEqual(sprite.mask.get_at((0, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 1)), 0)
+
+    def test_mask_seq_mask_4(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.mask_seq = 4
+        # Assert
+        self.assertEqual(sprite.mask.get_size(), (2, 2))
+        self.assertEqual(sprite.mask.get_at((0, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 1)), 1)
+
+    def test_mask_seq_mask_5(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.mask_seq = 5
+        # Assert
+        self.assertEqual(sprite.mask.get_size(), (2, 2))
+        self.assertEqual(sprite.mask.get_at((0, 0)), 0)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 0)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 0)
+        self.assertEqual(sprite.mask.get_at((1, 1)), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
