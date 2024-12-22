@@ -159,8 +159,59 @@ class TestGameSprite(unittest.TestCase):
         # Act
         sprite.seq = 0
         # Assert
+        self.assertEqual(sprite.image.size, (2, 2))
         for pos in self.IMAGE_POINTS:
             self.assertEqual(sprite.image.get_at(pos), pygame.Color('red'))
+
+    def test_seq_image_1(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.seq = 1
+        # Assert
+        self.assertEqual(sprite.image.size, (2, 2))
+        for pos in self.IMAGE_POINTS:
+            self.assertEqual(sprite.image.get_at(pos), pygame.Color('green'))
+
+    def test_seq_image_2(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.seq = 2
+        # Assert
+        self.assertEqual(sprite.image.size, (2, 2))
+        for pos in self.IMAGE_POINTS:
+            self.assertEqual(sprite.image.get_at(pos), pygame.Color('blue'))
+
+    def test_seq_image_3(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.seq = 3
+        # Assert
+        self.assertEqual(sprite.image.size, (2, 2))
+        for pos in self.IMAGE_POINTS:
+            self.assertEqual(sprite.image.get_at(pos), pygame.Color('black'))
+
+    def test_seq_image_4(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.seq = 4
+        # Assert
+        self.assertEqual(sprite.image.size, (2, 2))
+        for pos in self.IMAGE_POINTS:
+            self.assertEqual(sprite.image.get_at(pos), pygame.Color('white'))
+
+    def test_seq_image_5(self):
+        # Arrange
+        sprite = TestSpriteSheet()
+        # Act
+        sprite.seq = 5
+        # Assert
+        self.assertEqual(sprite.image.size, (2, 2))
+        for pos in self.IMAGE_POINTS:
+            self.assertEqual(sprite.image.get_at(pos), pygame.Color('black'))
 
     def test_mask_seq(self):
         # Arrange
