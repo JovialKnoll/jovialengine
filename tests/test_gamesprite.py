@@ -45,8 +45,8 @@ class TestSpriteSheet(GameSprite):
 class TestGameSprite(unittest.TestCase):
     IMAGE_POINTS = (
         (0, 0),
-        (0, 1),
         (1, 0),
+        (0, 1),
         (1, 1),
     )
 
@@ -229,8 +229,8 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertEqual(sprite.mask.get_size(), (2, 2))
         self.assertEqual(sprite.mask.get_at((0, 0)), 0)
-        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
         self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
         self.assertEqual(sprite.mask.get_at((1, 1)), 1)
 
     def test_mask_seq_mask_1(self):
@@ -241,8 +241,8 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertEqual(sprite.mask.get_size(), (2, 2))
         self.assertEqual(sprite.mask.get_at((0, 0)), 1)
-        self.assertEqual(sprite.mask.get_at((0, 1)), 0)
-        self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 0)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
         self.assertEqual(sprite.mask.get_at((1, 1)), 1)
 
     def test_mask_seq_mask_2(self):
@@ -253,8 +253,8 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertEqual(sprite.mask.get_size(), (2, 2))
         self.assertEqual(sprite.mask.get_at((0, 0)), 1)
-        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
-        self.assertEqual(sprite.mask.get_at((1, 0)), 0)
+        self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 0)
         self.assertEqual(sprite.mask.get_at((1, 1)), 1)
 
     def test_mask_seq_mask_3(self):
@@ -265,8 +265,8 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertEqual(sprite.mask.get_size(), (2, 2))
         self.assertEqual(sprite.mask.get_at((0, 0)), 1)
-        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
         self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
         self.assertEqual(sprite.mask.get_at((1, 1)), 0)
 
     def test_mask_seq_mask_4(self):
@@ -277,8 +277,8 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertEqual(sprite.mask.get_size(), (2, 2))
         self.assertEqual(sprite.mask.get_at((0, 0)), 1)
-        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
         self.assertEqual(sprite.mask.get_at((1, 0)), 1)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 1)
         self.assertEqual(sprite.mask.get_at((1, 1)), 1)
 
     def test_mask_seq_mask_5(self):
@@ -289,8 +289,8 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertEqual(sprite.mask.get_size(), (2, 2))
         self.assertEqual(sprite.mask.get_at((0, 0)), 0)
-        self.assertEqual(sprite.mask.get_at((0, 1)), 0)
         self.assertEqual(sprite.mask.get_at((1, 0)), 0)
+        self.assertEqual(sprite.mask.get_at((0, 1)), 0)
         self.assertEqual(sprite.mask.get_at((1, 1)), 0)
 
 
