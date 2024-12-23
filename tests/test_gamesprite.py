@@ -197,7 +197,7 @@ class TestGameSprite(unittest.TestCase):
         # Arrange
         left = TestSpriteSheet()
         left.mask_seq = 4
-        left.rect.topleft = (0.5, 0.0)
+        left.rect.topleft = (0.51, 0.0)
         right = TestSpriteSheet()
         right.mask_seq = 4
         right.rect.topleft = (2.0, 0.0)
@@ -210,7 +210,7 @@ class TestGameSprite(unittest.TestCase):
         # Arrange
         left = TestSpriteSheet()
         left.mask_seq = 4
-        left.rect.topleft = (0.5, 0.0)
+        left.rect.topleft = (0.51, 0.0)
         right = TestSpriteSheet()
         right.mask_seq = 4
         right.rect.topleft = (2.0, 0.0)
