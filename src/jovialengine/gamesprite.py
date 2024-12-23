@@ -103,14 +103,14 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
 
     def save(self):
         return {
-            'rect_center': self.rect.center,
+            'rect_topleft': self.rect.topleft,
             '_seq': self._seq,
             '_mask_seq': self._mask_seq,
         }
 
     @classmethod
     def load(cls, save_data):
-        new_obj = GameSprite(save_data['rect_center'])
+        new_obj = GameSprite(topleft=save_data['rect_topleft'])
         if new_obj.seq is not None:
             new_obj.seq = save_data['_seq']
         if new_obj.mask_seq is not None:
