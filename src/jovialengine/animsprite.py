@@ -67,8 +67,8 @@ class AnimSprite(GameSprite):
         'sound_channel',
     )
 
-    def __init__(self, pos: pygame.typing.Point = (0, 0)):
-        super().__init__(pos)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.anims = deque()
         self.last_pos = None
         self.time = 0

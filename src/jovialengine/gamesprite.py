@@ -50,7 +50,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         '_mask_seq',
     )
 
-    def __init__(self, pos: pygame.typing.Point = (0, 0)):
+    def __init__(self, **kwargs):
         if self._IMAGE_LOCATION and not self._ALPHA_OR_COLORKEY:
             raise RuntimeError(
                 "if _IMAGE_LOCATION is set, _ALPHA_OR_COLORKEY must be set"
@@ -78,7 +78,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                 self._seq = 0
                 self._source_rect = pygame.Rect((0, 0), self._IMAGE_SECTION_SIZE)
                 self.image = load.subsurface(self._base_image, tuple(self._source_rect))
-            self.rect = self.image.get_frect(center=pos)
+            self.rect = self.image.get_frect(**kwargs)
         self.radius: float | None = None
         self._mask_image: pygame.Surface | None = None
         self._mask_image_count_x: int | None = None
