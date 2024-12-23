@@ -84,8 +84,11 @@ class ModeBase(abc.ABC):
         """All game modes can draw to the screen"""
         self._update_pre_draw()
         screen.set_clip((self._CAMERA_OFFSET, self._CAMERA_SIZE or display.screen_size))
-        offset = (self._CAMERA_OFFSET[0] - self._camera.x, self._CAMERA_OFFSET[1] - self._camera.y)
-        screen.blit(self._background, utility.round_point(offset))
+        offset = (
+            self._CAMERA_OFFSET[0] - round(self._camera.x),
+            self._CAMERA_OFFSET[1] - round(self._camera.y),
+        )
+        screen.blit(self._background, offset)
         self._draw_pre_sprites(screen, offset)
         self.sprites_all.draw(screen, offset)
         self._draw_post_sprites(screen, offset)
@@ -119,14 +122,12 @@ class ModeBase(abc.ABC):
         """Handle anything that only needs to happen right before drawing, like updating the camera position."""
         pass
 
-    def _draw_pre_sprites(self, screen: pygame.Surface, offset: pygame.typing.Point):
-        """Handle dynamic drawing after the background and before sprites.
-        May want to use utility.round_point on final positions (taking into account offset)."""
+    def _draw_pre_sprites(self, screen: pygame.Surface, offset: pygame.typing.IntPoint):
+        """Handle dynamic drawing after the background and before sprites."""
         pass
 
-    def _draw_post_sprites(self, screen: pygame.Surface, offset: pygame.typing.Point):
-        """Handle dynamic drawing after the sprites.
-        May want to use utility.round_point on final positions (taking into account offset)."""
+    def _draw_post_sprites(self, screen: pygame.Surface, offset: pygame.typing.IntPoint):
+        """Handle dynamic drawing after the sprites."""
         pass
 
     def _draw_post_camera(self, screen: pygame.Surface):
