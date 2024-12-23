@@ -82,7 +82,7 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertEqual(TestSpriteC.get_collides_with(), frozenset(('TestSpriteA',)))
 
-    def test_does_collide_circles_false(self):
+    def test_does_collide_circle_false(self):
         # Arrange
         left = TestSpriteCircle((2.5, 3))
         right = TestSpriteCircle((8.5, 4))
@@ -91,7 +91,7 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertFalse(does_collide)
 
-    def test_does_collide_circles_true(self):
+    def test_does_collide_circle_true(self):
         # Arrange
         left = TestSpriteCircle((2.5, 3))
         right = TestSpriteCircle((3.99, 3))
@@ -100,7 +100,7 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertTrue(does_collide)
 
-    def test_does_collide_rects_false(self):
+    def test_does_collide_rect_false(self):
         # Arrange
         left = TestSpriteRect((2.5, 3))
         right = TestSpriteRect((8.5, 4))
@@ -109,7 +109,7 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertFalse(does_collide)
 
-    def test_does_collide_rects_true(self):
+    def test_does_collide_rect_true(self):
         # Arrange
         left = TestSpriteRect((2, 3))
         right = TestSpriteRect((5, 6))
@@ -118,7 +118,7 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertTrue(does_collide)
 
-    def test_does_collide_rects_round_false(self):
+    def test_does_collide_rect_round_false(self):
         # Arrange
         left = TestSpriteRect()
         left.rect.topleft = (0.00, 0.0)
@@ -129,7 +129,7 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertFalse(does_collide)
 
-    def test_does_collide_rects_round_true(self):
+    def test_does_collide_rect_round_true(self):
         # Arrange
         left = TestSpriteRect()
         left.rect.topleft = (0.01, 0.0)
