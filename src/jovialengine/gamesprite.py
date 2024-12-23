@@ -183,7 +183,9 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
             return ds <= (self.radius + other.radius)**2
         elif not self.radius and not other.radius \
                 and not self._COLLISION_MASK_LOCATION and not other._COLLISION_MASK_LOCATION:
-            return pygame.sprite.collide_rect(self, other)
+            self_rect = self.rect.move_to(topleft=(round(self.rect.x), round(self.rect.y)))
+            other_rect = other.rect.move_to(topleft=(round(other.rect.x), round(other.rect.y)))
+            return self_rect.colliderect(other_rect)
         else:
             dx = round(other.rect.x) - round(self.rect.x)
             dy = round(other.rect.y) - round(self.rect.y)
