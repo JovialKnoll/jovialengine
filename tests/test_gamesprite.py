@@ -120,10 +120,8 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_rect_round_false_0(self):
         # Arrange
-        left = TestSpriteRect()
-        left.rect.topleft = (0.4, 0.0)
-        right = TestSpriteRect()
-        right.rect.topleft = (4.0, 0.0)
+        left = TestSpriteRect(topleft=(0.4, 0.0))
+        right = TestSpriteRect(topleft=(4.0, 0.0))
         # Act
         does_collide = left.does_collide(right)
         # Assert
@@ -131,10 +129,8 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_rect_round_false_1(self):
         # Arrange
-        left = TestSpriteRect()
-        left.rect.topleft = (0.4, 0.0)
-        right = TestSpriteRect()
-        right.rect.topleft = (4.0, 0.0)
+        left = TestSpriteRect(topleft=(0.4, 0.0))
+        right = TestSpriteRect(topleft=(4.0, 0.0))
         # Act
         does_collide = right.does_collide(left)
         # Assert
@@ -142,10 +138,8 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_rect_round_true_0(self):
         # Arrange
-        left = TestSpriteRect()
-        left.rect.topleft = (0.51, 0.0)
-        right = TestSpriteRect()
-        right.rect.topleft = (4.0, 0.0)
+        left = TestSpriteRect(topleft=(0.51, 0.0))
+        right = TestSpriteRect(topleft=(4.0, 0.0))
         # Act
         does_collide = left.does_collide(right)
         # Assert
@@ -153,10 +147,8 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_rect_round_true_1(self):
         # Arrange
-        left = TestSpriteRect()
-        left.rect.topleft = (0.51, 0.0)
-        right = TestSpriteRect()
-        right.rect.topleft = (4.0, 0.0)
+        left = TestSpriteRect(topleft=(0.51, 0.0))
+        right = TestSpriteRect(topleft=(4.0, 0.0))
         # Act
         does_collide = right.does_collide(left)
         # Assert
@@ -191,12 +183,10 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_mask_round_false_0(self):
         # Arrange
-        left = TestSpriteSheet()
+        left = TestSpriteSheet(topleft=(0.49, 0.0))
         left.mask_seq = 4
-        left.rect.topleft = (0.49, 0.0)
-        right = TestSpriteSheet()
+        right = TestSpriteSheet(topleft=(2.0, 0.0))
         right.mask_seq = 4
-        right.rect.topleft = (2.0, 0.0)
         # Act
         does_collide = left.does_collide(right)
         # Assert
@@ -204,12 +194,10 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_mask_round_false_1(self):
         # Arrange
-        left = TestSpriteSheet()
+        left = TestSpriteSheet(topleft=(0.49, 0.0))
         left.mask_seq = 4
-        left.rect.topleft = (0.49, 0.0)
-        right = TestSpriteSheet()
+        right = TestSpriteSheet(topleft=(2.0, 0.0))
         right.mask_seq = 4
-        right.rect.topleft = (2.0, 0.0)
         # Act
         does_collide = right.does_collide(left)
         # Assert
@@ -217,12 +205,10 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_mask_round_true_0(self):
         # Arrange
-        left = TestSpriteSheet()
+        left = TestSpriteSheet(topleft=(0.51, 0.0))
         left.mask_seq = 4
-        left.rect.topleft = (0.51, 0.0)
-        right = TestSpriteSheet()
+        right = TestSpriteSheet(topleft=(2.0, 0.0))
         right.mask_seq = 4
-        right.rect.topleft = (2.0, 0.0)
         # Act
         does_collide = left.does_collide(right)
         # Assert
@@ -230,12 +216,10 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_mask_round_true_1(self):
         # Arrange
-        left = TestSpriteSheet()
+        left = TestSpriteSheet(topleft=(0.51, 0.0))
         left.mask_seq = 4
-        left.rect.topleft = (0.51, 0.0)
-        right = TestSpriteSheet()
+        right = TestSpriteSheet(topleft=(2.0, 0.0))
         right.mask_seq = 4
-        right.rect.topleft = (2.0, 0.0)
         # Act
         does_collide = right.does_collide(left)
         # Assert
