@@ -118,10 +118,10 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertTrue(does_collide)
 
-    def test_does_collide_rect_round_false(self):
+    def test_does_collide_rect_round_false_0(self):
         # Arrange
         left = TestSpriteRect()
-        left.rect.topleft = (0.00, 0.0)
+        left.rect.topleft = (0.4, 0.0)
         right = TestSpriteRect()
         right.rect.topleft = (4.0, 0.0)
         # Act
@@ -129,10 +129,21 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertFalse(does_collide)
 
-    def test_does_collide_rect_round_true(self):
+    def test_does_collide_rect_round_false_1(self):
         # Arrange
         left = TestSpriteRect()
-        left.rect.topleft = (0.01, 0.0)
+        left.rect.topleft = (0.4, 0.0)
+        right = TestSpriteRect()
+        right.rect.topleft = (4.0, 0.0)
+        # Act
+        does_collide = right.does_collide(left)
+        # Assert
+        self.assertFalse(does_collide)
+
+    def test_does_collide_rect_round_true_0(self):
+        # Arrange
+        left = TestSpriteRect()
+        left.rect.topleft = (0.51, 0.0)
         right = TestSpriteRect()
         right.rect.topleft = (4.0, 0.0)
         # Act
@@ -140,7 +151,18 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertTrue(does_collide)
 
-    def test_does_collide_mask_false0(self):
+    def test_does_collide_rect_round_true_1(self):
+        # Arrange
+        left = TestSpriteRect()
+        left.rect.topleft = (0.51, 0.0)
+        right = TestSpriteRect()
+        right.rect.topleft = (4.0, 0.0)
+        # Act
+        does_collide = right.does_collide(left)
+        # Assert
+        self.assertTrue(does_collide)
+
+    def test_does_collide_mask_false_0(self):
         # Arrange
         left = TestSpriteMask((2, 3))
         right = TestSpriteMask((5, 3))
@@ -149,7 +171,7 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertFalse(does_collide)
 
-    def test_does_collide_mask_false1(self):
+    def test_does_collide_mask_false_1(self):
         # Arrange
         left = TestSpriteMask((3, 3))
         right = TestSpriteMask((5, 5))
