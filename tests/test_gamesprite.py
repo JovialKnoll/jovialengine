@@ -84,8 +84,8 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_circle_false(self):
         # Arrange
-        left = TestSpriteCircle((2.5, 3))
-        right = TestSpriteCircle((8.5, 4))
+        left = TestSpriteCircle(center=(2.5, 3))
+        right = TestSpriteCircle(center=(8.5, 4))
         # Act
         does_collide = left.does_collide(right)
         # Assert
@@ -93,8 +93,8 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_circle_true(self):
         # Arrange
-        left = TestSpriteCircle((2.5, 3))
-        right = TestSpriteCircle((3.99, 3))
+        left = TestSpriteCircle(center=(2.5, 3))
+        right = TestSpriteCircle(center=(3.99, 3))
         # Act
         does_collide = left.does_collide(right)
         # Assert
@@ -102,8 +102,8 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_rect_false(self):
         # Arrange
-        left = TestSpriteRect((2.5, 3))
-        right = TestSpriteRect((8.5, 4))
+        left = TestSpriteRect(center=(2.5, 3))
+        right = TestSpriteRect(center=(8.5, 4))
         # Act
         does_collide = left.does_collide(right)
         # Assert
@@ -111,8 +111,8 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_rect_true(self):
         # Arrange
-        left = TestSpriteRect((2, 3))
-        right = TestSpriteRect((5, 6))
+        left = TestSpriteRect(center=(2, 3))
+        right = TestSpriteRect(center=(5, 6))
         # Act
         does_collide = left.does_collide(right)
         # Assert
@@ -164,8 +164,8 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_mask_false_0(self):
         # Arrange
-        left = TestSpriteMask((2, 3))
-        right = TestSpriteMask((5, 3))
+        left = TestSpriteMask(center=(2, 3))
+        right = TestSpriteMask(center=(5, 3))
         # Act
         does_collide = left.does_collide(right)
         # Assert
@@ -173,8 +173,8 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_mask_false_1(self):
         # Arrange
-        left = TestSpriteMask((3, 3))
-        right = TestSpriteMask((5, 5))
+        left = TestSpriteMask(center=(3, 3))
+        right = TestSpriteMask(center=(5, 5))
         # Act
         does_collide = left.does_collide(right)
         # Assert
@@ -182,8 +182,8 @@ class TestGameSprite(unittest.TestCase):
 
     def test_does_collide_mask_true(self):
         # Arrange
-        left = TestSpriteMask((4, 4))
-        right = TestSpriteMask((6, 2))
+        left = TestSpriteMask(center=(4, 4))
+        right = TestSpriteMask(center=(6, 2))
         # Act
         does_collide = left.does_collide(right)
         # Assert
