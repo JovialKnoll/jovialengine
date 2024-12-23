@@ -167,6 +167,32 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         self.assertTrue(does_collide)
 
+    def test_does_collide_mask_round_false(self):
+        # Arrange
+        left = TestSpriteSheet()
+        left.mask_seq = 4
+        left.rect.topleft = (0.00, 0.0)
+        right = TestSpriteSheet()
+        right.mask_seq = 4
+        right.rect.topleft = (2.0, 0.0)
+        # Act
+        does_collide = left.does_collide(right)
+        # Assert
+        self.assertTrue(does_collide)
+
+    def test_does_collide_mask_round_true(self):
+        # Arrange
+        left = TestSpriteSheet()
+        left.mask_seq = 4
+        left.rect.topleft = (0.01, 0.0)
+        right = TestSpriteSheet()
+        right.mask_seq = 4
+        right.rect.topleft = (2.0, 0.0)
+        # Act
+        does_collide = left.does_collide(right)
+        # Assert
+        self.assertTrue(does_collide)
+
     def test_seq(self):
         # Arrange
         sprite = TestSpriteSheet()
