@@ -177,15 +177,18 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     @final
     def does_collide(self, other: Self):
         if self.radius and other.radius:
+            # circle collisions doesn't match exact pixels anyway, so no rounding
             dx = self.rect.centerx - other.rect.centerx
             dy = self.rect.centery - other.rect.centery
             ds = dx**2 + dy**2
             return ds <= (self.radius + other.radius)**2
         elif self.radius or other.radius or self._COLLISION_MASK_LOCATION or other._COLLISION_MASK_LOCATION:
+            # rounding so that mask collisions reflect apparent (drawn) position of sprites
             dx = round(other.rect.x) - round(self.rect.x)
             dy = round(other.rect.y) - round(self.rect.y)
             return self.mask.overlap(other.mask, (dx, dy))
         else:
+            # rounding so that rect collisions reflect apparent (drawn) positions of sprites
             self_rect = self.rect.move_to(topleft=(round(self.rect.x), round(self.rect.y)))
             other_rect = other.rect.move_to(topleft=(round(other.rect.x), round(other.rect.y)))
             return self_rect.colliderect(other_rect)
