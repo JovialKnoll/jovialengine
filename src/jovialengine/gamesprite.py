@@ -177,7 +177,10 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     @final
     def does_collide(self, other: Self):
         if self.radius and other.radius:
-            return pygame.sprite.collide_circle(self, other)
+            dx = self.rect.centerx - other.rect.centerx
+            dy = self.rect.centery - other.rect.centery
+            ds = dx**2 + dy**2
+            return ds <= (self.radius + other.radius)**2
         elif not self.radius and not other.radius \
                 and not self._COLLISION_MASK_LOCATION and not other._COLLISION_MASK_LOCATION:
             return pygame.sprite.collide_rect(self, other)
