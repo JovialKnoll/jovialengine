@@ -20,8 +20,7 @@ class ModeTest(ModeBase, Saveable):
         test_sprite = pygame.sprite.Sprite()
         test_sprite.image = pygame.Surface((1, 1))
         test_sprite.image.fill(pygame.Color('green'))
-        test_sprite.rect = test_sprite.image.get_frect()
-        test_sprite.rect.topleft = sprite_pos
+        test_sprite.rect = test_sprite.image.get_frect(topleft=sprite_pos)
         self.sprites_all.add(test_sprite)
         self.test_value = 1
 
