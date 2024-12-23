@@ -1,5 +1,4 @@
 import abc
-import math
 from functools import cache
 from typing import final, Self
 
@@ -183,8 +182,8 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                 and not self._COLLISION_MASK_LOCATION and not other._COLLISION_MASK_LOCATION:
             return pygame.sprite.collide_rect(self, other)
         else:
-            dx = math.ceil(other.rect.x - self.rect.x)
-            dy = math.ceil(other.rect.y - self.rect.y)
+            dx = round(other.rect.x) - round(self.rect.x)
+            dy = round(other.rect.y) - round(self.rect.y)
             return self.mask.overlap(other.mask, (dx, dy))
 
     @final
