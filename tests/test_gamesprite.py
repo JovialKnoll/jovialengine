@@ -127,7 +127,7 @@ class TestGameSprite(unittest.TestCase):
         # Act
         does_collide = left.does_collide(right)
         # Assert
-        self.assertTrue(does_collide)
+        self.assertFalse(does_collide)
 
     def test_does_collide_rects_round_true(self):
         # Arrange
