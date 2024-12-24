@@ -50,7 +50,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         '_mask_seq',
     )
 
-    def __init__(self, pos: pygame.typing.Point = (0, 0)):
+    def __init__(self, **kwargs):
         if self._IMAGE_LOCATION and not self._ALPHA_OR_COLORKEY:
             raise RuntimeError(
                 "if _IMAGE_LOCATION is set, _ALPHA_OR_COLORKEY must be set"
@@ -78,7 +78,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
                 self._seq = 0
                 self._source_rect = pygame.Rect((0, 0), self._IMAGE_SECTION_SIZE)
                 self.image = load.subsurface(self._base_image, tuple(self._source_rect))
-            self.rect = self.image.get_frect(center=pos)
+            self.rect = self.image.get_frect(**kwargs)
         self.radius: float | None = None
         self._mask_image: pygame.Surface | None = None
         self._mask_image_count_x: int | None = None
@@ -103,14 +103,14 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
 
     def save(self):
         return {
-            'rect_center': self.rect.center,
+            'rect_topleft': self.rect.topleft,
             '_seq': self._seq,
             '_mask_seq': self._mask_seq,
         }
 
     @classmethod
     def load(cls, save_data):
-        new_obj = GameSprite(save_data['rect_center'])
+        new_obj = GameSprite(topleft=save_data['rect_topleft'])
         if new_obj.seq is not None:
             new_obj.seq = save_data['_seq']
         if new_obj.mask_seq is not None:

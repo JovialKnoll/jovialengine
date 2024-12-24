@@ -67,8 +67,8 @@ class AnimSprite(GameSprite):
         'sound_channel',
     )
 
-    def __init__(self, pos: pygame.typing.Point = (0, 0)):
-        super().__init__(pos)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.anims = deque()
         self.last_pos = None
         self.time = 0
@@ -77,7 +77,7 @@ class AnimSprite(GameSprite):
 
     def save(self):
         return {
-            'rect_center': self.rect.center,
+            'rect_topleft': self.rect.topleft,
             'seq': self.seq,
             'mask_seq': self.mask_seq,
             'anims': self.anims,
@@ -87,7 +87,7 @@ class AnimSprite(GameSprite):
 
     @classmethod
     def load(cls, save_data):
-        new_obj = AnimSprite(save_data['rect_center'])
+        new_obj = AnimSprite(topleft=save_data['rect_topleft'])
         if new_obj.seq is not None:
             new_obj.seq = save_data['seq']
         if new_obj.mask_seq is not None:
