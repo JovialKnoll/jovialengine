@@ -177,7 +177,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     @final
     def does_collide(self, other: Self):
         if self.radius and other.radius:
-            # circle collisions doesn't match exact pixels anyway, so no rounding
+            # no rounding since circle collisions doesn't match exact pixels anyway
             dx = self.rect.centerx - other.rect.centerx
             dy = self.rect.centery - other.rect.centery
             ds = dx**2 + dy**2
