@@ -152,7 +152,7 @@ class _Game(object):
     def _filter_event(self, event: pygame.event.Event):
         """If event should be handled before all others, handle it and return False, otherwise return True.
         As an example, game-ending or display-changing events should be handled before all others.
-        Also filter out bad mouse events here.
+        Also filter out irrelevant mouse events here.
         """
         match event.type:
             case pygame.MOUSEMOTION | pygame.MOUSEBUTTONUP | pygame.MOUSEBUTTONDOWN:
