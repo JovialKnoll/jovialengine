@@ -97,9 +97,8 @@ class ModeBase(abc.ABC):
 
     @final
     def cleanup(self):
-        """All sprite groups we have in this mode should be emptied here.
-        We can't just kill the sprites since we might be reusing them between modes."""
         for sprites in (self.sprites_all, self.sprites_collide, self.sprites_input):
+            # we can't just kill the sprites since we might be reusing them between modes
             sprites.empty()
         self._cleanup()
 
@@ -113,13 +112,15 @@ class ModeBase(abc.ABC):
         pass
 
     def _update_pre_sprites(self, dt: int):
+        """Handle mode updates before sprites."""
         pass
 
     def _update_post_sprites(self, dt: int):
+        """Handle mode updates after sprites and collision handling."""
         pass
 
     def _update_pre_draw(self):
-        """Handle anything that only needs to happen right before drawing, like updating the camera position."""
+        """Handle updates that only need to happen right before drawing, like updating the camera position."""
         pass
 
     def _draw_pre_sprites(self, screen: pygame.Surface, offset: pygame.typing.IntPoint):
@@ -135,6 +136,7 @@ class ModeBase(abc.ABC):
         pass
 
     def _cleanup(self):
+        """Handle any additional cleanup this mode will need when it's ended."""
         pass
 
     @staticmethod
