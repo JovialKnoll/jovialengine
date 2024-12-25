@@ -4,8 +4,7 @@ from . import utility
 
 
 class OffsetGroup(pygame.sprite.LayeredUpdates):
-    """A sprite group for drawing sprites, in layers, offset by some amount.
-    For best results, sprite.rect should be an FRect."""
+    """A sprite group for drawing sprites, in layers, offset by some amount."""
     def draw(self, surface: pygame.Surface, offset: pygame.typing.IntPoint=(0,0)):
         sprite_sequence = [
             (
