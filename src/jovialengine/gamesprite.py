@@ -120,8 +120,8 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     @final
     @property
     def seq(self):
-        """Get the sprite sequence.
-        Set this value to change to a different part of the sprite sheet."""
+        """Get the image sequence.
+        Set this value to change to a different part of the image sheet."""
         return self._seq
 
     @final
@@ -137,8 +137,8 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     @final
     @property
     def mask_seq(self):
-        """Get the sprite sequence.
-        Set this value to change to a different part of the sprite sheet."""
+        """Get the mask sequence.
+        Set this value to change to a different part of the mask sheet."""
         return self._mask_seq
 
     @final
@@ -177,7 +177,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     @final
     def does_collide(self, other: Self):
         if self.radius and other.radius:
-            # circle collisions doesn't match exact pixels anyway, so no rounding
+            # no rounding since circle collisions doesn't match exact pixels anyway
             dx = self.rect.centerx - other.rect.centerx
             dy = self.rect.centery - other.rect.centery
             ds = dx**2 + dy**2
