@@ -120,8 +120,8 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     @final
     @property
     def seq(self):
-        """Get the sprite sequence.
-        Set this value to change to a different part of the sprite sheet."""
+        """Get the image sequence.
+        Set this value to change to a different part of the image sheet."""
         return self._seq
 
     @final
@@ -137,8 +137,8 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     @final
     @property
     def mask_seq(self):
-        """Get the sprite sequence.
-        Set this value to change to a different part of the sprite sheet."""
+        """Get the mask sequence.
+        Set this value to change to a different part of the mask sheet."""
         return self._mask_seq
 
     @final
