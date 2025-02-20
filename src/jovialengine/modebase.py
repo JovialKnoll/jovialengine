@@ -5,7 +5,6 @@ from collections.abc import Iterable
 import pygame
 
 from . import display
-from . import utility
 from .offsetgroup import OffsetGroup
 from .inputframe import InputFrame
 

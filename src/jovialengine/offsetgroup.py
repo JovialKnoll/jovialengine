@@ -1,7 +1,5 @@
 import pygame
 
-from . import utility
-
 
 class OffsetGroup(pygame.sprite.LayeredUpdates):
     """A sprite group for drawing sprites, in layers, offset by some amount."""
