@@ -317,7 +317,7 @@ class ModeGameMenuSave(ModeGameMenu):
                         self._reset_cursor_blink()
         self._cursor_position = utility.clamp(self._cursor_position, 0, len(self._save_name))
 
-    def _update(self, dt):
+    def _update_pre_sprites(self, dt):
         self._cursor_timer += dt
         if self._cursor_timer >= self._CURSOR_TIME:
             self._cursor_switch = not self._cursor_switch
@@ -576,7 +576,7 @@ class ModeGameMenuControls(ModeGameMenuList):
                 if gameinput.set_input_mapping(self._selected_player, self._index, event):
                     self._state = self.STATE_CHOOSE_EVENT
 
-    def _update(self, dt):
+    def _update_pre_sprites(self, dt):
         if self._state == self.STATE_CHOOSE_INPUT:
             self._selection_timer -= dt
             if self._selection_timer <= 0:
