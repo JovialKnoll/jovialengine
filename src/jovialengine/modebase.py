@@ -34,7 +34,7 @@ class ModeBase(abc.ABC):
     )
 
     def __init__(self):
-        self._background = pygame.Surface(self._SPACE_SIZE or display.screen_size).convert()
+        self._background = pygame.Surface(self.get_space_size()).convert()
         self._background.fill((0, 0, 0))
         self.sprites_all = OffsetGroup()
         self.sprites_collide = pygame.sprite.Group()
@@ -143,3 +143,6 @@ class ModeBase(abc.ABC):
         pygame.mixer.music.stop()
         pygame.mixer.music.unload()
         pygame.mixer.stop()
+
+    def get_space_size(self):
+        return self._SPACE_SIZE or display.screen_size
