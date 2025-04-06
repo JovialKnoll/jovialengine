@@ -25,6 +25,13 @@ def subsurface(surface: pygame.Surface, rect: tuple[int, int, int, int]):
 
 
 @cache
+def flip(surface: pygame.Surface, flip_x: bool, flip_y: bool):
+    """Gets a flipped surface from a surface.
+    The results are cached so don't alter them."""
+    return pygame.transform.flip(surface, flip_x, flip_y)
+
+
+@cache
 def mask_surface(surface: pygame.Surface, rect: tuple[int, int, int, int] | None=None):
     """Constructs a mask from a surface.
     The results are cached so don't alter them."""
