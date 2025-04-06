@@ -59,8 +59,8 @@ class ModeBase(abc.ABC):
         self._update_pre_sprites(dt)
         for sprite in self.sprites_all.sprites():
             sprite.update(dt, self._camera)
-        self.__handle_collisions()
         self._update_post_sprites(dt)
+        self.__handle_collisions()
 
     def __handle_collisions(self):
         collide_events = []
@@ -115,7 +115,7 @@ class ModeBase(abc.ABC):
         pass
 
     def _update_post_sprites(self, dt: int):
-        """Handle mode updates after sprites and collision handling."""
+        """Handle mode updates after sprites (before collision handling)."""
         pass
 
     def _update_pre_draw(self):
