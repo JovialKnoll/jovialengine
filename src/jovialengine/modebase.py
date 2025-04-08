@@ -26,7 +26,7 @@ class ModeBase(abc.ABC):
     __slots__ = (
         '_background',
         'sprites_all',
-        'sprites_collide',
+        'sprites_game',
         'sprites_input',
         '_camera',
         '_input_frame',
@@ -37,7 +37,7 @@ class ModeBase(abc.ABC):
         self._background = pygame.Surface(self.get_space_size()).convert()
         self._background.fill((0, 0, 0))
         self.sprites_all = OffsetGroup()
-        self.sprites_collide = pygame.sprite.Group()
+        self.sprites_game = pygame.sprite.Group()
         self.sprites_input = pygame.sprite.Group()
         self._camera = pygame.FRect((0, 0), self._CAMERA_SIZE or display.screen_size)
         self._input_frame: InputFrame | None = None
@@ -64,7 +64,7 @@ class ModeBase(abc.ABC):
 
     def __handle_collisions(self):
         collide_events = []
-        collide_sprites = self.sprites_collide.sprites()
+        collide_sprites = self.sprites_game.sprites()
         for i, sprite0 in enumerate(collide_sprites):
             for j in range(i + 1, len(collide_sprites)):
                 sprite1 = collide_sprites[j]
@@ -90,13 +90,15 @@ class ModeBase(abc.ABC):
         screen.blit(self._background, offset)
         self._draw_pre_sprites(screen, offset)
         self.sprites_all.draw(screen, offset)
+        for sprite in self.sprites_game.sprites():
+            sprite.draw_dynamic(screen, offset)
         self._draw_post_sprites(screen, offset)
         screen.set_clip(None)
         self._draw_post_camera(screen)
 
     @final
     def cleanup(self):
-        for sprites in (self.sprites_all, self.sprites_collide, self.sprites_input):
+        for sprites in (self.sprites_all, self.sprites_game, self.sprites_input):
             # we can't just kill the sprites since we might be reusing them between modes
             sprites.empty()
         self._cleanup()

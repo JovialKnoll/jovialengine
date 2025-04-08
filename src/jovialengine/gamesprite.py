@@ -203,7 +203,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         if mode is None:
             mode = game.get_current_mode()
         mode.sprites_all.add(self)
-        mode.sprites_collide.add(self)
+        mode.sprites_game.add(self)
         if self._GETS_INPUT or self._take_state_change is not GameSprite._take_state_change:
             mode.sprites_input.add(self)
         self._start(mode)
@@ -218,6 +218,10 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
 
     def update(self, dt: int, camera: pygame.FRect):
         """Called to apply time updates to a GameSprite."""
+        pass
+
+    def draw_dynamic(self, screen: pygame.Surface, offset: pygame.typing.IntPoint):
+        """Called to apply dynamic drawing from a GameSprite after normal drawing."""
         pass
 
     def _start(self, mode: ModeBase):
