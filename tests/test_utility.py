@@ -9,15 +9,15 @@ class TestUtility(unittest.TestCase):
     def test_clamp(self):
         # Assert
         self.assertEqual(
-            utility.clamp(123, 5, 10),
+            pygame.math.clamp(123, 5, 10),
             10
         )
         self.assertEqual(
-            utility.clamp(-123, 5, 10),
+            pygame.math.clamp(-123, 5, 10),
             5
         )
         self.assertEqual(
-            utility.clamp(12, 3, 33),
+            pygame.math.clamp(12, 3, 33),
             12
         )
 
