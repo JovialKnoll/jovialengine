@@ -193,7 +193,7 @@ class ModeGameMenuTop(ModeGameMenu):
                         self._last_disp_text = None
                     case 6:
                         game.stop()
-        self._selected = utility.clamp(self._selected, 0, len(self._OPTIONS) - 1)
+        self._selected = pygame.math.clamp(self._selected, 0, len(self._OPTIONS) - 1)
 
     def _draw_post_camera(self, screen):
         disp_text = self._SHARED_DISP_TEXT
@@ -315,7 +315,7 @@ class ModeGameMenuSave(ModeGameMenu):
                             + self._save_name[self._cursor_position:]
                         self._cursor_position += 1
                         self._reset_cursor_blink()
-        self._cursor_position = utility.clamp(self._cursor_position, 0, len(self._save_name))
+        self._cursor_position = pygame.math.clamp(self._cursor_position, 0, len(self._save_name))
 
     def _update_pre_sprites(self, dt):
         self._cursor_timer += dt
@@ -393,7 +393,7 @@ class ModeGameMenuLoad(ModeGameMenuList):
                         if len(self._saves) > 0:
                             self._state = self.STATE_SELECTED_SAVE
                             self._selected_save_option = self.OPTION_LOAD
-                self._index = utility.clamp(self._index, 0, len(self._saves) - 1)
+                self._index = pygame.math.clamp(self._index, 0, len(self._saves) - 1)
             case self.STATE_LOADED_SAVE:
                 if action in {MenuAction.CONFIRM, MenuAction.REJECT}:
                     self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
@@ -419,7 +419,7 @@ class ModeGameMenuLoad(ModeGameMenuList):
                         elif self._selected_save_option == self.OPTION_DELETE:
                             self._saves[self._index].delete()
                             del self._saves[self._index]
-                            self._index = utility.clamp(self._index, 0, len(self._saves) - 1)
+                            self._index = pygame.math.clamp(self._index, 0, len(self._saves) - 1)
                             self._state = self.STATE_DELETED_SAVE
                     case MenuAction.REJECT:
                         self._state = self.STATE_DEFAULT
@@ -556,7 +556,7 @@ class ModeGameMenuControls(ModeGameMenuList):
                         self._index = 0
                     case MenuAction.REJECT:
                         self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-                self._selected_player = utility.clamp(self._selected_player, 0, gameinput.max_players - 1)
+                self._selected_player = pygame.math.clamp(self._selected_player, 0, gameinput.max_players - 1)
             case self.STATE_CHOOSE_EVENT:
                 match action:
                     case MenuAction.UP | MenuAction.LEFT:
@@ -571,7 +571,7 @@ class ModeGameMenuControls(ModeGameMenuList):
                             self._state = self.STATE_CHOOSE_PLAYER
                         else:
                             self.next_mode = ModeGameMenuTop(self._previous_mode, self._background)
-                self._index = utility.clamp(self._index, 0, gameinput.num_inputs - 1)
+                self._index = pygame.math.clamp(self._index, 0, gameinput.num_inputs - 1)
             case self.STATE_CHOOSE_INPUT:
                 if gameinput.set_input_mapping(self._selected_player, self._index, event):
                     self._state = self.STATE_CHOOSE_EVENT
