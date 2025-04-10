@@ -20,6 +20,7 @@ class _Game(object):
     __slots__ = (
         '_running',
         'start_mode_cls',
+        'restart_mode_cls',
         '_state_cls',
         '_clock',
         '_max_dt',
@@ -33,6 +34,7 @@ class _Game(object):
         self,
         mode_module: ModuleType,
         start_mode_cls: type[ModeBase],
+        restart_mode_cls: type[ModeBase] | None,
         state_cls: type[Saveable],
         src_directory: str,
         screen_size: tuple[int, int],
@@ -49,6 +51,7 @@ class _Game(object):
     ):
         self._running = False
         self.start_mode_cls = start_mode_cls
+        self.restart_mode_cls = restart_mode_cls
         self._state_cls = state_cls
         config.init(
             os.path.join(src_directory, 'config.ini')
@@ -197,6 +200,7 @@ def init(
     font_size: int,
     font_height: int,
     font_antialias: bool,
+    restart_mode_cls: type[ModeBase] | None=None,
     max_dt: int=5
 ):
     """Loads up the game and prepares it for running.
@@ -215,6 +219,7 @@ def init(
     font_size: default font size
     font_height: default font height
     font_antialias: default font antialias
+    restart_mode_cls: the class to return for what mode to restart the game to
     max_dt: maximum dt for updates, if over this will run updates and collision checks multiple times
     """
     global _game
@@ -223,6 +228,7 @@ def init(
     _game = _Game(
         mode_module,
         start_mode_cls,
+        restart_mode_cls,
         state_cls,
         src_directory,
         screen_size,
@@ -255,6 +261,10 @@ def set_state(save_data=None):
 
 def get_start_mode_cls():
     return _game.start_mode_cls
+
+
+def get_restart_mode_cls():
+    return _game.restart_mode_cls or _game.start_mode_cls
 
 
 def get_current_mode():
