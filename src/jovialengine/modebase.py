@@ -1,5 +1,5 @@
 import abc
-from typing import final
+from typing import final, TYPE_CHECKING
 from collections.abc import Iterable
 
 import pygame
@@ -7,6 +7,8 @@ import pygame
 from . import display
 from .offsetgroup import OffsetGroup
 from .inputframe import InputFrame
+if TYPE_CHECKING:
+    from .gamesprite import GameSprite
 
 
 class ModeBase(abc.ABC):
@@ -37,8 +39,8 @@ class ModeBase(abc.ABC):
         self._background = pygame.Surface(self.get_space_size()).convert()
         self._background.fill((0, 0, 0))
         self.sprites_all = OffsetGroup()
-        self.sprites_game = pygame.sprite.Group()
-        self.sprites_input = pygame.sprite.Group()
+        self.sprites_game: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
+        self.sprites_input: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
         self._camera = pygame.FRect((0, 0), self._CAMERA_SIZE or display.screen_size)
         self._input_frame: InputFrame | None = None
         self.next_mode: ModeBase | None = None
