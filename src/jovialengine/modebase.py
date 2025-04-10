@@ -10,6 +10,7 @@ from .inputframe import InputFrame
 if TYPE_CHECKING:
     from .gamesprite import GameSprite
 
+
 class ModeBase(abc.ABC):
     """Base class for all game modes.
     Subclasses should set:
