@@ -5,10 +5,6 @@ import datetime
 import pygame
 
 
-def clamp(number, minimum, maximum):
-    return max(minimum, min(maximum, number))
-
-
 def get_int_movement(tracking: float, vel: float, dt: int):
     tracking += vel * dt
     tracking_int = int(tracking)
@@ -35,7 +31,7 @@ def cos_curve(number: float):
 
 
 def get_positional_channel_mix(pos: pygame.typing.Point, camera: pygame.FRect):
-    lr_pos = clamp((pos[0] - camera.left) / camera.width, 0, 1)
+    lr_pos = pygame.math.clamp((pos[0] - camera.left) / camera.width, 0, 1)
     # currently doesn't start to get quieter as sprites get further off-screen to left or right (or up or down)
     # possibly should
     channel_l = _bound_channel_volume(cos_curve(lr_pos))

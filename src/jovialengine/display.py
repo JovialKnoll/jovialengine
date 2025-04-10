@@ -87,7 +87,7 @@ def set_scale(new_scale: int):
     global upscale
     global screen
     global _disp_res
-    new_scale = utility.clamp(new_scale, 1, _upscale_max)
+    new_scale = pygame.math.clamp(new_scale, 1, _upscale_max)
     if new_scale == upscale:
         return
     upscale = new_scale
