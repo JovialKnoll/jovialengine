@@ -50,7 +50,7 @@ def binary(start, end, mix):
 
 
 def lerp(start, end, mix):
-    return pygame.math.lerp(start, end, mix, False)
+    return start + (end - start)*mix
 
 
 def inc_speed_lerp(start, end, mix):
