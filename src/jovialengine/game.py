@@ -185,66 +185,90 @@ class _Game(object):
 _game: _Game | None = None
 
 
-def init(
-    mode_module: ModuleType,
-    start_mode_cls: type[ModeBase],
-    state_cls: type[Saveable],
-    src_directory: str,
-    screen_size: tuple[int, int],
-    title: str,
-    window_icon: str | None,
-    max_players: int,
-    event_names: tuple[str],
-    input_defaults: tuple[gameinput.InputDefault],
-    font_location: str | None,
-    font_size: int,
-    font_height: int,
-    font_antialias: bool,
-    restart_mode_cls: type[ModeBase] | None=None,
-    max_dt: int=5
-):
-    """Loads up the game and prepares it for running.
-    Arguments:
-    mode_module: the module holding all modes for your game
-    start_mode_cls: the class for the first mode
-    state_cls: the class for holding general game state
-    src_directory: directory of the program
-    screen_size: size of the virtual screen
-    title: title of the game (for titlebar)
-    window_icon: location of icon of the game (for titlebar)
-    max_players: maximum number of players the game supports
-    event_names: names for virtual inputs that button / axis inputs map to
-    input_defaults: default input mappings
-    font_location: location of default font for the game
-    font_size: default font size
-    font_height: default font height
-    font_antialias: default font antialias
-    restart_mode_cls: the class to return for what mode to restart the game to
-    max_dt: maximum dt for updates, if over this will run updates and collision checks multiple times
-    """
-    global _game
-    if _game:
-        raise RuntimeError("error: _game is already set")
-    _game = _Game(
-        mode_module,
-        start_mode_cls,
-        restart_mode_cls,
-        state_cls,
-        src_directory,
-        screen_size,
-        title,
-        window_icon,
-        max_players,
-        event_names,
-        input_defaults,
-        font_location,
-        font_size,
-        font_height,
-        font_antialias,
-        max_dt
+class GameBuilder(object):
+    __slots__ = (
+        '_game',
     )
-    _game.start()
-    return _game
+    def __init__(self):
+        self._game = _Game()
+
+    def set_mode_module(self, mode_module: ModuleType):
+        """required: Sets the module that holds all modes."""
+        self._game.mode_module = mode_module
+
+    def set_start_mode_cls(self, start_mode_cls: type[ModeBase]):
+        """required: Sets the class for the starting mode."""
+        self._game.start_mode_cls = start_mode_cls
+
+    def set_start_mode_cls(self, start_mode_cls: type[ModeBase]):
+        """required: Sets the class for the starting mode."""
+        self._game.start_mode_cls = start_mode_cls
+
+    def set_restart_mode_cls(self, restart_mode_cls: type[ModeBase]):
+        """optional: Sets the class for the mode to restart to."""
+        self._game.restart_mode_cls = restart_mode_cls
+
+    def set_state_cls(self, state_cls: type[Saveable]):
+        """required: Sets the class for holding general game state."""
+        self._game.state_cls = state_cls
+
+    def set_src_directory(self, src_directory: str):
+        """required: Sets the directory of the program (for config, input, saves, screenshots)."""
+        self._game.src_directory = src_directory
+
+    def set_screen_size(self, screen_size: tuple[int, int]):
+        """required: Sets the size of the virtual screen."""
+        self._game.screen_size = screen_size
+
+    def set_title(self, title: str):
+        """optional: Sets the title of the game window."""
+        self._game.title = title
+
+    def set_window_icon(self, window_icon: str):
+        """optional: Sets the location of icon of the game window."""
+        self._game.window_icon = window_icon
+
+    def set_max_players(self, max_players: int):
+        """optional: Sets the maximum number of players the game supports."""
+        self._game.max_players = max_players
+
+    def set_event_names(self, event_names: tuple[str]):
+        """required: Sets the names for the virtual input events."""
+        self._game.event_names = event_names
+
+    def set_input_defaults(self, input_defaults: tuple[gameinput.InputDefault]):
+        """required: Sets the default input mappings."""
+        self._game.input_defaults = input_defaults
+
+    def set_font_location(self, font_location: str):
+        """optional: Sets the location of the default font."""
+        self._game.font_location = font_location
+
+    def set_font_size(self, font_size: int):
+        """required: Sets the size of the default font."""
+        self._game.font_size = font_size
+
+    def set_font_height(self, font_height: int):
+        """required: Sets the height of the default font."""
+        self._game.font_height = font_height
+
+    def set_font_antialias(self, font_antialias: bool):
+        """required: Sets the antialias type of the default font."""
+        self._game.font_antialias = font_antialias
+
+    def set_max_dt(self, max_dt: int):
+        """optional: Sets the maximum dt for updates.
+        If dt is over this amount instead the game runs updates and collision checks multiple times.
+        Default is 5."""
+        self._game.max_dt = max_dt
+
+    def build(self):
+        global _game
+        if _game:
+            raise RuntimeError("error: _game is already set")
+        _game = self._game
+        _game.start()
+        return _game
 
 
 def stop():
