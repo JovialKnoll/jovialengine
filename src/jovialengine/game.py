@@ -18,87 +18,118 @@ from . import save
 
 class _Game(object):
     __slots__ = (
-        '_running',
+        'mode_module',
         'start_mode_cls',
         'restart_mode_cls',
-        '_state_cls',
-        '_clock',
-        '_max_dt',
+        'state_cls',
+        'src_directory',
+        'screen_size',
+        'title',
+        'window_icon',
+        'max_players',
+        'event_names',
+        'input_defaults',
+        'font_location',
+        'font_size',
+        'font_height',
+        'font_antialias',
+        'max_dt',
+
         '_joysticks',
-        '_is_first_loop',
-        'current_mode',
         'state',
+        'current_mode',
+        '_running',
+        '_is_first_loop',
+        '_clock',
     )
 
-    def __init__(
-        self,
-        mode_module: ModuleType,
-        start_mode_cls: type[ModeBase],
-        restart_mode_cls: type[ModeBase] | None,
-        state_cls: type[Saveable],
-        src_directory: str,
-        screen_size: tuple[int, int],
-        title: str,
-        window_icon: str | None,
-        max_players: int,
-        event_names: tuple[str],
-        input_defaults: tuple[gameinput.InputDefault],
-        font_location: str | None,
-        font_size: int,
-        font_height: int,
-        font_antialias: bool,
-        max_dt: int
-    ):
-        self._running = False
-        self.start_mode_cls = start_mode_cls
-        self.restart_mode_cls = restart_mode_cls
-        self._state_cls = state_cls
-        config.init(
-            os.path.join(src_directory, 'config.ini')
-        )
-        save.init(
-            os.path.join(src_directory, 'saves'),
-            mode_module
-        )
-        display.init(
-            os.path.join(src_directory, 'screenshots'),
-            screen_size,
-            title,
-            window_icon
-        )
-        gameinput.init(
-            os.path.join(src_directory, 'input.cfg'),
-            max_players,
-            event_names,
-            input_defaults
-        )
-        if font_location:
-            font = pygame.font.Font(font_location, font_size)
-        else:
-            font = pygame.font.SysFont(None, font_size)
-        fontwrap.init(font, font_height, font_antialias)
-        self._clock = pygame.time.Clock()
-        self._max_dt = max_dt
+    def __init__(self):
+        self.mode_module: ModuleType | None = None
+        self.start_mode_cls: type[ModeBase] | None = None
+        self.restart_mode_cls: type[ModeBase] | None = None
+        self.state_cls: type[Saveable] | None = None
+        self.src_directory: str | None = None
+        self.screen_size: tuple[int, int] | None = None
+        self.title: str = ""
+        self.window_icon: str | None = None
+        self.max_players: int = 1
+        self.event_names: tuple[str] | None = None
+        self.input_defaults: tuple[gameinput.InputDefault] | None = None
+        self.font_location: str | None = None
+        self.font_size: int | None = None
+        self.font_height: int | None = None
+        self.font_antialias: bool | None = None
+        self.max_dt: int = 5
+
         self._joysticks = [
             pygame.joystick.Joystick(i)
             for i
             in range(pygame.joystick.get_count())
         ]
-        self._is_first_loop = True
-        self.current_mode: ModeBase | None = None
         self.state: Saveable | None = None
+        self.current_mode: ModeBase | None = None
+        self._running: bool = False
+        self._is_first_loop: bool = False
+        self._clock: pygame.time.Clock | None = None
 
     def start(self):
         """Start the game, must be called before run()."""
+        if not self.mode_module:
+            raise RuntimeError("error: self.mode_module is not set")
+        if not self.start_mode_cls:
+            raise RuntimeError("error: self.start_mode_cls is not set")
+        if not self.state_cls:
+            raise RuntimeError("error: self.state_cls is not set")
+        if not self.src_directory:
+            raise RuntimeError("error: self.src_directory is not set")
+        if not self.screen_size:
+            raise RuntimeError("error: self.screen_size is not set")
+        if not self.event_names:
+            raise RuntimeError("error: self.event_names is not set")
+        if not self.input_defaults:
+            raise RuntimeError("error: self.input_defaults is not set")
+        if not self.font_size:
+            raise RuntimeError("error: self.font_size is not set")
+        if not self.font_height:
+            raise RuntimeError("error: self.font_height is not set")
+        if self.font_antialias is None:
+            raise RuntimeError("error: self.font_antialias is not set")
+        config.init(
+            os.path.join(self.src_directory, 'config.ini')
+        )
+        save.init(
+            os.path.join(self.src_directory, 'saves'),
+            self.mode_module
+        )
+        display.init(
+            os.path.join(self.src_directory, 'screenshots'),
+            self.screen_size,
+            self.title,
+            self.window_icon
+        )
+        gameinput.init(
+            os.path.join(self.src_directory, 'input.cfg'),
+            self.max_players,
+            self.event_names,
+            self.input_defaults
+        )
+        if self.font_location:
+            font = pygame.font.Font(self.font_location, self.font_size)
+        else:
+            font = pygame.font.SysFont(None, self.font_size)
+        fontwrap.init(font, self.font_height, self.font_antialias)
+
         self.set_state()
         self.current_mode = self.start_mode_cls()
         self._running = True
+        self._is_first_loop = True
+        self._clock = pygame.time.Clock()
 
     def set_state(self, save_data=None):
         if save_data:
-            self.state = self._state_cls.load(save_data)
+            self.state = self.state_cls.load(save_data)
         else:
-            self.state = self._state_cls()
+            self.state = self.state_cls()
 
     def stop(self):
         self._running = False
@@ -106,7 +137,7 @@ class _Game(object):
     def run(self):
         """Run the game, and check if the game needs to end."""
         if not self.current_mode:
-            raise RuntimeError("error: self._current_mode is not set")
+            raise RuntimeError("error: self.current_mode is not set")
         events = self._filter_input(pygame.event.get())
         events = gameinput.take_events(events)
         input_frame = gameinput.get_input_frame()
@@ -123,9 +154,9 @@ class _Game(object):
                 events = []
         self.current_mode.input(events, input_frame)
         dt = self._clock.tick_busy_loop(display.max_framerate)
-        while dt > self._max_dt:
-            dt -= self._max_dt
-            self.current_mode.update(self._max_dt)
+        while dt > self.max_dt:
+            dt -= self.max_dt
+            self.current_mode.update(self.max_dt)
         self.current_mode.update(dt)
         self.current_mode.draw(display.screen)
         display.scale_draw()
@@ -197,15 +228,11 @@ class GameBuilder(object):
         self._game.mode_module = mode_module
 
     def set_start_mode_cls(self, start_mode_cls: type[ModeBase]):
-        """required: Sets the class for the starting mode."""
-        self._game.start_mode_cls = start_mode_cls
-
-    def set_start_mode_cls(self, start_mode_cls: type[ModeBase]):
-        """required: Sets the class for the starting mode."""
+        """required: Sets the class for the game start mode."""
         self._game.start_mode_cls = start_mode_cls
 
     def set_restart_mode_cls(self, restart_mode_cls: type[ModeBase]):
-        """optional: Sets the class for the mode to restart to."""
+        """optional: Sets the class for the game restart mode."""
         self._game.restart_mode_cls = restart_mode_cls
 
     def set_state_cls(self, state_cls: type[Saveable]):
@@ -218,6 +245,8 @@ class GameBuilder(object):
 
     def set_screen_size(self, screen_size: tuple[int, int]):
         """required: Sets the size of the virtual screen."""
+        if screen_size[0] < 1 or screen_size[1] < 1:
+            raise ValueError("error: screen_size must have a positive non-zero length for each dimension")
         self._game.screen_size = screen_size
 
     def set_title(self, title: str):
@@ -230,6 +259,8 @@ class GameBuilder(object):
 
     def set_max_players(self, max_players: int):
         """optional: Sets the maximum number of players the game supports."""
+        if max_players < 1:
+            raise ValueError("error: max_players must not be less than 1")
         self._game.max_players = max_players
 
     def set_event_names(self, event_names: tuple[str]):
