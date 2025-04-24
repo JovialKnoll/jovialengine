@@ -14,7 +14,7 @@ class GameForTest(game.Game):
 
 
 class TestGame(unittest.TestCase):
-    game_for_test: game._Game = None
+    game_for_test: game.Game = None
 
     @classmethod
     def setUpClass(cls):
