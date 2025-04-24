@@ -6,7 +6,7 @@ from collections import deque
 
 import pygame.math
 
-from . import game
+from . import gamebuilder
 from .saveable import Saveable
 
 
@@ -174,7 +174,7 @@ class Save(object):
             save_name,
             type(from_mode).__name__,
             from_mode.save(),
-            game.get_state().save()
+            gamebuilder.get_state().save()
         )
 
     def save(self):
@@ -196,7 +196,7 @@ class Save(object):
             return False
 
     def load(self):
-        game.set_state(self._shared_data)
+        gamebuilder.set_state(self._shared_data)
         mode_cls = getattr(_mode_module, self._mode_name)
         new_mode = mode_cls.load(self._mode_data)
         return new_mode

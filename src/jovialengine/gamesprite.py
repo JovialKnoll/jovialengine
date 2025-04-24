@@ -5,7 +5,7 @@ from typing import final, Self
 import pygame
 
 from . import load
-from . import game
+from . import gamebuilder
 from .saveable import Saveable
 from .modebase import ModeBase
 from .inputframe import InputFrame, StateChange
@@ -201,7 +201,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         Sprites created within a mode's __init__ should probably have that mode passed into this method.
         """
         if mode is None:
-            mode = game.get_current_mode()
+            mode = gamebuilder.get_current_mode()
         mode.sprites_all.add(self)
         mode.sprites_game.add(self)
         if self._GETS_INPUT or self._take_state_change is not GameSprite._take_state_change:
