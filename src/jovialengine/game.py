@@ -61,11 +61,7 @@ class _Game(object):
         self.font_antialias: bool | None = None
         self.max_dt: int = 5
 
-        self._joysticks = [
-            pygame.joystick.Joystick(i)
-            for i
-            in range(pygame.joystick.get_count())
-        ]
+        self._joysticks: list[pygame.joystick.Joystick] = []
         self.state: Saveable | None = None
         self.current_mode: ModeBase | None = None
         self._running: bool = False
@@ -119,6 +115,11 @@ class _Game(object):
             font = pygame.font.SysFont(None, self.font_size)
         fontwrap.init(font, self.font_height, self.font_antialias)
 
+        self._joysticks = [
+            pygame.joystick.Joystick(i)
+            for i
+            in range(pygame.joystick.get_count())
+        ]
         self.set_state()
         self.current_mode = self.start_mode_cls()
         self._running = True
