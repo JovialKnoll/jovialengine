@@ -6,7 +6,7 @@ import jovialengine.display as display
 import jovialengine.game as game
 
 
-class GameForTest(game._Game):
+class GameForTest(game.Game):
     def __init__(self):
         self.running = False
         self._is_first_loop = False
@@ -14,7 +14,7 @@ class GameForTest(game._Game):
 
 
 class TestGame(unittest.TestCase):
-    game_for_test: game._Game = None
+    game_for_test: game.Game = None
 
     @classmethod
     def setUpClass(cls):

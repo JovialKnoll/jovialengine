@@ -4,7 +4,7 @@ import string
 
 import pygame
 
-from . import game
+from . import gamebuilder
 from . import display
 from . import gameinput
 from . import utility
@@ -163,7 +163,7 @@ class ModeGameMenuTop(ModeGameMenu):
     def _take_event(self, event):
         match self._get_action(event):
             case MenuAction.QUIT:
-                game.stop()
+                gamebuilder.stop()
             case MenuAction.REJECT:
                 self.next_mode = self._previous_mode
             case MenuAction.UP | MenuAction.LEFT:
@@ -185,14 +185,14 @@ class ModeGameMenuTop(ModeGameMenu):
                         gameinput.reset_default_mapping()
                     case 5:
                         self._stop_mixer()
-                        game.set_state()
-                        self._previous_mode = game.get_start_mode_cls()()
+                        gamebuilder.set_state()
+                        self._previous_mode = gamebuilder.get_start_mode_cls()()
                         pygame.mixer.music.pause()
                         pygame.mixer.pause()
                         self._background = self._get_old_screen()
                         self._last_disp_text = None
                     case 6:
-                        game.stop()
+                        gamebuilder.stop()
         self._selected = pygame.math.clamp(self._selected, 0, len(self._OPTIONS) - 1)
 
     def _draw_post_camera(self, screen):
