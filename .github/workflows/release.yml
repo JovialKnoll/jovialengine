@@ -12,7 +12,7 @@ jobs:
       python_version: '3.13'
 
   publish-python-package:
-    uses: JovialKnoll/workflows/.github/workflows/publish-python-package.yml@master
+    uses: JovialKnoll/workflows/.github/workflows/publish-python.yml@master
     needs: test-python
     with:
       python_version: '3.13'
