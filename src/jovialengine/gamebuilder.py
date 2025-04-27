@@ -138,3 +138,7 @@ def get_restart_mode_cls():
 
 def get_current_mode():
     return _game.current_mode
+
+
+def get_auto_save():
+    return _game.auto_save
