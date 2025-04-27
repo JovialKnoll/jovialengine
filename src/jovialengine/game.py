@@ -34,6 +34,7 @@ class Game(object):
         'font_height',
         'font_antialias',
         'max_dt',
+        'auto_save',
 
         '_joysticks',
         'state',
@@ -60,6 +61,7 @@ class Game(object):
         self.font_height: int | None = None
         self.font_antialias: bool | None = None
         self.max_dt: int = 5
+        self.auto_save: bool = False
 
         self._joysticks: list[pygame.joystick.Joystick] = []
         self.state: Saveable | None = None
