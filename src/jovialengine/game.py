@@ -173,17 +173,21 @@ class Game(object):
             self.current_mode.cleanup()
             self.current_mode = self.current_mode.next_mode
             gameinput.start_new_mode()
+            self._try_save()
         self._is_first_loop = False
         if not self._running:
             config.save()
             gameinput.save()
-            if self.auto_save and isinstance(self.current_mode, Saveable):
-                new_save = save.Save.get_from_mode(self._AUTO_SAVE_NAME, self.current_mode)
-                new_save.save()
+            self._try_save()
             self.current_mode = None
             self.state = None
             pygame.quit()
         return self._running
+
+    def _try_save(self):
+        if self.auto_save and isinstance(self.current_mode, Saveable):
+            new_save = save.Save.get_from_mode(self._AUTO_SAVE_NAME, self.current_mode)
+            new_save.save()
 
     def _filter_input(self, events: Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
