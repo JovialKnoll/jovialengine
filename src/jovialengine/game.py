@@ -17,6 +17,8 @@ from . import save
 
 
 class Game(object):
+    _AUTO_SAVE_NAME = "auto"
+
     __slots__ = (
         'mode_module',
         'start_mode_cls',
@@ -175,6 +177,9 @@ class Game(object):
         if not self._running:
             config.save()
             gameinput.save()
+            if self.auto_save and isinstance(self.current_mode, Saveable):
+                new_save = save.Save.get_from_mode(self._AUTO_SAVE_NAME, self.current_mode)
+                new_save.save()
             self.current_mode = None
             self.state = None
             pygame.quit()
