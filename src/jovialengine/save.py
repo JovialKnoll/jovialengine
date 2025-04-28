@@ -148,7 +148,7 @@ class Save(object):
                     for file
                     in cls._get_save_files()
                 )
-                if save
+                if save is not None
             ),
             key=lambda s: (s.save_name.lower(), s.save_name)
         )
@@ -166,7 +166,7 @@ class Save(object):
                     save_object['shared_data']
                 )
         except (IOError, json.decoder.JSONDecodeError):
-            return False
+            return None
 
     @classmethod
     def get_from_mode(cls, save_name: str, from_mode: Saveable):
@@ -200,6 +200,9 @@ class Save(object):
         mode_cls = getattr(_mode_module, self._mode_name)
         new_mode = mode_cls.load(self._mode_data)
         return new_mode
+
+    def load_state(self):
+        gamebuilder.set_state(self._shared_data)
 
     def delete(self):
         file_path = self._get_file_path()

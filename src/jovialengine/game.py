@@ -17,6 +17,8 @@ from . import save
 
 
 class Game(object):
+    _AUTO_SAVE_NAME = "auto"
+
     __slots__ = (
         'mode_module',
         'start_mode_cls',
@@ -34,6 +36,7 @@ class Game(object):
         'font_height',
         'font_antialias',
         'max_dt',
+        'auto_save',
 
         '_joysticks',
         'state',
@@ -60,6 +63,7 @@ class Game(object):
         self.font_height: int | None = None
         self.font_antialias: bool | None = None
         self.max_dt: int = 5
+        self.auto_save: bool = False
 
         self._joysticks: list[pygame.joystick.Joystick] = []
         self.state: Saveable | None = None
@@ -121,6 +125,8 @@ class Game(object):
             in range(pygame.joystick.get_count())
         ]
         self.set_state()
+        if self.auto_save:
+            self._try_load()
         self.current_mode = self.start_mode_cls()
         self._running = True
         self._is_first_loop = True
@@ -169,14 +175,27 @@ class Game(object):
             self.current_mode.cleanup()
             self.current_mode = self.current_mode.next_mode
             gameinput.start_new_mode()
+            self._try_save()
         self._is_first_loop = False
         if not self._running:
             config.save()
             gameinput.save()
+            self._try_save()
             self.current_mode = None
             self.state = None
             pygame.quit()
         return self._running
+
+    def _try_save(self):
+        if self.auto_save and isinstance(self.current_mode, Saveable):
+            new_save = save.Save.get_from_mode(self._AUTO_SAVE_NAME, self.current_mode)
+            new_save.save()
+
+    def _try_load(self):
+        saves = save.Save.get_all_from_files()
+        old_save = next(filter(lambda s: s.save_name == self._AUTO_SAVE_NAME, saves), None)
+        if old_save:
+            old_save.load_state()
 
     def _filter_input(self, events: Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""

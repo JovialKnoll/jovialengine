@@ -102,6 +102,11 @@ class GameBuilder(object):
         self._game.max_dt = max_dt
         return self
 
+    def set_auto_save(self):
+        """optional: Sets the game to automatically save and load."""
+        self._game.auto_save = True
+        return self
+
     def build(self):
         global _game
         if _game:
@@ -133,3 +138,7 @@ def get_restart_mode_cls():
 
 def get_current_mode():
     return _game.current_mode
+
+
+def get_auto_save():
+    return _game.auto_save

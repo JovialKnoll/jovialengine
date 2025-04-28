@@ -153,11 +153,13 @@ class ModeGameMenuTop(ModeGameMenu):
     ]
 
     __slots__ = (
+        '_options',
         '_selected',
     )
 
     def __init__(self, previous_mode, old_screen=None):
         super().__init__(previous_mode, old_screen)
+        self._options = self._OPTIONS[2:] if gamebuilder.get_auto_save() else self._OPTIONS
         self._selected = 0
 
     def _take_event(self, event):
@@ -171,7 +173,7 @@ class ModeGameMenuTop(ModeGameMenu):
             case MenuAction.DOWN | MenuAction.RIGHT:
                 self._selected += 1
             case MenuAction.CONFIRM:
-                match self._selected:
+                match self._selected + (2 if gamebuilder.get_auto_save() else 0):
                     case 0:
                         self.next_mode = ModeGameMenuSave(self._previous_mode, self._background)
                     case 1:
@@ -193,12 +195,12 @@ class ModeGameMenuTop(ModeGameMenu):
                         self._last_disp_text = None
                     case 6:
                         gamebuilder.stop()
-        self._selected = pygame.math.clamp(self._selected, 0, len(self._OPTIONS) - 1)
+        self._selected = pygame.math.clamp(self._selected, 0, len(self._options) - 1)
 
     def _draw_post_camera(self, screen):
         disp_text = self._SHARED_DISP_TEXT
         disp_text += "ARROW KEYS + ENTER)"
-        for index, option in enumerate(self._OPTIONS):
+        for index, option in enumerate(self._options):
             disp_text += "\n"
             disp_text += self._get_selected_char(self._selected == index)
             disp_text += option
