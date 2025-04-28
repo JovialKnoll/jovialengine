@@ -189,6 +189,12 @@ class Game(object):
             new_save = save.Save.get_from_mode(self._AUTO_SAVE_NAME, self.current_mode)
             new_save.save()
 
+    def _try_load(self):
+        saves = save.Save.get_all_from_files()
+        old_save = next(filter(lambda s: s.save_name == self._AUTO_SAVE_NAME, saves), None)
+        if old_save:
+            old_save.load_state()
+
     def _filter_input(self, events: Iterable[pygame.event.Event]):
         """Take care of input that game modes should not take care of."""
         events = map(display.scale_mouse_input, events)
