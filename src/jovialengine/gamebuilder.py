@@ -107,6 +107,11 @@ class GameBuilder(object):
         self._game.auto_save = True
         return self
 
+    def set_restart_without_state(self):
+        """optional: Sets the game to not reset the shared state when restarted."""
+        self._game.restart_affects_state = False
+        return self
+
     def build(self):
         global _game
         if _game:
