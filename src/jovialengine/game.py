@@ -125,6 +125,8 @@ class Game(object):
             in range(pygame.joystick.get_count())
         ]
         self.set_state()
+        if self.auto_save:
+            self._try_load()
         self.current_mode = self.start_mode_cls()
         self._running = True
         self._is_first_loop = True
