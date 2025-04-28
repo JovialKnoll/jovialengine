@@ -187,7 +187,8 @@ class ModeGameMenuTop(ModeGameMenu):
                         gameinput.reset_default_mapping()
                     case 5:
                         self._stop_mixer()
-                        gamebuilder.set_state()
+                        if gamebuilder.get_restart_affects_state():
+                            gamebuilder.set_state()
                         self._previous_mode = gamebuilder.get_start_mode_cls()()
                         pygame.mixer.music.pause()
                         pygame.mixer.pause()
