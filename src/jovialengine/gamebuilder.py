@@ -103,12 +103,12 @@ class GameBuilder(object):
         return self
 
     def set_auto_save(self):
-        """optional: Sets the game to automatically save and load."""
+        """optional: Sets the game to automatically save and load. (opposite of default behavior)"""
         self._game.auto_save = True
         return self
 
     def set_restart_without_state(self):
-        """optional: Sets the game to not reset the shared state when restarted."""
+        """optional: Sets the game to not reset the shared state when restarted. (opposite of default behavior)"""
         self._game.restart_affects_state = False
         return self
 
