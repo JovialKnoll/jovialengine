@@ -67,7 +67,7 @@ class Game(object):
         self.auto_save: bool = False
         self.restart_affects_state: bool = True
 
-        self._joysticks: list[pygame.joystick.Joystick] = []
+        self._joysticks: list[pygame.joystick.JoystickType] = []
         self.state: Saveable | None = None
         self.current_mode: ModeBase | None = None
         self._running: bool = False
