@@ -142,3 +142,7 @@ def get_current_mode():
 
 def get_auto_save():
     return _game.auto_save
+
+
+def get_restart_affects_state():
+    return _game.restart_affects_state

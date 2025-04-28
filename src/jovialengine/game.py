@@ -37,6 +37,7 @@ class Game(object):
         'font_antialias',
         'max_dt',
         'auto_save',
+        'restart_affects_state',
 
         '_joysticks',
         'state',
@@ -64,6 +65,7 @@ class Game(object):
         self.font_antialias: bool | None = None
         self.max_dt: int = 5
         self.auto_save: bool = False
+        self.restart_affects_state: bool = True
 
         self._joysticks: list[pygame.joystick.Joystick] = []
         self.state: Saveable | None = None
