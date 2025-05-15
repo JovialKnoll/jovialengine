@@ -76,7 +76,8 @@ class FontWrap(object):
                 words = [""]
             images.append(self._render_words_inside(width, words, color, bgcolor))
             height += images[-1].get_height()
-        result = pygame.Surface((width, height)).convert()
+        result = pygame.Surface((width, height))
+        result = result.convert() if bgcolor else result.convert_alpha()
         dest = [0, 0]
         for image in images:
             result.blit(image, dest)
