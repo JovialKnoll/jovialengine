@@ -61,7 +61,7 @@ class FontWrap(object):
         result = pygame.Surface((width, self.line_height * len(lines))).convert()
         result.fill(bgcolor)
         for i, line in enumerate(lines):
-            drawn_line = self.font.render(line, self._antialias, color, bgcolor).convert()
+            drawn_line = self.font.render(line, self._antialias, color, bgcolor)
             result.blit(drawn_line, (0, i * self.line_height))
         return result
 
