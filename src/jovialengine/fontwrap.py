@@ -58,7 +58,7 @@ class FontWrap(object):
         If any word is too long to fit, it will be in its own line, and truncated.
         """
         lines = self._calculate_lines_for_words(width, words)
-        result = pygame.Surface((width, self.line_height * len(lines))).convert()
+        result = pygame.Surface((width, self.line_height * len(lines)))
         if bgcolor:
             result.fill(bgcolor)
         for i, line in enumerate(lines):
