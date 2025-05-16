@@ -12,6 +12,7 @@ _screenshot_directory: str
 screen_size: tuple[int, int]
 _title: str
 _window_icon: pygame.Surface | None
+_mouse_visible: bool
 _monitor_res: tuple[int, int]
 _upscale_max: int
 _windowed_flags: int
@@ -30,12 +31,14 @@ def init(
     screenshot_directory: str,
     screen_size_in: tuple[int, int],
     title: str,
-    window_icon: str | None
+    window_icon: str | None,
+    mouse_visible: bool
 ):
     global _screenshot_directory
     global screen_size
     global _title
     global _window_icon
+    global _mouse_visible
     global is_fullscreen
     global upscale
     global screen
@@ -54,6 +57,7 @@ def init(
     _window_icon = None
     if window_icon:
         _window_icon = pygame.image.load(window_icon)
+    _mouse_visible = mouse_visible
     display_info = pygame.display.Info()
     _monitor_res = (
         display_info.current_w,
@@ -158,12 +162,16 @@ def _set_mode(size: tuple[int, int], flags: int):
     if _window_icon:
         pygame.display.set_icon(_window_icon)
     max_framerate = 0
+    display = None
     try:
-        return pygame.display.set_mode(size, flags, vsync=1)
+        display = pygame.display.set_mode(size, flags, vsync=1)
     except pygame.error:
         pass
     max_framerate = max(pygame.display.get_desktop_refresh_rates())
-    return pygame.display.set_mode(size, flags)
+    display = pygame.display.set_mode(size, flags)
+    if not _mouse_visible:
+        pygame.mouse.set_visible(False)
+    return display
 
 
 def scale_draw():

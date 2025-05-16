@@ -109,7 +109,8 @@ class Game(object):
             os.path.join(self.src_directory, 'screenshots'),
             self.screen_size,
             self.title,
-            self.window_icon
+            self.window_icon,
+            self.mouse_visible
         )
         gameinput.init(
             os.path.join(self.src_directory, 'input.cfg'),
@@ -117,8 +118,6 @@ class Game(object):
             self.event_names,
             self.input_defaults
         )
-        if not self.mouse_visible:
-            pygame.mouse.set_visible(False)
         if self.font_location:
             font = pygame.font.Font(self.font_location, self.font_size)
         else:
