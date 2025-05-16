@@ -112,6 +112,11 @@ class GameBuilder(object):
         self._game.restart_affects_state = False
         return self
 
+    def set_mouse_invisible(self):
+        """optional: Sets the game to not reset the shared state when restarted. (opposite of default behavior)"""
+        self._game.mouse_visible = False
+        return self
+
     def build(self):
         global _game
         if _game:

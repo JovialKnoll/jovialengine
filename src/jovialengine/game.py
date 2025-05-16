@@ -38,6 +38,7 @@ class Game(object):
         'max_dt',
         'auto_save',
         'restart_affects_state',
+        'mouse_visible',
 
         '_joysticks',
         'state',
@@ -66,6 +67,7 @@ class Game(object):
         self.max_dt: int = 5
         self.auto_save: bool = False
         self.restart_affects_state: bool = True
+        self.mouse_visible: bool = True
 
         self._joysticks: list[pygame.joystick.JoystickType] = []
         self.state: Saveable | None = None
@@ -115,6 +117,8 @@ class Game(object):
             self.event_names,
             self.input_defaults
         )
+        if not self.mouse_visible:
+            pygame.mouse.set_visible(False)
         if self.font_location:
             font = pygame.font.Font(self.font_location, self.font_size)
         else:
