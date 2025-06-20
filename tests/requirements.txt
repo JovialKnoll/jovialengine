@@ -1,1 +1,1 @@
-pygame-ce==2.5.4
+pygame-ce==2.5.5
