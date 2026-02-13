@@ -29,7 +29,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     Other will be the GameSprite collided with.
     """
     _IMAGE_LOCATION: str = None
-    _ALPHA_OR_COLORKEY: bool | tuple[int, int, int] = None
+    _ALPHA_OR_COLORKEY: bool | tuple[int, int, int] | None = None
     _IMAGE_SECTION_SIZE: tuple[int, int] | None = None
     _COLLISION_RADIUS: float | None = None
     _COLLISION_MASK_LOCATION: str | None = None
