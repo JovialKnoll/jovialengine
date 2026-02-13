@@ -51,11 +51,11 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     )
 
     def __init__(self, **kwargs):
-        if self._IMAGE_LOCATION and not self._ALPHA_OR_COLORKEY:
+        if self._IMAGE_LOCATION and self._ALPHA_OR_COLORKEY is None:
             raise RuntimeError(
                 "if _IMAGE_LOCATION is set, _ALPHA_OR_COLORKEY must be set"
             )
-        if self._COLLISION_MASK_LOCATION and not self._COLLISION_MASK_ALPHA_OR_COLORKEY:
+        if self._COLLISION_MASK_LOCATION and self._COLLISION_MASK_ALPHA_OR_COLORKEY is None:
             raise RuntimeError(
                 "if _COLLISION_MASK_LOCATION is set, _COLLISION_MASK_ALPHA_OR_COLORKEY must be set"
             )
