@@ -5,6 +5,17 @@ import jovialengine.load as load
 
 
 class TestLoad(unittest.TestCase):
+    @staticmethod
+    def get_mask_string(mask: pygame.Mask):
+        size = mask.get_size()
+        result = ""
+        for y in range(size[1]):
+            for x in range(size[0]):
+                bit = surface.get_at((x, y))
+                result += str(bit)
+            result += os.linesep
+        return result
+
     def test_mask_circle_even(self):
         # Arrange
         size = (32, 32)
@@ -12,6 +23,7 @@ class TestLoad(unittest.TestCase):
         # Act
         mask = load.mask_circle(size, radius)
         # Assert
+        mask_result = self.get_mask_string(mask)
 
     def test_mask_circle_odd(self):
         # Arrange
@@ -20,6 +32,7 @@ class TestLoad(unittest.TestCase):
         # Act
         mask = load.mask_circle(size, radius)
         # Assert
+        mask_result = self.get_mask_string(mask)
 
 
 if __name__ == '__main__':
