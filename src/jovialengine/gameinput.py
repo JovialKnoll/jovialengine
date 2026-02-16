@@ -83,7 +83,7 @@ _controller_states_prev: list[list[float | int]]
 _controller_state_changes: list[StateChange]
 
 
-def init(input_file: str, max_players_in: int, event_names: tuple[str], input_defaults: tuple[InputDefault]):
+def init(input_file: str, max_players_in: int, event_names: tuple[str, ...], input_defaults: tuple[InputDefault, ...]):
     global _input_file
     global max_players
     global _event_names
