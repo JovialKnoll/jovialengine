@@ -24,6 +24,7 @@ class TestLoad(unittest.TestCase):
         mask = load.mask_circle(size, radius)
         # Assert
         mask_result = self.get_mask_string(mask)
+        print(mask_result)
 
     def test_mask_circle_odd(self):
         # Arrange
@@ -33,6 +34,7 @@ class TestLoad(unittest.TestCase):
         mask = load.mask_circle(size, radius)
         # Assert
         mask_result = self.get_mask_string(mask)
+        print(mask_result)
 
 
 if __name__ == '__main__':
