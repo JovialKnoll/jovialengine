@@ -1,6 +1,8 @@
 import unittest
 import os
 
+import pygame
+
 import jovialengine.load as load
 
 
