@@ -36,15 +36,13 @@ class TestLoad(unittest.TestCase):
     def test_mask_circle_odd(self):
         # Arrange
         size = (31, 31)
-        radius = 14.5
+        radius = 15.5
         # Act
         mask = load.mask_circle(size, radius)
         # Assert
         mask_result = self.get_mask_string(mask)
         with open(self.MASK_CIRCLE_31, 'r') as file:
             expected = file.read()
-        print(mask_result)
-        print(expected)
         self.assertEqual(mask_result, expected)
 
 
