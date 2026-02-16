@@ -7,6 +7,9 @@ import jovialengine.load as load
 
 
 class TestLoad(unittest.TestCase):
+    MASK_CIRCLE_32 = './assets/txt/maskcircle32.txt'
+    MASK_CIRCLE_31 = './assets/txt/maskcircle31.txt'
+
     @staticmethod
     def get_mask_string(mask: pygame.Mask):
         size = mask.get_size()
