@@ -13,7 +13,7 @@ class TestLoad(unittest.TestCase):
         result = ""
         for y in range(size[1]):
             for x in range(size[0]):
-                bit = surface.get_at((x, y))
+                bit = mask.get_at((x, y))
                 result += str(bit)
             result += os.linesep
         return result
