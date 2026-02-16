@@ -51,9 +51,9 @@ def mask_filled(size: tuple[int, int]):
 def mask_circle(size: tuple[int, int], radius: float):
     """Constructs a mask with a filled circle centered in the size at the given radius.
     The results are cached so don't alter them."""
-    diameter = round(radius * 2)
     surface = pygame.Surface(size)
     surface.fill((0, 0, 0))
+    diameter = round(radius * 2)
     pygame.draw.ellipse(
         surface, (255, 0, 0),
         ((size[0] - diameter) // 2, (size[1] - diameter) // 2, diameter, diameter))
