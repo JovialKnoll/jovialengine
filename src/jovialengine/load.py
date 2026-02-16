@@ -53,7 +53,10 @@ def mask_circle(size: tuple[int, int], radius: float):
     The results are cached so don't alter them."""
     surface = pygame.Surface(size)
     surface.fill((0, 0, 0))
-    pygame.draw.circle(surface, (255, 0, 0), (size[0] / 2, size[1] / 2), radius)
+    diameter = round(radius * 2)
+    pygame.draw.ellipse(
+        surface, (255, 0, 0),
+        ((size[0] - diameter) // 2, (size[1] - diameter) // 2, diameter, diameter))
     surface.set_colorkey((0, 0, 0))
     return pygame.mask.from_surface(surface)
 
