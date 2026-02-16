@@ -58,8 +58,8 @@ class Game(object):
         self.title: str = ""
         self.window_icon: str | None = None
         self.max_players: int = 1
-        self.event_names: tuple[str] | None = None
-        self.input_defaults: tuple[gameinput.InputDefault] | None = None
+        self.event_names: tuple[str, ...] | None = None
+        self.input_defaults: tuple[gameinput.InputDefault, ...] | None = None
         self.font_location: str | None = None
         self.font_size: int | None = None
         self.font_height: int | None = None

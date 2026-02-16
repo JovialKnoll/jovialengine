@@ -65,12 +65,12 @@ class GameBuilder(object):
         self._game.max_players = max_players
         return self
 
-    def set_event_names(self, event_names: tuple[str]):
+    def set_event_names(self, event_names: tuple[str, ...]):
         """required: Sets the names for the virtual input events."""
         self._game.event_names = event_names
         return self
 
-    def set_input_defaults(self, input_defaults: tuple[gameinput.InputDefault]):
+    def set_input_defaults(self, input_defaults: tuple[gameinput.InputDefault, ...]):
         """required: Sets the default input mappings."""
         self._game.input_defaults = input_defaults
         return self
