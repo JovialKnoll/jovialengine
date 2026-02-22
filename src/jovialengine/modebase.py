@@ -67,6 +67,9 @@ class ModeBase(abc.ABC):
 
     @final
     def __handle_static_collisions(self):
+        collide_sprites = self.sprites_game.sprites()
+        for sprite in collide_sprites:
+            pass
         pass
 
     @final
