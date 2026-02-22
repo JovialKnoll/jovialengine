@@ -62,7 +62,12 @@ class ModeBase(abc.ABC):
         for sprite in self.sprites_all.sprites():
             sprite.update(dt, self._camera)
         self._update_post_sprites(dt)
+        self.__handle_static_collisions()
         self.__handle_collisions()
+
+    @final
+    def __handle_static_collisions(self):
+        pass
 
     @final
     def __handle_collisions(self):
