@@ -179,6 +179,17 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
             if e.startswith('collide_')
         ])
 
+    @classmethod
+    @final
+    @cache
+    def get_static_collides_with(cls):
+        #static_collide_backgroundElementName
+        return frozenset([
+            e.removeprefix('static_collide_')
+            for e in dir(cls)
+            if e.startswith('static_collide_')
+        ])
+
     @final
     def does_collide(self, other: Self):
         if self.radius and other.radius:
