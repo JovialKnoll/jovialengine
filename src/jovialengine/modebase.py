@@ -100,7 +100,7 @@ class ModeBase(abc.ABC):
         )
         screen.blit(self._background, offset)
         self._draw_pre_sprites(screen, offset)
-        self.sprites_all.draw(screen, offset)
+        self.sprites_all.draw_offset(screen, offset)
         for sprite in self.sprites_game.sprites():
             sprite.draw_dynamic(screen, offset)
         self._draw_post_sprites(screen, offset)
