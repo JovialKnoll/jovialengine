@@ -161,7 +161,6 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     @final
     @cache
     def get_static_collides_with(cls):
-        #static_collide_backgroundElementName
         return frozenset([
             e.removeprefix('static_collide_')
             for e in dir(cls)
