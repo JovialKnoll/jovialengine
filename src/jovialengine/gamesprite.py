@@ -22,16 +22,16 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     optional: _COLLISION_MASK_ALPHA_OR_COLORKEY, used for loading image, required if _COLLISION_MASK_LOCATION is set
     optional: _GETS_INPUT, set this true to force this sprite to receive input
 
+    To hook in to collision checking against static background elements, create a function like so:
+    def static_collide_backgroundElementName(self):
+        do_something()
+    static_collide_backgroundElementName will be called whenever there is a collision with that background element
+
     To hook in to collision checking against other sprints, create a function like so:
     def collide_OtherGameSpriteClassName(self, other: OtherGameSpriteClassName):
         do_something()
     collide_OtherGameSpriteClassName will be called whenever there is a collision with a OtherGameSpriteClassName
     other will be the GameSprite collided with
-
-    To hook in to collision checking against static background elements, create a function like so:
-    def static_collide_backgroundElementName(self):
-        do_something()
-    static_collide_backgroundElementName will be called whenever there is a collision with that background element
     """
     _IMAGE_LOCATION: str = None
     _ALPHA_OR_COLORKEY: bool | tuple[int, int, int] | None = None
@@ -172,22 +172,22 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     @classmethod
     @final
     @cache
-    def get_collides_with(cls):
-        return frozenset([
-            e.removeprefix('collide_')
-            for e in dir(cls)
-            if e.startswith('collide_')
-        ])
-
-    @classmethod
-    @final
-    @cache
     def get_static_collides_with(cls):
         #static_collide_backgroundElementName
         return frozenset([
             e.removeprefix('static_collide_')
             for e in dir(cls)
             if e.startswith('static_collide_')
+        ])
+
+    @classmethod
+    @final
+    @cache
+    def get_collides_with(cls):
+        return frozenset([
+            e.removeprefix('collide_')
+            for e in dir(cls)
+            if e.startswith('collide_')
         ])
 
     @final
