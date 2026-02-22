@@ -64,6 +64,7 @@ class ModeBase(abc.ABC):
         self._update_post_sprites(dt)
         self.__handle_collisions()
 
+    @final
     def __handle_collisions(self):
         collide_events = []
         collide_sprites = self.sprites_game.sprites()
