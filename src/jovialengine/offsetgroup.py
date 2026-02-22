@@ -3,7 +3,7 @@ import pygame
 
 class OffsetGroup(pygame.sprite.LayeredUpdates):
     """A sprite group for drawing sprites, in layers, offset by some amount."""
-    def draw(self, surface: pygame.Surface, offset: pygame.typing.IntPoint=(0,0)):
+    def draw_offset(self, surface: pygame.Surface, offset: pygame.typing.IntPoint=(0,0)):
         sprite_sequence = [
             (
                 sprite.image,
@@ -16,5 +16,3 @@ class OffsetGroup(pygame.sprite.LayeredUpdates):
             in self.sprites()
         ]
         surface.fblits(sprite_sequence)
-        self.lostsprites = []
-        return self.lostsprites
