@@ -26,7 +26,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     def collide_OtherGameSpriteClassName(self, other: OtherGameSpriteClassName):
         do_something()
     collide_OtherGameSpriteClassName will be called whenever there is a collision with a OtherGameSpriteClassName
-    other will be the GameSprite collided with.
+    other will be the GameSprite collided with
 
     To hook in to collision checking against static background elements, create a function like so:
     def collide_static_backgroundElementName(self):
