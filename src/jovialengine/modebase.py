@@ -69,8 +69,11 @@ class ModeBase(abc.ABC):
     def __handle_static_collisions(self):
         collide_sprites = self.sprites_game.sprites()
         for sprite in collide_sprites:
-            pass
-        pass
+            for sprite_collides_with in sprite.get_static_collides_with():
+                #check if sprite_collides_with is in set of possible background elements for this mode
+                #then if so check if sprite collides with that one
+                #then if so call getattr(sprite, 'static_collide_' + sprite_collides_with)()
+                pass
 
     @final
     def __handle_collisions(self):
