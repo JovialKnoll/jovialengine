@@ -155,6 +155,16 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     @classmethod
     @final
     @cache
+    def get_collides_with(cls):
+        return frozenset([
+            e.removeprefix('collide_')
+            for e in dir(cls)
+            if e.startswith('collide_')
+        ])
+
+    @classmethod
+    @final
+    @cache
     def get_collision_labels(cls):
         labels = [
             t.__name__
@@ -163,16 +173,6 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         ]
         labels.append('GameSprite')
         return frozenset(labels)
-
-    @classmethod
-    @final
-    @cache
-    def get_collides_with(cls):
-        return frozenset([
-            e.removeprefix('collide_')
-            for e in dir(cls)
-            if e.startswith('collide_')
-        ])
 
     @final
     def does_collide(self, other: Self):
