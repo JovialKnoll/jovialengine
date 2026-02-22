@@ -29,9 +29,9 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     other will be the GameSprite collided with
 
     To hook in to collision checking against static background elements, create a function like so:
-    def collide_static_backgroundElementName(self):
+    def static_collide_backgroundElementName(self):
         do_something()
-    collide_static_backgroundElementName will be called whenever there is a collision with that background element
+    static_collide_backgroundElementName will be called whenever there is a collision with that background element
     """
     _IMAGE_LOCATION: str = None
     _ALPHA_OR_COLORKEY: bool | tuple[int, int, int] | None = None
