@@ -190,6 +190,14 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         return frozenset(labels)
 
     @final
+    def does_collide(self, mask: pygame.Mask):
+        # rounding so that mask collisions reflect apparent (drawn) position of sprites
+        dx = 0 - round(self.rect.x)
+        dy = 0 - round(self.rect.y)
+        # might have to take in a position for the mask
+        return self.mask.overlap(mask, (dx, dy))
+
+    @final
     def does_collide(self, other: Self):
         if self.radius and other.radius:
             # no rounding since circle collisions doesn't match exact pixels anyway
