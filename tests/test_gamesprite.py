@@ -1,4 +1,5 @@
 import unittest
+import timeit
 
 import pygame
 
@@ -378,6 +379,26 @@ class TestGameSprite(unittest.TestCase):
         self.assertEqual(sprite.mask.get_at((1, 0)), 0)
         self.assertEqual(sprite.mask.get_at((0, 1)), 0)
         self.assertEqual(sprite.mask.get_at((1, 1)), 0)
+
+    def test_does_collide_mask_efficiency_empty(self):
+        pass
+        # Arrange
+        sprite = TestSpriteCollideMask(topleft=(100, 100))
+        mask_big = pygame.mask.Mask((2560, 1440), False)
+        mask_small = pygame.mask.Mask((32, 32), False)
+        # Act
+        # Assert
+        pass
+
+    def test_does_collide_mask_efficiency_empty(self):
+        pass
+        # Arrange
+        sprite = TestSpriteCollideMask(topleft=(100, 100))
+        mask_big = pygame.mask.Mask((2560, 1440), True)
+        mask_small = pygame.mask.Mask((32, 32), True)
+        # Act
+        # Assert
+        pass
 
 
 if __name__ == '__main__':
