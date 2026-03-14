@@ -42,6 +42,12 @@ class TestSpriteSheet(GameSprite):
     _COLLISION_MASK_LOCATION = './assets/gfx/6x4_mask_tests.png'
     _COLLISION_MASK_ALPHA_OR_COLORKEY = (255, 0, 255)
 
+class TestSpriteCollideMask(GameSprite):
+    _IMAGE_LOCATION = './assets/gfx/32x32_image.png'
+    _ALPHA_OR_COLORKEY = (255, 0, 255)
+    _COLLISION_MASK_LOCATION = './assets/gfx/32x32_image.png'
+    _COLLISION_MASK_ALPHA_OR_COLORKEY = (255, 0, 255)
+
 class TestGameSprite(unittest.TestCase):
     IMAGE_POINTS = (
         (0, 0),
