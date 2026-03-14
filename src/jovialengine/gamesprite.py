@@ -178,8 +178,8 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     def does_collide(self, other: Self):
         if self.radius and other.radius:
             # no rounding since circle collisions doesn't match exact pixels anyway
-            dx = self.rect.centerx - other.rect.centerx
-            dy = self.rect.centery - other.rect.centery
+            dx = other.rect.centerx - self.rect.centerx
+            dy = other.rect.centery - self.rect.centery
             ds = dx**2 + dy**2
             return ds <= (self.radius + other.radius)**2
         elif self.radius or other.radius or self._COLLISION_MASK_LOCATION or other._COLLISION_MASK_LOCATION:
