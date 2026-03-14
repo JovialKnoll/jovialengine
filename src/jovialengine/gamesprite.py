@@ -22,7 +22,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     optional: _COLLISION_MASK_ALPHA_OR_COLORKEY, used for loading image, required if _COLLISION_MASK_LOCATION is set
     optional: _GETS_INPUT, set this true to force this sprite to receive input
 
-    To hook in to collision checking against other sprints, create a function like so:
+    To hook in to collision checking against other sprites, create a function like so:
     def collide_OtherGameSpriteClassName(self, other: OtherGameSpriteClassName):
         do_something()
     collide_OtherGameSpriteClassName will be called whenever there is a collision with a OtherGameSpriteClassName
