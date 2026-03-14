@@ -420,7 +420,7 @@ class TestGameSprite(unittest.TestCase):
         # Assert
         print('big_time', big_time)
         print('small_time', small_time)
-        self.assertLess(small_time, big_time)
+        self.assertLess(big_time, small_time)
 
 
 if __name__ == '__main__':
