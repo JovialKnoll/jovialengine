@@ -27,7 +27,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         do_something()
     static_collide_backgroundElementName will be called whenever there is a collision with that background element
 
-    To hook in to collision checking against other sprints, create a function like so:
+    To hook in to collision checking against other sprites, create a function like so:
     def collide_OtherGameSpriteClassName(self, other: OtherGameSpriteClassName):
         do_something()
     collide_OtherGameSpriteClassName will be called whenever there is a collision with a OtherGameSpriteClassName
@@ -201,8 +201,8 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     def does_collide(self, other: Self):
         if self.radius and other.radius:
             # no rounding since circle collisions doesn't match exact pixels anyway
-            dx = self.rect.centerx - other.rect.centerx
-            dy = self.rect.centery - other.rect.centery
+            dx = other.rect.centerx - self.rect.centerx
+            dy = other.rect.centery - self.rect.centery
             ds = dx**2 + dy**2
             return ds <= (self.radius + other.radius)**2
         elif self.radius or other.radius or self._COLLISION_MASK_LOCATION or other._COLLISION_MASK_LOCATION:
