@@ -190,10 +190,10 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         return frozenset(labels)
 
     @final
-    def does_collide_mask(self, mask: pygame.Mask, pos: pygame.typing.IntPoint):
+    def does_collide_mask(self, mask: pygame.Mask):
         # rounding so that mask collisions reflect apparent (drawn) position of sprites
-        dx = pos[0] - round(self.rect.x)
-        dy = pos[1] - round(self.rect.y)
+        dx = 0 - round(self.rect.x)
+        dy = 0 - round(self.rect.y)
         # might have to take in a position for the mask
         return self.mask.overlap(mask, (dx, dy))
 

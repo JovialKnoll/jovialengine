@@ -4,6 +4,7 @@ import timeit
 import pygame
 
 from jovialengine.gamesprite import GameSprite
+import jovialengine.load as load
 
 
 class TestSpriteA(GameSprite):
@@ -380,47 +381,15 @@ class TestGameSprite(unittest.TestCase):
         self.assertEqual(sprite.mask.get_at((0, 1)), 0)
         self.assertEqual(sprite.mask.get_at((1, 1)), 0)
 
-    def test_does_collide_mask_efficiency_collide(self):
-        pass
+    def test_does_collide_mask(self):
         # Arrange
         sprite = TestSpriteCollideMask(topleft=(100, 100))
-        mask_big = pygame.mask.Mask((2560, 1440), True)
-        mask_small = pygame.mask.Mask((32, 32), True)
+        mask_image = load.image('./assets/gfx/2560x1440_mask.png', (255, 0, 255))
+        mask = load.mask_surface(mask_image)
         # Act
-        big_time = timeit.timeit(lambda: sprite.does_collide_mask(mask_big, (0, 0)), number=10000)
-        def small_check(s: GameSprite, m: pygame.mask.Mask):
-            for x in range(80):
-                for y in range(45):
-                    pos = (x * 32, y * 32)
-                    if s.does_collide_mask(m, pos):
-                        return True
-            return False
-        small_time = timeit.timeit(lambda: small_check(sprite, mask_small), number=10000)
+        does_collide = sprite.does_collide_mask(mask)
         # Assert
-        print('big_time', big_time)
-        print('small_time', small_time)
-        self.assertLess(big_time, small_time)
-
-    def test_does_collide_mask_efficiency_empty(self):
-        pass
-        # Arrange
-        sprite = TestSpriteCollideMask(topleft=(100, 100))
-        mask_big = pygame.mask.Mask((2560, 1440), False)
-        mask_small = pygame.mask.Mask((32, 32), False)
-        # Act
-        big_time = timeit.timeit(lambda: sprite.does_collide_mask(mask_big, (0, 0)), number=10000)
-        def small_check(s: GameSprite, m: pygame.mask.Mask):
-            for x in range(80):
-                for y in range(45):
-                    pos = (x * 32, y * 32)
-                    if s.does_collide_mask(m, pos):
-                        return True
-            return False
-        small_time = timeit.timeit(lambda: small_check(sprite, mask_small), number=10000)
-        # Assert
-        print('big_time', big_time)
-        print('small_time', small_time)
-        self.assertLess(big_time, small_time)
+        self.assertTrue(does_collide)
 
 
 if __name__ == '__main__':
