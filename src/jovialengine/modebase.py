@@ -36,6 +36,7 @@ class ModeBase(abc.ABC):
         'sprites_game',
         'sprites_input',
         'map_sprites_static_collide',
+        '_static_collision_masks',
         '_camera',
         '_input_frame',
         'next_mode',
@@ -86,13 +87,16 @@ class ModeBase(abc.ABC):
 
     @final
     def __handle_static_collisions(self):
-        collide_sprites = self.sprites_game.sprites()
-        for sprite in collide_sprites:
-            for sprite_collides_with in sprite.get_static_collides_with():
-                #check if sprite_collides_with is in set of possible background elements for this mode
-                #then if so check whether sprite collides with that one
-                #then if so call getattr(sprite, 'static_collide_' + sprite_collides_with)()
-                pass
+        static_collide_events = []
+        for static_collision_mask in self._static_collision_masks:
+            sprites_static_collide = self.map_sprites_static_collide.get(static_collision_mask[0], None)
+            if sprites_static_collide is not None:
+                static_collide_sprites = sprites_static_collide.sprites()
+                for sprite in static_collide_sprites:
+                    if sprite.does_collide_mask(static_collision_mask[1]):
+                        static_collide_events.append(getattr(sprite, 'static_collide_' + static_collision_mask[0]))
+        for static_collide_event in static_collide_events:
+            static_collide_event()
 
     @final
     def __handle_collisions(self):
