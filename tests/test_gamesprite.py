@@ -1,5 +1,4 @@
 import unittest
-import timeit
 
 import pygame
 
