@@ -87,16 +87,13 @@ class ModeBase(abc.ABC):
 
     @final
     def __handle_static_collisions(self):
-        static_collide_events = []
         for static_collision_mask in self._static_collision_masks:
             sprites_static_collide = self.map_sprites_static_collide.get(static_collision_mask[0], None)
             if sprites_static_collide is not None:
                 static_collide_sprites = sprites_static_collide.sprites()
                 for sprite in static_collide_sprites:
                     if sprite.does_collide_mask(static_collision_mask[1]):
-                        static_collide_events.append(getattr(sprite, 'static_collide_' + static_collision_mask[0]))
-        for static_collide_event in static_collide_events:
-            static_collide_event()
+                        getattr(sprite, 'static_collide_' + static_collision_mask[0])()
 
     @final
     def __handle_collisions(self):
