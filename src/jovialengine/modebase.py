@@ -30,6 +30,7 @@ class ModeBase(abc.ABC):
         'sprites_all',
         'sprites_game',
         'sprites_input',
+        'map_sprites_static_collide',
         '_camera',
         '_input_frame',
         'next_mode',
@@ -41,9 +42,17 @@ class ModeBase(abc.ABC):
         self.sprites_all = OffsetGroup()
         self.sprites_game: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
         self.sprites_input: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
+        self.map_sprites_static_collide: dict[str, pygame.sprite.Group[GameSprite]] = dict()
         self._camera = pygame.FRect((0, 0), self._CAMERA_SIZE or display.screen_size)
         self._input_frame: InputFrame | None = None
         self.next_mode: ModeBase | None = None
+
+    @final
+    def add_sprite_static_collide(self, sprite: GameSprite):
+        for sprite_collides_with in sprite.get_static_collides_with():
+            if sprite_collides_with not in self.map_sprites_static_collide:
+                self.map_sprites_static_collide[sprite_collides_with] = pygame.sprite.Group()
+            self.map_sprites_static_collide[sprite_collides_with].add(sprite)
 
     @final
     def input(self, events: Iterable[pygame.event.Event], input_frame: InputFrame):
@@ -71,7 +80,7 @@ class ModeBase(abc.ABC):
         for sprite in collide_sprites:
             for sprite_collides_with in sprite.get_static_collides_with():
                 #check if sprite_collides_with is in set of possible background elements for this mode
-                #then if so check if sprite collides with that one
+                #then if so check whether sprite collides with that one
                 #then if so call getattr(sprite, 'static_collide_' + sprite_collides_with)()
                 pass
 

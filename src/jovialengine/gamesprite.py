@@ -23,9 +23,9 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     optional: _GETS_INPUT, set this true to force this sprite to receive input
 
     To hook in to collision checking against static background elements, create a function like so:
-    def static_collide_backgroundElementName(self):
+    def static_collide_backgroundLabel(self):
         do_something()
-    static_collide_backgroundElementName will be called whenever there is a collision with that background element
+    static_collide_backgroundLabel will be called whenever there is a collision with that background element
 
     To hook in to collision checking against other sprites, create a function like so:
     def collide_OtherGameSpriteClassName(self, other: OtherGameSpriteClassName):
@@ -229,6 +229,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         mode.sprites_game.add(self)
         if self._GETS_INPUT or self._take_state_change is not GameSprite._take_state_change:
             mode.sprites_input.add(self)
+        mode.add_sprite_static_collide(self)
         self._start(mode)
         return self
 
