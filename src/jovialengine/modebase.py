@@ -28,7 +28,7 @@ class ModeBase(abc.ABC):
     _SPACE_SIZE: tuple[int, int] | None = None
     _CAMERA_SIZE: tuple[int, int] | None = None
     _CAMERA_OFFSET: tuple[int, int] = (0, 0)
-    _STATIC_COLLISION_MASK_INFOS: Iterable[tuple[str, str, bool | tuple[int, int, int]]]
+    _STATIC_COLLISION_MASK_INFOS: Iterable[tuple[str, str, bool | tuple[int, int, int]]] = ()
 
     __slots__ = (
         '_background',
