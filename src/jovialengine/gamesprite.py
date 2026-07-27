@@ -22,6 +22,11 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     optional: _COLLISION_MASK_ALPHA_OR_COLORKEY, used for loading image, required if _COLLISION_MASK_LOCATION is set
     optional: _GETS_INPUT, set this true to force this sprite to receive input
 
+    To hook in to collision checking against static background elements, create a function like so:
+    def static_collide_backgroundLabel(self):
+        do_something()
+    static_collide_backgroundLabel will be called whenever there is a collision with that background element
+
     To hook in to collision checking against other sprites, create a function like so:
     def collide_OtherGameSpriteClassName(self, other: OtherGameSpriteClassName):
         do_something()
@@ -155,6 +160,16 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     @classmethod
     @final
     @cache
+    def get_static_collides_with(cls):
+        return frozenset([
+            e.removeprefix('static_collide_')
+            for e in dir(cls)
+            if e.startswith('static_collide_')
+        ])
+
+    @classmethod
+    @final
+    @cache
     def get_collides_with(cls):
         return frozenset([
             e.removeprefix('collide_')
@@ -173,6 +188,14 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         ]
         labels.append('GameSprite')
         return frozenset(labels)
+
+    @final
+    def does_collide_mask(self, mask: pygame.Mask):
+        # rounding so that mask collisions reflect apparent (drawn) position of sprites
+        dx = 0 - round(self.rect.x)
+        dy = 0 - round(self.rect.y)
+        # might have to take in a position for the mask
+        return self.mask.overlap(mask, (dx, dy))
 
     @final
     def does_collide(self, other: Self):
@@ -206,6 +229,7 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         mode.sprites_game.add(self)
         if self._GETS_INPUT or self._take_state_change is not GameSprite._take_state_change:
             mode.sprites_input.add(self)
+        mode.add_sprite_static_collide(self)
         self._start(mode)
         return self
 

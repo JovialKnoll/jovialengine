@@ -4,6 +4,7 @@ from collections.abc import Iterable
 
 import pygame
 
+from . import load
 from . import display
 from .offsetgroup import OffsetGroup
 from .inputframe import InputFrame
@@ -17,6 +18,9 @@ class ModeBase(abc.ABC):
     optional: _SPACE_SIZE, size of the space inside this mode, if not supplied will assume display.screen_size
     optional: _CAMERA_SIZE, size of the camera inside this mode, if not supplied will assume display.screen_size
     optional: _CAMERA_OFFSET, offset for drawing camera view onto screen
+    optional: _STATIC_COLLISION_MASK_INFOS, iterable of setup information for collision masks for colliding with static
+        background elements
+        (LABEL, COLLISION_MASK, _COLLISION_MASK_ALPHA_OR_COLORKEY)
 
     When a subclass wants to pass on to another mode, set self.next_mode.
     Don't create another mode unless you are immediately assigning it to self.next_mode.
@@ -24,12 +28,15 @@ class ModeBase(abc.ABC):
     _SPACE_SIZE: tuple[int, int] | None = None
     _CAMERA_SIZE: tuple[int, int] | None = None
     _CAMERA_OFFSET: tuple[int, int] = (0, 0)
+    _STATIC_COLLISION_MASK_INFOS: Iterable[tuple[str, str, bool | tuple[int, int, int]]] = ()
 
     __slots__ = (
         '_background',
         'sprites_all',
         'sprites_game',
         'sprites_input',
+        'map_sprites_static_collide',
+        '_static_collision_masks',
         '_camera',
         '_input_frame',
         'next_mode',
@@ -41,9 +48,22 @@ class ModeBase(abc.ABC):
         self.sprites_all = OffsetGroup()
         self.sprites_game: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
         self.sprites_input: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
+        self.map_sprites_static_collide: dict[str, pygame.sprite.Group[GameSprite]] = dict()
+        self._static_collision_masks: list[tuple[str, pygame.mask.Mask]] = []
+        for static_collision_mask_info in self._STATIC_COLLISION_MASK_INFOS:
+            mask_image = load.image(static_collision_mask_info[1], static_collision_mask_info[2])
+            mask = load.mask_surface(mask_image)
+            self._static_collision_masks.append((static_collision_mask_info[0], mask))
         self._camera = pygame.FRect((0, 0), self._CAMERA_SIZE or display.screen_size)
         self._input_frame: InputFrame | None = None
         self.next_mode: ModeBase | None = None
+
+    @final
+    def add_sprite_static_collide(self, sprite: GameSprite):
+        for sprite_collides_with in sprite.get_static_collides_with():
+            if sprite_collides_with not in self.map_sprites_static_collide:
+                self.map_sprites_static_collide[sprite_collides_with] = pygame.sprite.Group()
+            self.map_sprites_static_collide[sprite_collides_with].add(sprite)
 
     @final
     def input(self, events: Iterable[pygame.event.Event], input_frame: InputFrame):
@@ -62,7 +82,18 @@ class ModeBase(abc.ABC):
         for sprite in self.sprites_all.sprites():
             sprite.update(dt, self._camera)
         self._update_post_sprites(dt)
+        self.__handle_static_collisions()
         self.__handle_collisions()
+
+    @final
+    def __handle_static_collisions(self):
+        for static_collision_mask in self._static_collision_masks:
+            sprites_static_collide = self.map_sprites_static_collide.get(static_collision_mask[0], None)
+            if sprites_static_collide is not None:
+                static_collide_sprites = sprites_static_collide.sprites()
+                for sprite in static_collide_sprites:
+                    if sprite.does_collide_mask(static_collision_mask[1]):
+                        getattr(sprite, 'static_collide_' + static_collision_mask[0])()
 
     @final
     def __handle_collisions(self):

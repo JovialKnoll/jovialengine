@@ -3,6 +3,7 @@ import unittest
 import pygame
 
 from jovialengine.gamesprite import GameSprite
+import jovialengine.load as load
 
 
 class TestSpriteA(GameSprite):
@@ -40,6 +41,12 @@ class TestSpriteSheet(GameSprite):
     _ALPHA_OR_COLORKEY = (255, 0, 255)
     _IMAGE_SECTION_SIZE = (2, 2)
     _COLLISION_MASK_LOCATION = './assets/gfx/6x4_mask_tests.png'
+    _COLLISION_MASK_ALPHA_OR_COLORKEY = (255, 0, 255)
+
+class TestSpriteCollideMask(GameSprite):
+    _IMAGE_LOCATION = './assets/gfx/32x32_image.png'
+    _ALPHA_OR_COLORKEY = (255, 0, 255)
+    _COLLISION_MASK_LOCATION = './assets/gfx/32x32_image.png'
     _COLLISION_MASK_ALPHA_OR_COLORKEY = (255, 0, 255)
 
 class TestGameSprite(unittest.TestCase):
@@ -372,6 +379,26 @@ class TestGameSprite(unittest.TestCase):
         self.assertEqual(sprite.mask.get_at((1, 0)), 0)
         self.assertEqual(sprite.mask.get_at((0, 1)), 0)
         self.assertEqual(sprite.mask.get_at((1, 1)), 0)
+
+    def test_does_collide_mask_yes(self):
+        # Arrange
+        sprite = TestSpriteCollideMask(topleft=(100, 100))
+        mask_image = load.image('./assets/gfx/2560x1440_mask.png', (255, 0, 255))
+        mask = load.mask_surface(mask_image)
+        # Act
+        does_collide = sprite.does_collide_mask(mask)
+        # Assert
+        self.assertTrue(does_collide)
+
+    def test_does_collide_mask_no(self):
+        # Arrange
+        sprite = TestSpriteCollideMask(topleft=(200, 200))
+        mask_image = load.image('./assets/gfx/2560x1440_mask.png', (255, 0, 255))
+        mask = load.mask_surface(mask_image)
+        # Act
+        does_collide = sprite.does_collide_mask(mask)
+        # Assert
+        self.assertFalse(does_collide)
 
 
 if __name__ == '__main__':
