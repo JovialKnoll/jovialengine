@@ -194,7 +194,6 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
         # rounding so that mask collisions reflect apparent (drawn) position of sprites
         dx = 0 - round(self.rect.x)
         dy = 0 - round(self.rect.y)
-        # might have to take in a position for the mask
         return self.mask.overlap(mask, (dx, dy))
 
     @final
