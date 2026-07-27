@@ -49,10 +49,10 @@ class ModeBase(abc.ABC):
         self.sprites_game: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
         self.sprites_input: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
         self.map_sprites_static_collide: dict[str, pygame.sprite.Group[GameSprite]] = dict()
-        self._static_collision_masks: Iterable[tuple[str, pygame.mask.Mask]] = []
-        for static_collision_mask_info in _STATIC_COLLISION_MASK_INFOS:
+        self._static_collision_masks: list[tuple[str, pygame.mask.Mask]] = []
+        for static_collision_mask_info in self._STATIC_COLLISION_MASK_INFOS:
             mask_image = load.image(static_collision_mask_info[1], static_collision_mask_info[2])
-            mask = load.mask_surface(self._mask_image)
+            mask = load.mask_surface(mask_image)
             self._static_collision_masks.append((static_collision_mask_info[0], mask))
         self._camera = pygame.FRect((0, 0), self._CAMERA_SIZE or display.screen_size)
         self._input_frame: InputFrame | None = None
