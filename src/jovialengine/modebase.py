@@ -51,6 +51,8 @@ class ModeBase(abc.ABC):
         self._background.fill((0, 0, 0))
         self._static_collision_masks: list[tuple[str, pygame.mask.Mask]] = []
         for static_collision_mask_info in self._STATIC_COLLISION_MASK_INFOS:
+            if not isinstance(static_collision_mask_info[0], str):
+                raise TypeError("error: static_collision_mask_info[0] must be a string")
             mask_image = load.image(static_collision_mask_info[1], static_collision_mask_info[2])
             mask = load.mask_surface(mask_image)
             self._static_collision_masks.append((static_collision_mask_info[0], mask))
