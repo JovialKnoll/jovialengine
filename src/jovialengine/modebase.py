@@ -31,11 +31,11 @@ class ModeBase(abc.ABC):
     _STATIC_COLLISION_MASK_INFOS: Iterable[tuple[str, str, bool | tuple[int, int, int]]] = ()
 
     __slots__ = (
-        '_background',
         'sprites_all',
         'sprites_game',
         'sprites_input',
         'map_sprites_static_collide',
+        '_background',
         '_static_collision_masks',
         '_camera',
         '_input_frame',
@@ -43,12 +43,12 @@ class ModeBase(abc.ABC):
     )
 
     def __init__(self):
-        self._background = pygame.Surface(self.get_space_size()).convert()
-        self._background.fill((0, 0, 0))
         self.sprites_all = OffsetGroup()
         self.sprites_game: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
         self.sprites_input: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
         self.map_sprites_static_collide: dict[str, pygame.sprite.Group[GameSprite]] = dict()
+        self._background = pygame.Surface(self.get_space_size()).convert()
+        self._background.fill((0, 0, 0))
         self._static_collision_masks: list[tuple[str, pygame.mask.Mask]] = []
         for static_collision_mask_info in self._STATIC_COLLISION_MASK_INFOS:
             mask_image = load.image(static_collision_mask_info[1], static_collision_mask_info[2])
