@@ -34,7 +34,7 @@ class ModeBase(abc.ABC):
         'sprites_all',
         'sprites_game',
         'sprites_input',
-        'map_sprites_static_collide',
+        '_map_sprites_static_collide',
         '_background',
         '_static_collision_masks',
         '_camera',
@@ -46,7 +46,7 @@ class ModeBase(abc.ABC):
         self.sprites_all = OffsetGroup()
         self.sprites_game: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
         self.sprites_input: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
-        self.map_sprites_static_collide: dict[str, pygame.sprite.Group[GameSprite]] = dict()
+        self._map_sprites_static_collide: dict[str, pygame.sprite.Group[GameSprite]] = dict()
         self._background = pygame.Surface(self.get_space_size()).convert()
         self._background.fill((0, 0, 0))
         self._static_collision_masks: list[tuple[str, pygame.mask.Mask]] = []
@@ -63,9 +63,9 @@ class ModeBase(abc.ABC):
     @final
     def add_sprite_static_collide(self, sprite: GameSprite):
         for sprite_collides_with in sprite.get_static_collides_with():
-            if sprite_collides_with not in self.map_sprites_static_collide:
-                self.map_sprites_static_collide[sprite_collides_with] = pygame.sprite.Group()
-            self.map_sprites_static_collide[sprite_collides_with].add(sprite)
+            if sprite_collides_with not in self._map_sprites_static_collide:
+                self._map_sprites_static_collide[sprite_collides_with] = pygame.sprite.Group()
+            self._map_sprites_static_collide[sprite_collides_with].add(sprite)
 
     @final
     def input(self, events: Iterable[pygame.event.Event], input_frame: InputFrame):
@@ -90,7 +90,7 @@ class ModeBase(abc.ABC):
     @final
     def __handle_static_collisions(self):
         for static_collision_mask in self._static_collision_masks:
-            sprites_static_collide = self.map_sprites_static_collide.get(static_collision_mask[0], None)
+            sprites_static_collide = self._map_sprites_static_collide.get(static_collision_mask[0], None)
             if sprites_static_collide is not None:
                 static_collide_sprites = sprites_static_collide.sprites()
                 for sprite in static_collide_sprites:
