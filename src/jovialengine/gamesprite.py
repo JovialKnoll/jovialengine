@@ -220,16 +220,12 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
     def start(self, mode: ModeBase | None = None):
         """Function to start processing the GameSprite as part of running the game.
         Should usually be called after creating the GameSprite.
-        Adds the sprite to appropriate groups in the current game mode or the mode indicated.
+        Passes the sprite to the current game mode or the mode indicated to be added to sprite groups.
         Sprites created within a mode's __init__ should probably have that mode passed into this method.
         """
         if mode is None:
             mode = gamebuilder.get_current_mode()
-        mode.sprites_all.add(self)
-        mode.sprites_game.add(self)
-        if self._GETS_INPUT or self._take_state_change is not GameSprite._take_state_change:
-            mode.sprites_input.add(self)
-        mode.add_sprite_static_collide(self)
+        mode.add_sprite(self)
         self._start(mode)
         return self
 
