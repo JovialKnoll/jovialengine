@@ -65,7 +65,7 @@ class ModeBase(abc.ABC):
         """Adds the sprite to appropriate groups in this mode."""
         self.sprites_all.add(sprite)
         self.sprites_game.add(sprite)
-        if sprite._GETS_INPUT or sprite._take_state_change is not GameSprite._take_state_change:
+        if sprite.gets_input():
             self.sprites_input.add(sprite)
         for sprite_collides_with in sprite.get_static_collides_with():
             if sprite_collides_with not in self.map_sprites_static_collide:

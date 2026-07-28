@@ -217,6 +217,10 @@ class GameSprite(pygame.sprite.Sprite, Saveable, abc.ABC):
             return self_rect.colliderect(other_rect)
 
     @final
+    def gets_input(self):
+        return self._GETS_INPUT or self._take_state_change is not GameSprite._take_state_change
+
+    @final
     def start(self, mode: ModeBase | None = None):
         """Function to start processing the GameSprite as part of running the game.
         Should usually be called after creating the GameSprite.
