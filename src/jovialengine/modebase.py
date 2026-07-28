@@ -31,11 +31,11 @@ class ModeBase(abc.ABC):
     _STATIC_COLLISION_MASK_INFOS: Iterable[tuple[str, str, bool | tuple[int, int, int]]] = ()
 
     __slots__ = (
-        '_background',
         'sprites_all',
-        'sprites_game',
-        'sprites_input',
-        'map_sprites_static_collide',
+        '_sprites_game',
+        '_sprites_input',
+        '_map_sprites_static_collide',
+        '_background',
         '_static_collision_masks',
         '_camera',
         '_input_frame',
@@ -43,14 +43,16 @@ class ModeBase(abc.ABC):
     )
 
     def __init__(self):
+        self.sprites_all = OffsetGroup()
+        self._sprites_game: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
+        self._sprites_input: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
+        self._map_sprites_static_collide: dict[str, pygame.sprite.Group[GameSprite]] = dict()
         self._background = pygame.Surface(self.get_space_size()).convert()
         self._background.fill((0, 0, 0))
-        self.sprites_all = OffsetGroup()
-        self.sprites_game: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
-        self.sprites_input: pygame.sprite.Group[GameSprite] = pygame.sprite.Group()
-        self.map_sprites_static_collide: dict[str, pygame.sprite.Group[GameSprite]] = dict()
         self._static_collision_masks: list[tuple[str, pygame.mask.Mask]] = []
-        for static_collision_mask_info in self._STATIC_COLLISION_MASK_INFOS:
+        for i, static_collision_mask_info in enumerate(self._STATIC_COLLISION_MASK_INFOS):
+            if not isinstance(static_collision_mask_info[0], str):
+                raise TypeError(f"error: _STATIC_COLLISION_MASK_INFOS[{i}][0] must be a string")
             mask_image = load.image(static_collision_mask_info[1], static_collision_mask_info[2])
             mask = load.mask_surface(mask_image)
             self._static_collision_masks.append((static_collision_mask_info[0], mask))
@@ -59,11 +61,16 @@ class ModeBase(abc.ABC):
         self.next_mode: ModeBase | None = None
 
     @final
-    def add_sprite_static_collide(self, sprite: GameSprite):
+    def add_sprite(self, sprite: GameSprite):
+        """Adds the sprite to appropriate groups in this mode."""
+        self.sprites_all.add(sprite)
+        self._sprites_game.add(sprite)
+        if sprite.gets_input():
+            self._sprites_input.add(sprite)
         for sprite_collides_with in sprite.get_static_collides_with():
-            if sprite_collides_with not in self.map_sprites_static_collide:
-                self.map_sprites_static_collide[sprite_collides_with] = pygame.sprite.Group()
-            self.map_sprites_static_collide[sprite_collides_with].add(sprite)
+            if sprite_collides_with not in self._map_sprites_static_collide:
+                self._map_sprites_static_collide[sprite_collides_with] = pygame.sprite.Group()
+            self._map_sprites_static_collide[sprite_collides_with].add(sprite)
 
     @final
     def input(self, events: Iterable[pygame.event.Event], input_frame: InputFrame):
@@ -71,7 +78,7 @@ class ModeBase(abc.ABC):
         for event in events:
             self._take_event(event)
         self._take_frame(input_frame)
-        for sprite in self.sprites_input.sprites():
+        for sprite in self._sprites_input.sprites():
             sprite.input(input_frame)
         self._input_frame = input_frame
 
@@ -88,7 +95,7 @@ class ModeBase(abc.ABC):
     @final
     def __handle_static_collisions(self):
         for static_collision_mask in self._static_collision_masks:
-            sprites_static_collide = self.map_sprites_static_collide.get(static_collision_mask[0], None)
+            sprites_static_collide = self._map_sprites_static_collide.get(static_collision_mask[0], None)
             if sprites_static_collide is not None:
                 static_collide_sprites = sprites_static_collide.sprites()
                 for sprite in static_collide_sprites:
@@ -98,7 +105,7 @@ class ModeBase(abc.ABC):
     @final
     def __handle_collisions(self):
         collide_events = []
-        collide_sprites = self.sprites_game.sprites()
+        collide_sprites = self._sprites_game.sprites()
         for i, sprite0 in enumerate(collide_sprites):
             for j in range(i + 1, len(collide_sprites)):
                 sprite1 = collide_sprites[j]
@@ -124,7 +131,7 @@ class ModeBase(abc.ABC):
         screen.blit(self._background, offset)
         self._draw_pre_sprites(screen, offset)
         self.sprites_all.draw_offset(screen, offset)
-        for sprite in self.sprites_game.sprites():
+        for sprite in self._sprites_game.sprites():
             sprite.draw_dynamic(screen, offset)
         self._draw_post_sprites(screen, offset)
         screen.set_clip(None)
@@ -132,7 +139,8 @@ class ModeBase(abc.ABC):
 
     @final
     def cleanup(self):
-        for sprites in (self.sprites_all, self.sprites_game, self.sprites_input):
+        for sprites in ((self.sprites_all, self._sprites_game, self._sprites_input)
+                + tuple(self._map_sprites_static_collide.values())):
             # we can't just kill the sprites since we might be reusing them between modes
             sprites.empty()
         self._cleanup()
