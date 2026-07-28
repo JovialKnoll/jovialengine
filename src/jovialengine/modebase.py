@@ -139,7 +139,8 @@ class ModeBase(abc.ABC):
 
     @final
     def cleanup(self):
-        for sprites in (self.sprites_all, self._sprites_game, self._sprites_input):
+        for sprites in ((self.sprites_all, self._sprites_game, self._sprites_input)
+                + tuple(self._map_sprites_static_collide.values())):
             # we can't just kill the sprites since we might be reusing them between modes
             sprites.empty()
         self._cleanup()
