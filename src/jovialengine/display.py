@@ -1,7 +1,9 @@
 import os
 import math
+import struct
 
 import pygame
+import moderngl
 
 from . import config
 from . import utility
