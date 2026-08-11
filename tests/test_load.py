@@ -18,7 +18,7 @@ class TestLoad(unittest.TestCase):
             for x in range(size[0]):
                 bit = mask.get_at((x, y))
                 result += str(bit)
-            result += os.linesep
+            result += "\n"
         return result
 
     def test_mask_circle_even(self):
